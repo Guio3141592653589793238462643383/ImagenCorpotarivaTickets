@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Usuarios | Austral Lens</title>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha512-pVnKx1qG6Y5Y0b+6Vg6QqY0Y6K3VQ0QyYqzKf1bqj5Yp0c5bX+3qk1Xk5s1V0K1a"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --al-blue:       #007DC8;
+            --al-blue-light: #0096C8;
+            --al-blue-dark:  #004B96;
+            --al-blue-mid:   #0064AF;
+            --al-blue-pale:  #d0eaf8;
+            --al-blue-xpale: #e8f4fd;
+        }
+
+        /* Sidebar con degradado igual al nav de menu.html */
+        #admin-sidebar > div {
+            background: linear-gradient(180deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%) !important;
+            border-right: none !important;
+        }
+
+        /* Item activo del sidebar */
+        .sidebar-active {
+            background: rgba(255,255,255,0.2) !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .sidebar-item {
+            color: rgba(255,255,255,0.82);
+            transition: background .15s, color .15s;
+        }
+        .sidebar-item:hover {
+            background: rgba(255,255,255,0.15) !important;
+            color: #fff !important;
+        }
+        .sidebar-item svg { color: rgba(255,255,255,0.7); }
+        .sidebar-item:hover svg, .sidebar-active svg { color: #fff; }
+
+        /* Separador del sidebar */
+        .sidebar-sep { border-color: rgba(255,255,255,0.2) !important; }
+
+        /* Logo text en sidebar */
+        .sidebar-logo-title { color: #fff; }
+        .sidebar-logo-sub   { color: rgba(255,255,255,0.6); }
+
+        /* Topbar */
+        .al-topbar {
+            background: linear-gradient(135deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%);
+            border: none !important;
+        }
+        .al-topbar h2, .al-topbar p { color: #fff !important; }
+        .al-topbar p { opacity: .8; }
+
+        /* Campana en topbar blanca */
+        .al-bell-btn { color: #fff !important; }
+        .al-bell-btn:hover { background: rgba(255,255,255,.15) !important; }
+
+        /* Botón hamburguesa */
+        .al-hamburger {
+            color: var(--al-blue-dark);
+        }
+        .al-hamburger:hover { background: var(--al-blue-xpale); }
+
+        /* Fondo de página */
+        body { background: linear-gradient(135deg, var(--al-blue-xpale) 0%, #f0f8ff 100%) !important; }
+
+        /* Tarjetas */
+        .al-card { background: #fff; border: 1.5px solid #b3d9f0; border-radius: .75rem; }
+
+        /* Botón primario */
+        .al-btn-primary {
+            background: linear-gradient(135deg, var(--al-blue-dark), var(--al-blue));
+            color: #fff;
+            transition: opacity .2s;
+        }
+        .al-btn-primary:hover { opacity: .88; }
+
+        /* Headers de tabla */
+        .al-thead { background: var(--al-blue-xpale) !important; color: var(--al-blue-dark) !important; }
+
+        /* Paginación activa */
+        .al-page-active { background: var(--al-blue) !important; color: #fff !important; border-color: var(--al-blue) !important; }
+
+        /* Títulos de sección */
+        .al-section-title { color: var(--al-blue-dark); border-left: 4px solid var(--al-blue); padding-left: .5rem; }
+
+        @keyframes slideInDown { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
+        .animate-slide-in { animation: slideInDown .4s ease-out; }
+    </style>
+</head>
+
+
+<body class="min-h-screen">
+
+<!-- Botón hamburguesa (solo mobile) -->
+<button data-drawer-target="admin-sidebar"
+        data-drawer-toggle="admin-sidebar"
+        aria-controls="admin-sidebar"
+        type="button"
+        class="al-hamburger inline-flex items-center p-2 mt-2 ms-3 rounded-lg sm:hidden focus:outline-none focus:ring-2 focus:ring-sky-200">
+    <span class="sr-only">Abrir menú</span>
+    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h10"/>
+    </svg>
+</button>
+
+<!-- SIDEBAR -->
+<aside id="admin-sidebar"
+       class="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0"
+       aria-label="Sidebar">
+    <div class="h-full flex flex-col px-3 py-4 overflow-y-auto">
+
+        <!-- Logo -->
+        <div class="px-2 pb-4 mb-2 sidebar-sep border-b flex items-center gap-3">
+            <img src="/images/logo.png" alt="Logo" class="h-10 object-contain brightness-0 invert">
+            <div>
+                <span class="sidebar-logo-title font-bold text-base leading-tight block">Austral Lens</span>
+                <span class="sidebar-logo-sub text-xs">Administración</span>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <ul class="space-y-1 font-medium flex-1">
+            <li>
+                <a href="/admin/tickets"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-ticket-alt w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Tickets</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/dashboard"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-chart-pie w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/usuarios"
+                   class="sidebar-item sidebar-active flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-users w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Usuarios</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/equipos"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-desktop w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Hoja de vida-Equipos</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Cerrar sesión -->
+        <div class="pt-3 sidebar-sep border-t">
+            <a href="/logout"
+               class="sidebar-item flex items-center px-3 py-2.5 rounded-lg"
+               style="color:rgba(255,180,180,.9);"
+               onmouseover="this.style.color='#fff';this.style.background='rgba(239,68,68,.25)'"
+               onmouseout="this.style.color='rgba(255,180,180,.9)';this.style.background=''">
+                <i class="fas fa-sign-out-alt w-5 text-center shrink-0"></i>
+                <span class="ms-3">Cerrar sesión</span>
+            </a>
+        </div>
+
+    </div>
+</aside>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="p-4 sm:ml-64">
+    <main class="w-full">
+
+        <!-- TOPBAR con degradado igual al nav de menu.html -->
+        <div class="al-topbar rounded-xl shadow-lg p-4 md:p-6 mb-6 md:mb-8 flex justify-between items-center animate-slide-in">
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex w-12 h-12 rounded-full items-center justify-center"
+                     style="background:rgba(255,255,255,.18);">
+                    <i class="fas fa-users text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold">Gestión de Usuarios</h2>
+                    <p class="text-xs md:text-sm">Lista completa de usuarios registrados</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+
+                <!-- CAMPANA -->
+                <div class="relative">
+                    <button id="btnNotificaciones"
+                            class="al-bell-btn relative p-2 rounded-full transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6"
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M15 17h5l-1.405-1.405A2.032 2.032 0
+                      0118 14.158V11a6.002 6.002 0
+                      00-4-5.659V5a2 2 0
+                      10-4 0v.341C7.67 6.165 6 8.388
+                      6 11v3.159c0 .538-.214 1.055-.595
+                      1.436L4 17h5m6 0v1a3 3 0
+                      11-6 0v-1m6 0H9"/>
+                        </svg>
+                        <span id="contadorNotificaciones"
+                              class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 hidden">
+                            0
+                        </span>
+                    </button>
+
+                    <div id="dropdownNotificaciones"
+                         class="hidden absolute right-0 mt-3 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                        <div class="p-3 border-b font-semibold text-gray-700 flex justify-between items-center">
+                            <span>Notificaciones</span>
+                            <button id="btnMarcarTodas"
+                                    class="text-xs hover:underline"
+                                    style="color:var(--al-blue);">
+                                Marcar todas como leidas
+                            </button>
+                        </div>
+                        <div id="listaNotificaciones" class="max-h-80 overflow-y-auto text-sm">
+                            <div class="p-3 text-gray-500">Sin notificaciones</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nuevo usuario -->
+                <a href="/admin/usuarios/nuevo"
+                   class="al-btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm shadow-md">
+                    <i class="fas fa-plus"></i>
+                    <span class="hidden sm:inline">Nuevo Usuario</span>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- BUSCADOR -->
+        <form method="get" th:action="@{/admin/usuarios}"
+              class="al-card shadow-md p-4 md:p-6 mb-6">
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="text"
+                       name="buscar"
+                       th:value="${buscar}"
+                       placeholder="Buscar por nombre, email o cédula..."
+                       class="flex-1 border border-sky-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400">
+                <button type="submit"
+                        class="al-btn-primary px-4 py-2 rounded-lg text-sm font-semibold shadow-md">
+                    <i class="fas fa-search mr-1"></i> Buscar
+                </button>
+                <a th:href="@{/admin/usuarios}"
+                   class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition text-center">
+                    <i class="fas fa-times mr-1"></i> Limpiar
+                </a>
+            </div>
+        </form>
+
+        <!-- INFO REGISTROS -->
+        <div th:if="${pagina.totalElements > 0}"
+             class="text-xs text-gray-500 mb-3 px-1">
+            Mostrando
+            <span th:text="${pagina.number * pagina.size + 1}"></span>–<span th:text="${pagina.number * pagina.size + usuarios.size()}"></span>
+            de <span th:text="${pagina.totalElements}"></span> usuarios
+        </div>
+
+        <!-- TABLA USUARIOS -->
+        <div class="overflow-x-auto rounded-xl" style="border:1.5px solid #b3d9f0;">
+            <!-- ══════════════════════════════════════════
+                 VISTA MÓVIL: tarjetas (solo en < md)
+                 ══════════════════════════════════════════ -->
+            <ul class="md:hidden flex flex-col gap-3 mb-6">
+
+                <li th:if="${#lists.isEmpty(usuarios)}"
+                    class="text-center py-8 text-gray-500 bg-white rounded-xl border border-sky-100">
+                    No hay usuarios registrados.
+                </li>
+
+                <li th:each="usuario : ${usuarios}"
+                    class="bg-white rounded-xl p-4 shadow-sm flex flex-col gap-3"
+                    style="border:1.5px solid #b3d9f0;"
+                    onmouseover="this.style.borderColor='var(--al-blue)';this.style.boxShadow='0 4px 14px rgba(0,125,200,.15)'"
+                    onmouseout="this.style.borderColor='#b3d9f0';this.style.boxShadow=''">
+
+                    <!-- Avatar + nombre + email -->
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+                             th:classappend="${usuario.rol.name() == 'ADMIN'} ? 'bg-red-100 text-red-700' : 'bg-sky-100 text-sky-700'">
+                            <span th:text="${#strings.substring(usuario.nombre, 0, 1).toUpperCase()}">U</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-gray-800 text-sm truncate" th:text="${usuario.nombre}"></p>
+                            <p class="text-xs text-gray-500 truncate" th:text="${usuario.email}"></p>
+                        </div>
+                        <!-- Badge rol -->
+                        <span class="text-xs px-2 py-0.5 rounded-full font-bold shrink-0"
+                              th:classappend="${usuario.rol.name() == 'ADMIN'} ? 'bg-red-100 text-red-700' : 'bg-sky-100 text-sky-700'"
+                              th:text="${usuario.rol}"></span>
+                    </div>
+
+                    <!-- Datos secundarios -->
+                    <div class="grid grid-cols-2 gap-1 text-xs text-gray-500 border-t border-sky-100 pt-2">
+                        <span><i class="fas fa-id-card mr-1"></i><span th:text="${usuario.cedula}"></span></span>
+                        <span><i class="fas fa-phone mr-1"></i><span th:text="${usuario.telefono}"></span></span>
+                        <span class="col-span-2"><i class="fas fa-map-marker-alt mr-1"></i><span th:text="${usuario.ciudad}"></span></span>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="flex gap-2 border-t border-sky-100 pt-2">
+                        <a th:href="@{/admin/usuarios/editar/{id}(id=${usuario.id})}"
+                           class="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-yellow-400 text-white rounded-lg text-xs font-semibold hover:bg-yellow-500 transition">
+                            <i class="fas fa-pencil-alt"></i> Editar
+                        </a>
+                        <form th:action="@{/admin/usuarios/eliminar/{id}(id=${usuario.id})}"
+                              method="post" class="flex-1">
+                            <button type="submit"
+                                    onclick="return confirm('¿Eliminar usuario?')"
+                                    class="w-full flex items-center justify-center gap-1 px-3 py-2 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </form>
+                    </div>
+
+                </li>
+            </ul>
+
+            <!-- ══════════════════════════════════════════
+                 VISTA DESKTOP: tabla (solo en >= md)
+                 ══════════════════════════════════════════ -->
+            <div class="hidden md:block overflow-x-auto rounded-xl mb-6" style="border:1.5px solid #b3d9f0;">
+                <table class="min-w-full text-sm text-left">
+                    <thead class="al-thead uppercase text-xs tracking-wider">
+                    <tr>
+                        <th class="px-4 py-3">ID</th>
+                        <th class="px-4 py-3">No. Identificación</th>
+                        <th class="px-4 py-3">Teléfono</th>
+                        <th class="px-4 py-3">Nombre</th>
+                        <th class="px-4 py-3">Email</th>
+                        <th class="px-4 py-3">Rol</th>
+                        <th class="px-4 py-3">Ciudad</th>
+                        <th class="px-4 py-3">Área/Punto de Venta</th>
+                        <th class="px-4 py-3">Cargo</th>
+                        <th class="px-4 py-3 text-center">Acciones
+
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y bg-white" style="divide-color:#e0f0fb;">
+
+                    <tr th:if="${#lists.isEmpty(usuarios)}">
+                        <td colspan="10" class="text-center py-8 text-gray-500">
+                            No hay usuarios registrados.
+                        </td>
+                    </tr>
+
+                    <tr th:each="usuario : ${usuarios}" onmouseover="this.style.background='var(--al-blue-xpale)'" onmouseout="this.style.background=''">
+                        <td class="px-4 py-3 font-mono text-gray-500 text-xs" th:text="${usuario.id}"></td>
+                        <td class="px-4 py-3 font-mono text-gray-600" th:text="${usuario.cedula}"></td>
+                        <td class="px-4 py-3 text-gray-600" th:text="${usuario.telefono}"></td>
+                        <td class="px-4 py-3 font-semibold text-gray-700" th:text="${usuario.nombre}"></td>
+                        <td class="px-4 py-3 text-gray-600" th:text="${usuario.email}"></td>
+                        <td class="px-4 py-3">
+                        <span class="text-xs px-2 py-1 rounded-full font-bold"
+                              th:classappend="${usuario.rol.name() == 'ADMIN'} ? 'bg-red-100 text-red-700' : 'bg-sky-100 text-sky-700'"
+                              th:text="${usuario.rol}"></span>
+                        </td>
+                        <td class="px-4 py-3 text-gray-600" th:text="${usuario.ciudad}"></td>
+                        <td class="px-4 py-3 text-gray-600" th:text="${usuario.punto}"></td>
+                        <td class="px-4 py-3 text-gray-600" th:text="${usuario.cargo}"></td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <a th:href="@{/admin/usuarios/editar/{id}(id=${usuario.id})}"
+                                   class="inline-flex items-center gap-1 px-3 py-1.5 bg-yellow-400 text-white rounded-lg text-xs font-semibold hover:bg-yellow-500 transition">
+                                    <i class="fas fa-pencil-alt"></i> Editar
+                                </a>
+                                <form th:action="@{/admin/usuarios/eliminar/{id}(id=${usuario.id})}"
+                                      method="post" style="display:inline;">
+                                    <button type="submit"
+                                            onclick="return confirm('¿Eliminar usuario?')"
+                                            class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINACIÓN FLOWBITE -->
+            <div th:if="${pagina.totalPages > 1}" class="flex justify-center mb-6">
+                <nav aria-label="Paginación de usuarios">
+                    <ul class="flex -space-x-px text-sm">
+
+                        <li>
+                            <a th:if="${pagina.hasPrevious()}"
+                               th:href="@{/admin/usuarios(page=${pagina.number - 1}, buscar=${buscar})}"
+                               class="flex items-center justify-center w-9 h-9 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-sky-50 hover:text-sky-700 transition">
+                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/>
+                                </svg>
+                            </a>
+                            <span th:unless="${pagina.hasPrevious()}"
+                                  class="flex items-center justify-center w-9 h-9 leading-tight text-gray-300 bg-white border border-gray-300 rounded-s-lg cursor-not-allowed">
+                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/>
+                            </svg>
+                        </span>
+                        </li>
+
+                        <li th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}">
+                            <a th:if="${i == pagina.number}"
+                               th:href="@{/admin/usuarios(page=${i}, buscar=${buscar})}"
+                               th:text="${i + 1}"
+                               aria-current="page"
+                               class="al-page-active flex items-center justify-center w-9 h-9 font-semibold transition">
+                            </a>
+                            <a th:if="${i != pagina.number}"
+                               th:href="@{/admin/usuarios(page=${i}, buscar=${buscar})}"
+                               th:text="${i + 1}"
+                               class="flex items-center justify-center w-9 h-9 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-sky-50 hover:text-sky-700 transition">
+                            </a>
+                        </li>
+
+                        <li>
+                            <a th:if="${pagina.hasNext()}"
+                               th:href="@{/admin/usuarios(page=${pagina.number + 1}, buscar=${buscar})}"
+                               class="flex items-center justify-center w-9 h-9 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-sky-50 hover:text-sky-700 transition">
+                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+                                </svg>
+                            </a>
+                            <span th:unless="${pagina.hasNext()}"
+                                  class="flex items-center justify-center w-9 h-9 leading-tight text-gray-300 bg-white border border-gray-300 rounded-e-lg cursor-not-allowed">
+                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
+                            </svg>
+                        </span>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
+
+<script>
+    const btn = document.getElementById("btnNotificaciones");
+    const dropdown = document.getElementById("dropdownNotificaciones");
+    const lista = document.getElementById("listaNotificaciones");
+    const contador = document.getElementById("contadorNotificaciones");
+    const btnMarcarTodas = document.getElementById("btnMarcarTodas");
+    const rolUsuario = "ADMIN";
+
+    btn.addEventListener("click", () => dropdown.classList.toggle("hidden"));
+    document.addEventListener("click", e => {
+        if (!btn.contains(e.target) && !dropdown.contains(e.target))
+            dropdown.classList.add("hidden");
+    });
+
+    function actualizarContador() {
+        fetch(`/api/notificaciones/${rolUsuario}/no-leidas`)
+            .then(r => r.json())
+            .then(count => {
+                if (count > 0) { contador.textContent = count; contador.classList.remove("hidden"); }
+                else { contador.classList.add("hidden"); }
+            });
+    }
+
+    function renderNotificacion(n) {
+        const item = document.createElement("div");
+        item.className = "p-3 border-b hover:bg-gray-50 cursor-pointer flex items-start gap-2 transition-all duration-300";
+        item.dataset.id = n.id;
+        const punto = n.leida ? "" : `<span class="mt-1.5 min-w-2 min-h-2 w-2 h-2 bg-red-500 rounded-full inline-block"></span>`;
+        item.innerHTML = `${punto}<div class="flex-1">
+            <div class='font-semibold text-gray-800'>${n.tipo}</div>
+            <div class='text-gray-600 text-xs'>${n.mensaje}</div>
+            <div class='text-gray-400 text-xs'>${new Date(n.fecha).toLocaleString()}</div>
+        </div>`;
+        item.addEventListener("click", () => {
+            fetch("/api/notificaciones/marcar-leida/" + n.id, { method: "POST" }).then(() => {
+                actualizarContador();
+                item.style.opacity = "0";
+                item.style.maxHeight = item.scrollHeight + "px";
+                setTimeout(() => { item.style.maxHeight="0"; item.style.padding="0"; item.style.borderWidth="0"; item.style.overflow="hidden"; }, 150);
+                setTimeout(() => { item.remove(); if (lista.children.length===0) lista.innerHTML='<div class="p-3 text-gray-500">Sin notificaciones</div>'; }, 400);
+            });
+            if (n.ticketId) setTimeout(() => { window.location.href="/admin/ticket/"+n.ticketId; }, 200);
+        });
+        return item;
+    }
+
+    function cargarNotificaciones() {
+        fetch(`/api/notificaciones/${rolUsuario}`)
+            .then(r => r.json())
+            .then(data => {
+                lista.innerHTML = "";
+                const noLeidas = data.filter(n => !n.leida);
+                if (noLeidas.length === 0) lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
+                else noLeidas.forEach(n => lista.appendChild(renderNotificacion(n)));
+                actualizarContador();
+            }).catch(err => console.error("Error cargando notificaciones", err));
+    }
+
+    btnMarcarTodas.addEventListener("click", () => {
+        fetch(`/api/notificaciones/${rolUsuario}/marcar-todas-leidas`, { method: "POST" }).then(() => {
+            [...lista.children].forEach(item => { item.style.opacity="0"; item.style.transition="opacity 0.3s"; });
+            setTimeout(() => { lista.innerHTML='<div class="p-3 text-gray-500">Sin notificaciones</div>'; actualizarContador(); }, 350);
+        });
+    });
+
+    function conectarWebSocket() {
+        const socket = new SockJS('/ws-notificaciones');
+        const stomp = Stomp.over(socket);
+        stomp.debug = null;
+        stomp.connect({}, function() {
+            stomp.subscribe('/topic/notificaciones/ADMIN', function(msg) {
+                const n = JSON.parse(msg.body);
+                if (lista.querySelector('.text-gray-500')) lista.innerHTML = "";
+                lista.insertBefore(renderNotificacion(n), lista.firstChild);
+                if (lista.children.length > 15) lista.removeChild(lista.lastChild);
+                actualizarContador();
+            });
+        }, function() {
+            console.warn("WebSocket desconectado, reintentando en 5s...");
+            setTimeout(conectarWebSocket, 5000);
+        });
+    }
+
+    cargarNotificaciones();
+    conectarWebSocket();
+</script>
+
+</body>
+</html>

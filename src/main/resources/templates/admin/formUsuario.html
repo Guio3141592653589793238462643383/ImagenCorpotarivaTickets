@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${usuario.id} != null ? 'Editar Usuario | Austral Lens' : 'Nuevo Usuario | Austral Lens'"></title>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha512-pVnKx1qG6Y5Y0b+6Vg6QqY0Y6K3VQ0QyYqzKf1bqj5Yp0c5bX+3qk1Xk5s1V0K1a"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --al-blue:       #007DC8;
+            --al-blue-light: #0096C8;
+            --al-blue-dark:  #004B96;
+            --al-blue-mid:   #0064AF;
+            --al-blue-pale:  #d0eaf8;
+            --al-blue-xpale: #e8f4fd;
+        }
+
+        #admin-sidebar > div {
+            background: linear-gradient(180deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%) !important;
+            border-right: none !important;
+        }
+        .sidebar-active { background: rgba(255,255,255,.2) !important; color:#fff !important; font-weight:600; }
+        .sidebar-item   { color: rgba(255,255,255,.82); transition: background .15s, color .15s; }
+        .sidebar-item:hover { background: rgba(255,255,255,.15) !important; color:#fff !important; }
+        .sidebar-sep    { border-color: rgba(255,255,255,.2) !important; }
+        .sidebar-logo-title { color:#fff; }
+        .sidebar-logo-sub   { color: rgba(255,255,255,.6); }
+
+        .al-topbar {
+            background: linear-gradient(135deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%);
+            border: none !important;
+        }
+        .al-topbar h2, .al-topbar p { color:#fff !important; }
+        .al-topbar p { opacity:.82; }
+        .al-bell-btn { color:#fff !important; }
+        .al-bell-btn:hover { background: rgba(255,255,255,.15) !important; }
+
+        .al-hamburger { color: var(--al-blue-dark); }
+
+        body { background: linear-gradient(135deg, var(--al-blue-xpale) 0%, #f0f8ff 100%) !important; }
+
+        .al-card { background:#fff; border:1.5px solid #b3d9f0; border-radius:.75rem; }
+
+        .al-btn-primary {
+            background: linear-gradient(135deg, var(--al-blue-dark), var(--al-blue));
+            color:#fff; transition: opacity .2s;
+        }
+        .al-btn-primary:hover { opacity:.88; }
+
+        .al-section-title { color: var(--al-blue-dark); border-left:4px solid var(--al-blue); padding-left:.5rem; }
+        .al-label { color: var(--al-blue-dark); font-size:.8rem; font-weight:600; }
+
+        .al-input {
+            border-color: #b3d9f0 !important;
+            transition: border-color .15s, box-shadow .15s;
+        }
+        .al-input:focus {
+            outline: none;
+            border-color: var(--al-blue) !important;
+            box-shadow: 0 0 0 3px rgba(0,125,200,.12);
+        }
+
+        .al-btn-back {
+            border:1.5px solid #b3d9f0; color: var(--al-blue-mid);
+            transition: background .15s, color .15s;
+        }
+        .al-btn-back:hover { background: var(--al-blue-xpale); color: var(--al-blue-dark); }
+
+        /* Panel lateral */
+        .al-side-panel {
+            background: var(--al-blue-xpale);
+            border: 1.5px solid var(--al-blue-pale);
+            border-radius: .75rem;
+        }
+
+        @keyframes slideInDown { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
+        .animate-slide-in { animation: slideInDown .4s ease-out; }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+<!-- Hamburguesa mobile -->
+<button data-drawer-target="admin-sidebar"
+        data-drawer-toggle="admin-sidebar"
+        aria-controls="admin-sidebar"
+        type="button"
+        class="al-hamburger inline-flex items-center p-2 mt-2 ms-3 rounded-lg sm:hidden focus:outline-none focus:ring-2 focus:ring-sky-200">
+    <span class="sr-only">Abrir menú</span>
+    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h10"/>
+    </svg>
+</button>
+
+<!-- SIDEBAR -->
+<aside id="admin-sidebar"
+       class="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0"
+       aria-label="Sidebar">
+    <div class="h-full flex flex-col px-3 py-4 overflow-y-auto">
+
+        <div class="px-2 pb-4 mb-2 sidebar-sep border-b flex items-center gap-3">
+            <img src="/images/logo.png" alt="Logo" class="h-10 object-contain brightness-0 invert">
+            <div>
+                <span class="sidebar-logo-title font-bold text-base leading-tight block">Austral Lens</span>
+                <span class="sidebar-logo-sub text-xs">Administración</span>
+            </div>
+        </div>
+
+        <ul class="space-y-1 font-medium flex-1">
+            <li>
+                <a href="/admin/tickets" class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-ticket-alt w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Tickets</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/dashboard" class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-chart-pie w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/usuarios" class="sidebar-item sidebar-active flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-users w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Usuarios</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/equipos"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-desktop w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Hoja de vida-Equipos</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="pt-3 sidebar-sep border-t">
+            <a href="/logout"
+               class="sidebar-item flex items-center px-3 py-2.5 rounded-lg"
+               style="color:rgba(255,180,180,.9);"
+               onmouseover="this.style.color='#fff';this.style.background='rgba(239,68,68,.25)'"
+               onmouseout="this.style.color='rgba(255,180,180,.9)';this.style.background=''">
+                <i class="fas fa-sign-out-alt w-5 text-center shrink-0"></i>
+                <span class="ms-3">Cerrar sesión</span>
+            </a>
+        </div>
+
+    </div>
+</aside>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="p-4 sm:ml-64">
+    <main class="w-full">
+
+        <!-- TOPBAR -->
+        <div class="al-topbar rounded-xl shadow-lg p-4 md:p-6 mb-6 flex justify-between items-center animate-slide-in">
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex w-12 h-12 rounded-full items-center justify-center"
+                     style="background:rgba(255,255,255,.18);">
+                    <i class="fas fa-user-edit text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold"
+                        th:text="${usuario.id} != null ? 'Editar Usuario' : 'Nuevo Usuario'"></h2>
+                    <p class="text-xs md:text-sm"
+                       th:text="${usuario.id} != null ? 'Actualiza la información del usuario.' : 'Completa los datos para registrar un nuevo usuario.'"></p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- CAMPANA -->
+                <div class="relative">
+                    <button id="btnNotificaciones" class="al-bell-btn relative p-2 rounded-full transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6"
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M15 17h5l-1.405-1.405A2.032 2.032 0
+                      0118 14.158V11a6.002 6.002 0
+                      00-4-5.659V5a2 2 0
+                      10-4 0v.341C7.67 6.165 6 8.388
+                      6 11v3.159c0 .538-.214 1.055-.595
+                      1.436L4 17h5m6 0v1a3 3 0
+                      11-6 0v-1m6 0H9"/>
+                        </svg>
+                        <span id="contadorNotificaciones"
+                              class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 hidden">0</span>
+                    </button>
+
+                    <div id="dropdownNotificaciones"
+                         class="hidden absolute right-0 mt-3 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                        <div class="p-3 border-b font-semibold text-gray-700 flex justify-between items-center">
+                            <span>Notificaciones</span>
+                            <button id="btnMarcarTodas" class="text-xs hover:underline" style="color:var(--al-blue);">
+                                Marcar todas como leidas
+                            </button>
+                        </div>
+                        <div id="listaNotificaciones" class="max-h-80 overflow-y-auto text-sm">
+                            <div class="p-3 text-gray-500">Sin notificaciones</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volver desktop -->
+                <a href="/admin/usuarios"
+                   class="al-btn-back hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm bg-white">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+
+        <!-- FORMULARIO -->
+        <form th:action="@{/admin/usuarios/guardar}"
+              th:object="${usuario}"
+              method="post"
+              class="al-card shadow-md p-6 md:p-8">
+
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                <!-- DATOS PRINCIPALES -->
+                <div class="lg:col-span-2 space-y-5">
+
+                    <h3 class="text-sm font-bold al-section-title flex items-center gap-2 mb-2">
+                        <i class="fas fa-user-circle text-xs"></i> Datos del usuario
+                    </h3>
+
+                    <div>
+                        <label class="al-label flex items-center gap-1 mb-1">
+                            <i class="fas fa-id-card"></i> No. Identificación
+                        </label>
+                        <input type="text" th:field="*{cedula}"
+                               class="al-input w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="al-label flex items-center gap-1 mb-1">
+                            <i class="fas fa-user"></i> Nombre Completo
+                        </label>
+                        <input type="text" th:field="*{nombre}"
+                               class="al-input w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="al-label flex items-center gap-1 mb-1">
+                            <i class="fas fa-envelope"></i> Correo Electrónico
+                        </label>
+                        <input type="email" th:field="*{email}"
+                               class="al-input w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="al-label flex items-center gap-1 mb-1">
+                            <i class="fas fa-phone"></i> Teléfono
+                        </label>
+                        <input type="text" th:field="*{telefono}"
+                               class="al-input w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="al-label flex items-center gap-1 mb-1">
+                            <i class="fas fa-city"></i> Ciudad
+                        </label>
+                        <select th:field="*{ciudad}" required
+                                class="al-input w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none">
+                            <option value="">Seleccione una ciudad</option>
+                            <option value="BARRANQUILLA">BARRANQUILLA</option>
+                            <option value="BOGOTA">BOGOTA</option>
+                            <option value="BUCARAMANGA">BUCARAMANGA</option>
+                            <option value="CALI">CALI</option>
+                            <option value="TUNJA">TUNJA</option>
+                            <option value="CHIA">CHIA</option>
+                            <option value="CUCUTA">CUCUTA</option>
+                            <option value="RIONEGRO">RIONEGRO</option>
+                            <option value="NEIVA">NEIVA</option>
+                            <option value="PEREIRA">PEREIRA</option>
+                            <option value="MANIZALES">MANIZALES</option>
+                        </select>
+                    </div>
+                    <!-- Punto -->
+                    <div>
+                        <label class="block text-sky-700 font-semibold mb-1">
+                            Área/Punto de venta: <span class="text-red-500">*</span>
+                        </label>
+                        <select required name="punto"
+                                class="w-full px-3 py-2 border border-sky-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none bg-white">
+                            <option value="">Seleccione un punto</option>
+                            <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
+                            <option value="ARCHIVO">ARCHIVO</option>
+                            <option value="BARRANQUILLA">BARRANQUILLA</option>
+                            <option value="BODEGA">BODEGA</option>
+                            <option value="BUCARAMANGA">BUCARAMANGA</option>
+                            <option value="CALI">CALI</option>
+                            <option value="CENTRO">CENTRO</option>
+                            <option value="CHAPINERO">CHAPINERO</option>
+                            <option value="CHIA">CHIA</option>
+                            <option value="CUCUTA">CUCUTA</option>
+                            <option value="LABORATORIO">LABORATORIO</option>
+                            <option value="MANIZALES">MANIZALES</option>
+                            <option value="MEDELLIN">MEDELLIN</option>
+                            <option value="NEIVA">NEIVA</option>
+                            <option value="OLAYA">OLAYA</option>
+                            <option value="PEREIRA">PEREIRA</option>
+                            <option value="PRINCIPAL">PRINCIPAL</option>
+                            <option value="RIONEGRO">RIONEGRO</option>
+                            <option value="TUNJA">TUNJA</option>
+                        </select>
+                    </div>
+
+                    <!-- Cargo -->
+                    <div>
+                        <label class="block text-sky-700 font-semibold mb-1">
+                            Cargo: <span class="text-red-500">*</span>
+                        </label>
+                        <select required name="cargo"
+                                class="w-full px-3 py-2 border border-sky-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none bg-white">
+                            <option value="ADMINISTRADOR/A">ADMINISTRADOR/A</option>
+                            <option value="ANALISTA DE CARTERA">ANALISTA DE CARTERA</option>
+                            <option value="ASESOR JURIDICO">ASESOR JURIDICO</option>
+                            <option value="ASISTENTE DE AUDITORIA">ASISTENTE DE AUDITORIA</option>
+                            <option value="ASISTENTE DE CONTABILIDAD">ASISTENTE DE CONTABILIDAD</option>
+                            <option value="ASISTENTE DE GERENCIA">ASISTENTE DE GERENCIA</option>
+                            <option value="ASISTENTE DE NOMINA">ASISTENTE DE NOMINA</option>
+                            <option value="ASISTENTE DE TALENTO HUMANO">ASISTENTE DE TALENTO HUMANO</option>
+                            <option value="AUDITOR INTERNO">AUDITOR INTERNO</option>
+                            <option value="AUXILIAR DE ARCHIVO">AUXILIAR DE ARCHIVO</option>
+                            <option value="AUXILIAR DE BODEGA">AUXILIAR DE BODEGA</option>
+                            <option value="AUXILIAR DE IMAGEN CORPORATIVA">AUXILIAR DE IMAGEN CORPORATIVA</option>
+                            <option value="AUXILIAR DE LABORATORIO">AUXILIAR DE LABORATORIO</option>
+                            <option value="AUXILIAR DE LABORATORIO - ANTIRREFLEJO">AUXILIAR DE LABORATORIO - ANTIRREFLEJO</option>
+                            <option value="AUXILIAR DE LABORATORIO - CALL CENTER">AUXILIAR DE LABORATORIO - CALL CENTER</option>
+                            <option value="AUXILIAR DE LABORATORIO - CONTROL DE CALIDAD">AUXILIAR DE LABORATORIO - CONTROL DE CALIDAD</option>
+                            <option value="AUXILIAR DE LABORATORIO - ENCINTADO">AUXILIAR DE LABORATORIO - ENCINTADO</option>
+                            <option value="AUXILIAR DE LABORATORIO - TALLA">AUXILIAR DE LABORATORIO - TALLA</option>
+                            <option value="AUXILIAR DE PUNTO DE VENTA">AUXILIAR DE PUNTO DE VENTA</option>
+                            <option value="AUXILIAR DE SERVICIOS GENERALES">AUXILIAR DE SERVICIOS GENERALES</option>
+                            <option value="AUXILIAR DE SERVICIOS VARIOS">AUXILIAR DE SERVICIOS VARIOS</option>
+                            <option value="BISELADOR/A">BISELADOR/A</option>
+                            <option value="CAJERO">CAJERO</option>
+                            <option value="COORDINADOR DE ARCHIVO Y SUMINISTROS">COORDINADOR DE ARCHIVO Y SUMINISTROS</option>
+                            <option value="COORDINADOR DE BISEL">COORDINADOR DE BISEL</option>
+                            <option value="COORDINADOR DE BODEGA">COORDINADOR DE BODEGA</option>
+                            <option value="COORDINADOR DE LABORATORIO">COORDINADOR DE LABORATORIO</option>
+                            <option value="COORDINADORA CONTABLE">COORDINADORA CONTABLE</option>
+                            <option value="DIRECTOR CIENTIFICO">DIRECTOR CIENTIFICO</option>
+                            <option value="DIRECTOR COMERCIAL">DIRECTOR COMERCIAL</option>
+                            <option value="DIRECTORA CONTABLE Y TESORERIA">DIRECTORA CONTABLE Y TESORERIA</option>
+                            <option value="DIRECTORA DE GESTION DE MARCA">DIRECTORA DE GESTION DE MARCA</option>
+                            <option value="DIRECTORA DE HSEQ">DIRECTORA DE HSEQ</option>
+                            <option value="DIRECTORA DE IMAGEN COORPORATIVA">DIRECTORA DE IMAGEN COORPORATIVA</option>
+                            <option value="DIRECTORA DE TALENTO HUMANO">DIRECTORA DE TALENTO HUMANO</option>
+                            <option value="EJECUTIVO COMERCIAL">EJECUTIVO COMERCIAL</option>
+                            <option value="GERENTE ADMINISTRATIVO Y FINANCIERO">GERENTE ADMINISTRATIVO Y FINANCIERO</option>
+                            <option value="GERENTE COMERCIAL">GERENTE COMERCIAL</option>
+                            <option value="JEFE DE BODEGA">JEFE DE BODEGA</option>
+                            <option value="JEFE DE LABORATORIO">JEFE DE LABORATORIO</option>
+                            <option value="LIDER DE SISTEMAS">LIDER DE SISTEMAS</option>
+                            <option value="MENSAJERO">MENSAJERO</option>
+                            <option value="PRESIDENTE">PRESIDENTE</option>
+                            <option value="APRENDIZ">APRENDIZ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="al-label flex items-center gap-1 mb-1">
+                            <i class="fas fa-lock"></i> Contraseña
+                            <span class="text-xs text-gray-400 font-normal ml-1">(Dejar vacía para mantener la actual)</span>
+                        </label>
+                        <input type="password" th:field="*{contrasena}"
+                               class="al-input w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none">
+                    </div>
+
+                </div>
+
+                <!-- PANEL LATERAL -->
+                <div class="lg:col-span-1">
+                    <div class="al-side-panel p-5 space-y-4">
+
+                        <h3 class="text-sm font-bold al-section-title flex items-center gap-2">
+                            <i class="fas fa-shield-alt text-xs"></i> Rol del usuario
+                        </h3>
+
+                        <select th:field="*{rol}"
+                                class="al-input w-full px-3 py-2.5 border rounded-lg text-sm bg-white focus:outline-none">
+                            <option th:each="r : ${roles}"
+                                    th:value="${r}"
+                                    th:text="${#strings.capitalize(r.name().toLowerCase())}">
+                            </option>
+                        </select>
+
+                        <p class="text-xs text-gray-500">
+                            Define los permisos del usuario dentro del sistema.
+                        </p>
+
+                        <div class="pt-3 space-y-3" style="border-top:1.5px solid var(--al-blue-pale);">
+
+                            <button type="submit" class="al-btn-primary w-full px-4 py-3 rounded-lg font-semibold text-sm shadow-md">
+                                <i class="fas fa-save mr-2"></i>
+                                <span th:text="${usuario.id} != null ? 'Guardar cambios' : 'Crear usuario'"></span>
+                            </button>
+
+                            <a href="/admin/usuarios"
+                               class="al-btn-back flex items-center justify-center gap-2 w-full px-4 py-3 rounded-lg font-semibold text-sm bg-white">
+                                <i class="fas fa-arrow-left"></i> Volver
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+        <!-- Volver mobile -->
+        <div class="md:hidden mt-4">
+            <a href="/admin/usuarios"
+               class="al-btn-back flex items-center justify-center gap-2 w-full px-4 py-3 rounded-lg font-semibold text-sm bg-white">
+                <i class="fas fa-arrow-left"></i> Volver a usuarios
+            </a>
+        </div>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
+
+<script>
+    const btn            = document.getElementById("btnNotificaciones");
+    const dropdown       = document.getElementById("dropdownNotificaciones");
+    const lista          = document.getElementById("listaNotificaciones");
+    const contador       = document.getElementById("contadorNotificaciones");
+    const btnMarcarTodas = document.getElementById("btnMarcarTodas");
+    const rolUsuario     = "ADMIN";
+
+    btn.addEventListener("click", () => dropdown.classList.toggle("hidden"));
+    document.addEventListener("click", e => {
+        if (!btn.contains(e.target) && !dropdown.contains(e.target))
+            dropdown.classList.add("hidden");
+    });
+
+    function actualizarContador() {
+        fetch(`/api/notificaciones/${rolUsuario}/no-leidas`)
+            .then(r => r.json())
+            .then(count => {
+                if (count > 0) { contador.textContent = count; contador.classList.remove("hidden"); }
+                else { contador.classList.add("hidden"); }
+            });
+    }
+
+    function renderNotificacion(n) {
+        const item = document.createElement("div");
+        item.className = "p-3 border-b hover:bg-gray-50 cursor-pointer flex items-start gap-2 transition-all duration-300";
+        item.dataset.id = n.id;
+        const punto = n.leida ? "" : `<span class="mt-1.5 w-2 h-2 bg-red-500 rounded-full inline-block shrink-0"></span>`;
+        item.innerHTML = `${punto}<div class="flex-1">
+            <div class='font-semibold text-gray-800'>${n.tipo}</div>
+            <div class='text-gray-600 text-xs'>${n.mensaje}</div>
+            <div class='text-gray-400 text-xs'>${new Date(n.fecha).toLocaleString()}</div>
+        </div>`;
+        item.addEventListener("click", () => {
+            fetch("/api/notificaciones/marcar-leida/" + n.id, { method: "POST" }).then(() => {
+                actualizarContador();
+                item.style.opacity = "0"; item.style.maxHeight = item.scrollHeight + "px";
+                setTimeout(() => { item.style.maxHeight="0"; item.style.padding="0"; item.style.borderWidth="0"; item.style.overflow="hidden"; }, 150);
+                setTimeout(() => { item.remove(); if (lista.children.length===0) lista.innerHTML='<div class="p-3 text-gray-500">Sin notificaciones</div>'; }, 400);
+            });
+            if (n.ticketId) setTimeout(() => { window.location.href="/admin/ticket/"+n.ticketId; }, 200);
+        });
+        return item;
+    }
+
+    function cargarNotificaciones() {
+        fetch(`/api/notificaciones/${rolUsuario}`)
+            .then(r => r.json())
+            .then(data => {
+                lista.innerHTML = "";
+                const noLeidas = data.filter(n => !n.leida);
+                if (noLeidas.length === 0) lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
+                else noLeidas.forEach(n => lista.appendChild(renderNotificacion(n)));
+                actualizarContador();
+            }).catch(err => console.error("Error cargando notificaciones", err));
+    }
+
+    btnMarcarTodas.addEventListener("click", () => {
+        fetch(`/api/notificaciones/${rolUsuario}/marcar-todas-leidas`, { method: "POST" }).then(() => {
+            [...lista.children].forEach(item => { item.style.opacity="0"; item.style.transition="opacity 0.3s"; });
+            setTimeout(() => { lista.innerHTML='<div class="p-3 text-gray-500">Sin notificaciones</div>'; actualizarContador(); }, 350);
+        });
+    });
+
+    function conectarWebSocket() {
+        const socket = new SockJS('/ws-notificaciones');
+        const stomp  = Stomp.over(socket);
+        stomp.debug  = null;
+        stomp.connect({}, function() {
+            stomp.subscribe('/topic/notificaciones/ADMIN', function(msg) {
+                const n = JSON.parse(msg.body);
+                if (lista.querySelector('.text-gray-500')) lista.innerHTML = "";
+                lista.insertBefore(renderNotificacion(n), lista.firstChild);
+                if (lista.children.length > 15) lista.removeChild(lista.lastChild);
+                actualizarContador();
+            });
+        }, function() {
+            console.warn("WebSocket desconectado, reintentando en 5s...");
+            setTimeout(conectarWebSocket, 5000);
+        });
+    }
+
+    cargarNotificaciones();
+    conectarWebSocket();
+</script>
+
+</body>
+</html>

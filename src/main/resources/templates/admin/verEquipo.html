@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Equipo | Austral Lens</title>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet" />
+
+    <!-- CHANGED: usar exactamente los mismos colores/estilos base que usuarios.html -->
+    <style>
+        :root {
+            --al-blue:       #007DC8;
+            --al-blue-light: #0096C8;
+            --al-blue-dark:  #004B96;
+            --al-blue-mid:   #0064AF;
+            --al-blue-pale:  #d0eaf8;
+            --al-blue-xpale: #e8f4fd;
+        }
+
+        /* Contenedor principal centrado en desktop */
+        .content-wrapper { max-width: 1200px; margin: 0 auto; }
+
+        /* Sidebar / topbar (mantener look) */
+        #admin-sidebar > div { background: linear-gradient(180deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%) !important; border-right: none !important; }
+        .sidebar-active { background: rgba(255,255,255,0.18) !important; color: #fff !important; font-weight: 600; }
+        .sidebar-item { color: rgba(255,255,255,0.86); transition: background .15s, color .15s; }
+        .al-topbar { background: linear-gradient(135deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%); border: none !important; }
+
+        body { background: linear-gradient(135deg, var(--al-blue-xpale) 0%, #f8fbff 100%) !important; font-family: 'Segoe UI', Roboto, Arial, sans-serif; color:#223; }
+
+        /* Cards y botones */
+        .al-card { background: #fff; border: 1px solid rgba(179,217,240,0.9); border-radius: 0.75rem; }
+        .al-btn-primary { background: linear-gradient(135deg, var(--al-blue-dark), var(--al-blue)); color: #fff; transition: opacity .18s; border: none; }
+        .al-btn-primary:hover { opacity:.9; }
+
+        /* Tabla: evitar overflow horizontal que cause 100vw */
+        .md-only-table { display:none; width:100%; }
+        .md-only-table .table-wrap { width:100%; overflow:auto; }
+        .md-only-table table { width:100%; border-collapse:collapse; min-width:640px; }
+        .md-only-table td { padding: 0.75rem 1rem; vertical-align:top; }
+        .md-only-table tr:nth-child(odd){ background:transparent; }
+
+        /* mobile cards */
+        .mobile-cards { display:block; }
+        .mobile-cards .card-item { width:100%; box-sizing:border-box; }
+
+        @media (min-width:768px){
+            .md-only-table { display:block; }
+            .mobile-cards { display:none; }
+            /* en desktop la tabla ocupa todo el ancho disponible */
+            .md-only-table .table-wrap { max-width: 100%; }
+        }
+
+        /* Galería y thumbnails */
+        .galeria-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
+        @media(min-width:768px){ .galeria-grid { grid-template-columns: repeat(4,1fr); } }
+        .galeria-grid img { width:100%; height:180px; object-fit:cover; display:block; border-radius:8px; }
+
+        /* Modal */
+        #modal-imagen { backdrop-filter: blur(3px); }
+        #modal-img { max-height:80vh; max-width:90vw; border-radius:8px; }
+
+        /* Responsive buttons: en móvil se apilan / ocupan todo el ancho */
+        @media(max-width:767px){
+            .al-topbar { padding: 1rem; }
+            .al-topbar .actions { display:flex; flex-direction:column; gap:.5rem; width:100%; }
+            .al-topbar .actions a { width:100%; justify-content:center; }
+            .al-btn-primary, .al-btn-back, .al-hamburger { width:100%; box-sizing:border-box; }
+            .al-btn-back { background:#fff; color:var(--al-blue-dark); }
+            .al-card { padding:1rem; }
+            .galeria-grid img { height:140px; }
+        }
+
+        /* Small tweaks */
+        .al-section-title { color: var(--al-blue-dark); border-left:4px solid var(--al-blue); padding-left:.5rem; }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6b7280;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--al-blue-pale);
+            margin-bottom: 1rem;
+        }
+        .empty-state h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--al-blue-dark);
+            margin-bottom: 0.5rem;
+        }
+        .empty-state p {
+            color: #9ca3af;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Info labels y pequeñas utilidades (copiado de detalleTicket/usuarios) */
+        .al-label { color: var(--al-blue-mid); font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        .animate-fade-in { animation: fadeIn .35s ease-in; }
+        @keyframes slideInDown { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
+        .animate-slide-in { animation: slideInDown .4s ease-out; }
+
+        /* Responsive tweaks para que en desktop la tabla ocupe todo y en móvil se muestre tarjeta */
+        .md-only-table { display: none; }
+        .mobile-cards { display: block; }
+        @media (min-width: 768px) {
+            .md-only-table { display: block; }
+            .mobile-cards { display: none; }
+        }
+
+        /* Galería */
+        .galeria-grid { display: grid; grid-template-columns: repeat(2,1fr); gap:1rem; }
+        @media (min-width:768px){ .galeria-grid { grid-template-columns: repeat(4,1fr); } }
+    </style>
+</head>
+<body class="min-h-screen">
+
+<!-- Alertas -->
+<div th:replace="fragments/_alertas :: alertas"></div>
+
+<!-- Hamburguesa mobile -->
+<button data-drawer-target="admin-sidebar" data-drawer-toggle="admin-sidebar" aria-controls="admin-sidebar" type="button"
+        class="al-hamburger inline-flex items-center p-2 mt-2 ms-3 rounded-lg sm:hidden focus:outline-none focus:ring-2 focus:ring-sky-200">
+    <span class="sr-only">Abrir menú</span>
+    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h10"/>
+    </svg>
+</button>
+<aside id="admin-sidebar"
+       class="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0"
+       aria-label="Sidebar">
+    <div class="h-full flex flex-col px-3 py-4 overflow-y-auto">
+
+        <!-- Logo -->
+        <div class="px-2 pb-4 mb-2 sidebar-sep border-b flex items-center gap-3">
+            <img src="/images/logo.png" alt="Logo" class="h-10 object-contain brightness-0 invert">
+            <div>
+                <span class="sidebar-logo-title font-bold text-base leading-tight block">Austral Lens</span>
+                <span class="sidebar-logo-sub text-xs">Administración</span>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <ul class="space-y-1 font-medium flex-1">
+            <li>
+                <a href="/admin/tickets"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-ticket-alt w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Tickets</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/dashboard"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-chart-pie w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/usuarios"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-users w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Usuarios</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/equipos"
+                   class="sidebar-item sidebar-active flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-desktop w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Hoja de vida-Equipos</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Cerrar sesión -->
+        <div class="pt-3 sidebar-sep border-t">
+            <a href="/logout"
+               class="sidebar-item flex items-center px-3 py-2.5 rounded-lg"
+               style="color:rgba(255,180,180,.9);"
+               onmouseover="this.style.color='#fff';this.style.background='rgba(239,68,68,.25)'"
+               onmouseout="this.style.color='rgba(255,180,180,.9)';this.style.background=''">
+                <i class="fas fa-sign-out-alt w-5 text-center shrink-0"></i>
+                <span class="ms-3">Cerrar sesión</span>
+            </a>
+        </div>
+
+    </div>
+</aside>
+
+<!-- CONTENIDO -->
+<div class="p-4 sm:ml-64">
+    <main class="w-full content-wrapper">
+
+        <!-- TOPBAR -->
+        <div class="al-topbar rounded-xl shadow-lg p-4 md:p-6 mb-6 flex justify-between items-center animate-slide-in">
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex w-12 h-12 rounded-full items-center justify-center" style="background:rgba(255,255,255,.18);">
+                    <i class="fas fa-desktop text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold">Equipo: <span th:text="${equipo.marca}"></span> <span th:text="${equipo.modelo}"></span></h2>
+                    <p class="text-xs md:text-sm text-gray-500">Detalle e historial del equipo</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a th:href="@{/admin/equipos}" class="al-btn-back hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm bg-white">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+                <a th:href="@{/admin/equipos/{id}/editar(id=${equipo.id})}" class="al-btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- COLUMNA PRINCIPAL -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                <!-- Tarjeta con datos (tabla en desktop, tarjetas en móvil) -->
+                <div class="al-card p-6 animate-fade-in">
+                    <h3 class="text-lg font-bold al-section-title mb-4">Información completa</h3>
+
+                    <!-- Tabla (desktop) -->
+                    <div class="md-only-table overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <tbody class="divide-y divide-sky-100">
+                                <!-- ...existing rows adaptados para equipo (mantengo los mismos th:text que ya existían) ... -->
+                                <tr><td class="w-1/3 px-6 py-4 font-semibold text-sky-900 bg-sky-50">Área/Punto</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.puntoEquipo}"></td></tr>
+                                <tr><td class="w-1/3 px-6 py-4 font-semibold text-sky-900 bg-sky-50">Cargo</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.cargo_r}"></td></tr>
+
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Responsable</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.responsable}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Tipo</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.tipo}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Marca</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.marca}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Modelo</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.modelo}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Serial</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.serial}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">CPU</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.cpu}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">RAM</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.ram}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Tipo de almacenamiento</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.tipoAlmacenamiento}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Capacidad de almacenamiento</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.capacidadAlmacenamiento}"></td></tr>
+
+                                <tr class="bg-sky-100">
+                                    <td colspan="2" class="px-6 py-3 font-bold text-sky-900 uppercase tracking-wide">
+                                        Periféricos
+                                    </td>
+                                </tr>
+
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Lector de barras</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.lectorBarras}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Mouse</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.mouse}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Teclado</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.teclado}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Monitor</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.monitor}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Base refrigerante</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.baseRefrigerante}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Impresora</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.impresora}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Adaptador LAN</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.adaptadorLan}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Hub USB</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.hubUsb}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Adicional</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.adicional}"></td></tr>
+
+                                <tr class="bg-sky-100">
+                                    <td colspan="2" class="px-6 py-3 font-bold text-sky-900 uppercase tracking-wide">
+                                        Red y Software
+                                    </td>
+                                </tr>
+
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Nombre del equipo</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.nombreEquipo}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Usuario de red</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.usuarioRed}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">MAC</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.mac}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">IP</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.ip}"></td></tr>
+                                <tr><td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">Sistema Operativo</td><td class="px-6 py-4 text-gray-700" th:text="${equipo.sistemaOperativo}"></td></tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">AnyDesk</td>
+                                    <td class="px-6 py-4 text-gray-700 flex items-center justify-between gap-3">
+                                        <span th:text="${equipo.usuarioAnydesk}"></span>
+
+                                        <button
+                                                type="button"
+                                                class="px-3 py-1 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                                                th:attr="data-id=${equipo.usuarioAnydesk}, data-tool='anydesk'"
+                                                onclick="openRemote(this)">
+                                            Conectar
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="px-6 py-4 font-semibold text-sky-900 bg-sky-50">RustDesk</td>
+                                    <td class="px-6 py-4 text-gray-700 flex items-center justify-between gap-3">
+                                        <span th:text="${equipo.usuarioRushDesk}"></span>
+
+                                        <button
+                                                type="button"
+                                                class="px-3 py-1 text-xs bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+                                                th:attr="data-id=${equipo.usuarioRushDesk}, data-tool='rustdesk'"
+                                                onclick="openRemote(this)">
+                                            Conectar
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tarjetas (móvil) -->
+                    <div class="mobile-cards mt-4">
+                        <ul class="flex flex-col gap-3">
+                            <li class="bg-white rounded-xl p-4 border border-sky-100">
+                                <div class="flex justify-between"><div class="font-semibold text-sky-900">Punto</div><div class="text-gray-700" th:text="${equipo.puntoEquipo}"></div></div>
+                            </li>
+                            <li class="bg-white rounded-xl p-4 border border-sky-100">
+                                <div class="flex justify-between"><div class="font-semibold text-sky-900">Responsable</div><div class="text-gray-700" th:text="${equipo.responsable}"></div></div>
+                            </li>
+                            <li class="bg-white rounded-xl p-4 border border-sky-100">
+                                <div class="flex justify-between"><div class="font-semibold text-sky-900">Marca</div><div class="text-gray-700" th:text="${equipo.marca}"></div></div>
+                            </li>
+                            <li class="bg-white rounded-xl p-4 border border-sky-100">
+                                <div class="flex justify-between"><div class="font-semibold text-sky-900">Modelo</div><div class="text-gray-700" th:text="${equipo.modelo}"></div></div>
+                            </li>
+                            <li class="bg-white rounded-xl p-4 border border-sky-100">
+                                <div class="flex justify-between"><div class="font-semibold text-sky-900">Serial</div><div class="text-gray-700" th:text="${equipo.serial}"></div></div>
+                            </li>
+                            <li class="bg-white rounded-xl p-4 border border-sky-100">
+                                <div class="flex justify-between"><div class="font-semibold text-sky-900">IP</div><div class="text-gray-700" th:text="${equipo.ip}"></div></div>
+                            </li>
+                            <li class="bg-white rounded-xl p-4 border border-sky-100">
+                                <div class="flex justify-between"><div class="font-semibold text-sky-900">Sistema Operativo</div><div class="text-gray-700" th:text="${equipo.sistemaOperativo}"></div></div>
+                            </li>
+                            <li class="bg-white rounded-xl p-4 border border-sky-100">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="font-semibold text-sky-900">AnyDesk</div>
+                                        <div class="text-gray-700 text-sm" th:text="${equipo.usuarioAnydesk}"></div>
+                                    </div>
+
+                                    <button
+                                            type="button"
+                                            class="px-3 py-1 text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                                            th:attr="data-id=${equipo.usuarioAnydesk}, data-tool='anydesk'"
+                                            onclick="openRemote(this)">
+                                        Conectar
+                                    </button>
+                                </div>
+                            </li>
+
+                            <li class="bg-white rounded-xl p-4 border border-sky-100">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="font-semibold text-sky-900">RustDesk</div>
+                                        <div class="text-gray-700 text-sm" th:text="${equipo.usuarioRushDesk}"></div>
+                                    </div>
+
+                                    <button
+                                            type="button"
+                                            class="px-3 py-1 text-xs bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+                                            th:attr="data-id=${equipo.usuarioRushDesk}, data-tool='rustdesk'"
+                                            onclick="openRemote(this)">
+                                        Conectar
+                                    </button>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Galería de imágenes -->
+                <div th:if="${imagenes != null and !imagenes.isEmpty()}" class="al-card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold al-section-title"><i class="fas fa-image"></i> Imágenes del equipo</h3>
+                        <span class="text-sm text-sky-700 bg-sky-100 px-3 py-1 rounded-full" th:text="${#lists.size(imagenes) + ' archivo(s)'}"></span>
+                    </div>
+                    <div class="galeria-grid">
+                        <div th:each="img : ${imagenes}" class="group overflow-hidden rounded-lg border border-gray-100 bg-white">
+                            <a href="javascript:void(0);" th:attr="data-img-url=@{${equipoMediaService.obtenerUrlMedia(img.nombreArchivo)}}" th:attrappend="data-img-name=${img.nombreArchivo}" onclick="mostrarModalImagen(this)" class="block">
+                                <div class="aspect-square bg-gray-100 overflow-hidden">
+                                    <img th:src="@{${equipoMediaService.obtenerUrlMedia(img.nombreArchivo)}}" alt="Imagen equipo" class="w-full h-full object-cover"/>
+                                </div>
+                                <div class="p-2">
+                                    <p class="text-xs text-gray-600 truncate" th:text="${img.nombreArchivo}"></p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLUMNA DERECHA: reunida en un único contenedor para mantener la grid -->
+            <aside class="lg:col-span-1 flex flex-col gap-6">
+                <!-- Historial (card) -->
+                <div class="al-card p-6">
+                    <h3 class="text-lg font-bold al-section-title mb-3">Historial de mantenimiento</h3>
+                    <p class="text-sm text-gray-600 mb-4">El historial de mantenimientos se muestra en una página dedicada para facilitar su gestión.</p>
+
+                    <div class="flex flex-col sm:flex-row sm:gap-2">
+                        <a th:href="@{/admin/mantenimientos/equipo/{equipoId}(equipoId=${equipo.id})}"
+                           class="al-btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm mb-2 sm:mb-0">
+                            <i class="fas fa-list"></i> Ver historial
+                        </a>
+
+                        <a th:href="@{/admin/mantenimientos/nuevo(equipoId=${equipo.id})}"
+                           class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-sky-300 text-sky-700 rounded-lg text-sm font-semibold">
+                            <i class="fas fa-plus"></i> Registrar mantenimiento
+                        </a>
+                    </div>
+
+                    <div th:if="${ultimoMantenimiento != null}" class="mt-4 text-sm text-gray-700">
+                        <div><b>Último mantenimiento:</b> <span th:text="${ultimoMantenimiento.tipo ?: 'Sin tipo'}"></span> — <span th:text="${ultimoMantenimiento.encargado ?: 'Sin encargado'}"></span></div>
+                        <div class="text-xs text-gray-500" th:text="${ultimoMantenimiento.fechaMantenimiento != null ? #temporals.format(ultimoMantenimiento.fechaMantenimiento,'dd/MM/yyyy HH:mm') : 'Sin fecha'}"></div>
+                    </div>
+
+                    <div th:unless="${ultimoMantenimiento != null}" class="mt-4 text-sm text-gray-500">No hay mantenimientos registrados.</div>
+                </div>
+
+                <!-- Estado / acciones -->
+                <div class="al-card p-4">
+                    <div class="text-sm text-gray-700 mb-3"><b>Estado</b></div>
+                    <div class="flex flex-wrap gap-2">
+                        <a th:href="@{/admin/equipos/{id}/editar(id=${equipo.id})}" class="inline-flex items-center gap-2 px-3 py-2 bg-green-300 text-gray-800 rounded-lg">Editar</a>
+                        <form method="POST" th:action="@{/admin/equipos/{id}/eliminar(id=${equipo.id})}" onsubmit="return confirm('¿Eliminar equipo?');">
+                            <button type="submit" class="inline-flex items-center gap-2 px-3 py-2 bg-red-600 text-white rounded-lg">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Datos rápidos -->
+                <div class="al-card p-4">
+                    <h4 class="font-semibold mb-2">Datos rápidos</h4>
+                    <p class="text-sm text-gray-600"><b>IP:</b> <span th:text="${equipo.ip ?: 'N/A'}"></span></p>
+                    <p class="text-sm text-gray-600"><b>MAC:</b> <span th:text="${equipo.mac ?: 'N/A'}"></span></p>
+                    <p class="text-sm text-gray-600"><b>Último mant.:</b> <span th:text="${equipo.fechaMantenimiento != null ? #temporals.format(equipo.fechaMantenimiento,'dd/MM/yyyy') : 'Sin registro'}"></span></p>
+                </div>
+            </aside>
+        </div>
+
+    </main>
+</div>
+
+<!-- Modal para mostrar imagen en grande -->
+<div id="modal-imagen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 transition-all duration-200 hidden" onclick="cerrarModalImagen(event)">
+    <div class="relative bg-transparent flex flex-col items-center justify-center max-w-full max-h-full p-4" style="min-width:0;">
+        <button type="button" onclick="cerrarModalImagen(event)" class="absolute top-2 right-2 text-white bg-black/60 rounded-full p-2 hover:bg-black/80" style="z-index:2;">
+            <i class="fas fa-times text-lg"></i>
+        </button>
+        <img id="modal-img" src="" alt="Imagen equipo" class="max-h-[80vh] max-w-[90vw] rounded-xl shadow-lg border-4 border-white object-contain bg-white"/>
+        <div id="modal-img-name" class="mt-3 text-white text-sm font-medium bg-black/50 px-4 py-1 rounded-lg shadow" style="max-width:90vw;overflow-x:auto;"></div>
+    </div>
+</div>
+<!--Modal de aviso para acceder a Anydesk/Rustdesk -->
+<div id="remoteModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center">
+    <div class="bg-white rounded-xl p-6 w-80 shadow-xl">
+        <h2 class="text-lg font-bold text-sky-900 mb-3">Confirmar conexión</h2>
+
+        <p class="text-sm text-gray-600 mb-4" id="remoteText"></p>
+
+        <div class="flex justify-end gap-2">
+            <button onclick="closeModal()" class="px-3 py-1 text-sm bg-gray-200 rounded-lg">
+                Cancelar
+            </button>
+            <button id="confirmBtn" class="px-3 py-1 text-sm bg-sky-600 text-white rounded-lg">
+                Conectar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarModalImagen(el) {
+        try {
+            const url = el.getAttribute('data-img-url');
+            const name = el.getAttribute('data-img-name');
+            const modal = document.getElementById('modal-imagen');
+            const img = document.getElementById('modal-img');
+            const nameDiv = document.getElementById('modal-img-name');
+            if(!url) return;
+            img.src = url;
+            nameDiv.textContent = name || '';
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } catch(e) { console.error(e); }
+    }
+    function cerrarModalImagen(event) {
+        const modal = document.getElementById('modal-imagen');
+        if (event.target === modal || event.target.closest('button')) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+            document.getElementById('modal-img').src = '';
+            document.getElementById('modal-img-name').textContent = '';
+        }
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
+<script>
+    let currentLink = "";
+
+    function openRemote(btn) {
+        const id = btn.getAttribute("data-id");
+        const tool = btn.getAttribute("data-tool");
+
+        if (!id) return;
+
+        currentLink = tool + ":" + id;
+
+        document.getElementById("remoteText").innerText =
+            "Se abrirá " + tool + " para el equipo: " + id;
+
+        document.getElementById("remoteModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+        document.getElementById("remoteModal").classList.add("hidden");
+    }
+
+    document.getElementById("confirmBtn").addEventListener("click", function () {
+        window.location.href = currentLink;
+        closeModal();
+    });
+</script>
+
+</body>
+</html>
+

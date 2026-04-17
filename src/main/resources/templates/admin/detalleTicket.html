@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Detalle Ticket | Austral Lens</title>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha512-pVnKx1qG6Y5Y0b+6Vg6QqY0Y6K3VQ0QyYqzKf1bqj5Yp0c5bX+3qk1Xk5s1V0K1a"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --al-blue:       #007DC8;
+            --al-blue-light: #0096C8;
+            --al-blue-dark:  #004B96;
+            --al-blue-mid:   #0064AF;
+            --al-blue-pale:  #d0eaf8;
+            --al-blue-xpale: #e8f4fd;
+        }
+
+        #admin-sidebar > div {
+            background: linear-gradient(180deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%) !important;
+            border-right: none !important;
+        }
+        .sidebar-active { background: rgba(255,255,255,.2) !important; color:#fff !important; font-weight:600; }
+        .sidebar-item   { color: rgba(255,255,255,.82); transition: background .15s, color .15s; }
+        .sidebar-item:hover { background: rgba(255,255,255,.15) !important; color:#fff !important; }
+        .sidebar-sep    { border-color: rgba(255,255,255,.2) !important; }
+        .sidebar-logo-title { color:#fff; }
+        .sidebar-logo-sub   { color: rgba(255,255,255,.6); }
+
+        .al-topbar {
+            background: linear-gradient(135deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%);
+            border: none !important;
+        }
+        .al-topbar h2, .al-topbar p, .al-topbar span { color:#fff !important; }
+        .al-topbar p { opacity:.82; }
+        .al-bell-btn  { color:#fff !important; }
+        .al-bell-btn:hover { background: rgba(255,255,255,.15) !important; }
+
+        .al-hamburger { color: var(--al-blue-dark); }
+
+        body { background: linear-gradient(135deg, var(--al-blue-xpale) 0%, #f0f8ff 100%) !important; }
+
+        .al-card { background:#fff; border:1.5px solid #b3d9f0; border-radius:.75rem; }
+
+        .al-btn-primary {
+            background: linear-gradient(135deg, var(--al-blue-dark), var(--al-blue));
+            color:#fff; transition: opacity .2s;
+        }
+        .al-btn-primary:hover { opacity:.88; }
+
+        .al-section-title { color: var(--al-blue-dark); border-left:4px solid var(--al-blue); padding-left:.5rem; }
+
+        /* Info labels */
+        .al-label { color: var(--al-blue-mid); font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+
+        /* Chat burbujas */
+        .chat-admin { background: var(--al-blue-xpale); border:1.5px solid var(--al-blue-pale); }
+        .chat-user  { background:#f9fafb; border:1.5px solid #e5e7eb; }
+        .chat-avatar-admin { background: rgba(0,125,200,.15); color: var(--al-blue); }
+        .chat-avatar-user  { background:#e5e7eb; color:#6b7280; }
+
+        /* Botón volver */
+        .al-btn-back {
+            border:1.5px solid #b3d9f0; color: var(--al-blue-mid);
+            transition: background .15s, color .15s;
+        }
+        .al-btn-back:hover { background: var(--al-blue-xpale); color: var(--al-blue-dark); }
+
+        /* Select / input */
+        .al-input {
+            border-color: #b3d9f0 !important;
+        }
+        .al-input:focus { outline: none; ring: 2px solid var(--al-blue); }
+
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        .animate-fade-in { animation: fadeIn .35s ease-in; }
+        @keyframes slideInDown { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
+        .animate-slide-in { animation: slideInDown .4s ease-out; }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+<!-- Alertas -->
+<div th:replace="fragments/_alertas :: alertas"></div>
+
+<!-- Hamburguesa mobile -->
+<button data-drawer-target="admin-sidebar"
+        data-drawer-toggle="admin-sidebar"
+        aria-controls="admin-sidebar"
+        type="button"
+        class="al-hamburger inline-flex items-center p-2 mt-2 ms-3 rounded-lg sm:hidden focus:outline-none focus:ring-2 focus:ring-sky-200">
+    <span class="sr-only">Abrir menú</span>
+    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h10"/>
+    </svg>
+</button>
+
+<!-- SIDEBAR -->
+<aside id="admin-sidebar"
+       class="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0"
+       aria-label="Sidebar">
+    <div class="h-full flex flex-col px-3 py-4 overflow-y-auto">
+
+        <div class="px-2 pb-4 mb-2 sidebar-sep border-b flex items-center gap-3">
+            <img src="/images/logo.png" alt="Logo" class="h-10 object-contain brightness-0 invert">
+            <div>
+                <span class="sidebar-logo-title font-bold text-base leading-tight block">Austral Lens</span>
+                <span class="sidebar-logo-sub text-xs">Administración</span>
+            </div>
+        </div>
+
+        <ul class="space-y-1 font-medium flex-1">
+            <li>
+                <a href="/admin/tickets" class="sidebar-item sidebar-active flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-ticket-alt w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Tickets</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/dashboard" class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-chart-pie w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/usuarios" class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-users w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Usuarios</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/equipos"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-desktop w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Hoja de vida-Equipos</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="pt-3 sidebar-sep border-t">
+            <a href="/logout"
+               class="sidebar-item flex items-center px-3 py-2.5 rounded-lg"
+               style="color:rgba(255,180,180,.9);"
+               onmouseover="this.style.color='#fff';this.style.background='rgba(239,68,68,.25)'"
+               onmouseout="this.style.color='rgba(255,180,180,.9)';this.style.background=''">
+                <i class="fas fa-sign-out-alt w-5 text-center shrink-0"></i>
+                <span class="ms-3">Cerrar sesión</span>
+            </a>
+        </div>
+
+    </div>
+</aside>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="p-4 sm:ml-64">
+    <main class="w-full">
+
+        <!-- TOPBAR -->
+        <div class="al-topbar rounded-xl shadow-lg p-4 md:p-6 mb-6 flex justify-between items-center animate-slide-in">
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex w-12 h-12 rounded-full items-center justify-center"
+                     style="background:rgba(255,255,255,.18);">
+                    <i class="fas fa-ticket-alt text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold">
+                        Ticket #<span th:text="${ticket.id}"></span>
+                    </h2>
+                    <p class="text-xs md:text-sm flex items-center gap-1">
+                        <i class="far fa-calendar-alt"></i>
+                        <span th:text="${#temporals.format(ticket.marcaTemporal,'dd/MM/yyyy HH:mm')}"></span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- CAMPANA -->
+                <div class="relative">
+                    <button id="btnNotificaciones" class="al-bell-btn relative p-2 rounded-full transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0
+                                  00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0
+                                  .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                        <span id="contadorNotificaciones"
+                              class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 hidden">0</span>
+                    </button>
+                    <div id="dropdownNotificaciones"
+                         class="hidden absolute right-0 mt-3 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                        <div class="p-3 border-b font-semibold text-gray-700 flex justify-between items-center">
+                            <span>Notificaciones</span>
+                            <button id="btnMarcarTodas" class="text-xs hover:underline" style="color:var(--al-blue);">
+                                Marcar todas como leidas
+                            </button>
+                        </div>
+                        <div id="listaNotificaciones" class="max-h-80 overflow-y-auto text-sm">
+                            <div class="p-3 text-gray-500">Sin notificaciones</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volver desktop -->
+                <a href="/admin/tickets"
+                   class="al-btn-back hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm bg-white">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+
+        <!-- GRID PRINCIPAL -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- ══ COLUMNA IZQUIERDA: info + archivos + chat ══ -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+
+                <!-- Tarjeta principal del ticket (estilo snippet usuario) -->
+                <div class="al-card shadow-md p-6 md:p-8 animate-fade-in">
+
+                    <!-- Header ticket -->
+                    <div class="mb-6 pb-6" style="border-bottom:1.5px solid var(--al-blue-pale);">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                            <div>
+                                <h3 class="text-2xl font-bold flex items-center gap-2 mb-1" style="color:var(--al-blue-dark);">
+                                    <i class="fas fa-ticket-alt" style="color:var(--al-blue);"></i>
+                                    Ticket #<span th:text="${ticket.id}"></span>
+                                </h3>
+                                <p class="text-gray-500 text-sm flex items-center gap-2">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <span th:text="'Creado el ' + ${#temporals.format(ticket.marcaTemporal,'dd/MM/yyyy HH:mm')}"></span>
+                                </p>
+                            </div>
+                            <!-- Badge estado actual -->
+                            <span class="self-start text-xs font-bold uppercase px-4 py-2 rounded-full"
+                                  th:classappend="${ticket.estado == 'Abierto'}              ? 'bg-blue-100 text-blue-700'     :
+                                                  (${ticket.estado == 'En Progreso'}         ? 'bg-yellow-100 text-yellow-700' :
+                                                  (${ticket.estado == 'Cerrado-Solucionado'} ? 'bg-green-100 text-green-700'   :
+                                                   'bg-gray-100 text-gray-600'))"
+                                  th:text="${ticket.estado}">Estado</span>
+                        </div>
+                    </div>
+
+                    <!-- Tema -->
+                    <div class="mb-5 p-4 rounded-lg" style="background:var(--al-blue-xpale);border:1.5px solid var(--al-blue-pale);">
+                        <p class="al-label flex items-center gap-1 mb-1"><i class="fas fa-tag"></i> Tema</p>
+                        <p class="font-semibold text-gray-800" th:text="${ticket.tema}"></p>
+                    </div>
+
+
+
+                    <!-- Descripción -->
+                    <div class="mb-5">
+                        <p class="al-label flex items-center gap-1 mb-2"><i class="fas fa-align-left"></i> Descripción</p>
+                        <div class="p-4 rounded-lg text-sm text-gray-800 whitespace-pre-wrap"
+                             style="background:#f9fafb;border:1.5px solid #e5e7eb;"
+                             th:text="${ticket.description}"></div>
+                    </div>
+
+                    <!-- Grid datos del usuario -->
+                    <div style="border-top:1.5px solid var(--al-blue-pale);" class="pt-6">
+                        <div class="flex items-center justify-between mb-5">
+                            <p class="al-label flex items-center gap-2 text-base font-semibold mb-0">
+                                <i class="fas fa-user-circle text-[var(--al-primary)]"></i>
+                                Datos del usuario
+                            </p>
+
+                            <a th:href="'https://wa.me/57' + ${#strings.replace(#strings.replace(#strings.replace(ticket.telefonoActual, ' ', ''), '-', ''), '(', '')}"
+                               target="_blank"
+                               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white bg-green-600 hover:bg-green-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <i class="fab fa-whatsapp text-base"></i>
+                                Continuar por WhatsApp
+                            </a>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 text-sm">
+
+                            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                                <p class="al-label mb-1 text-xs uppercase tracking-wide text-gray-500">
+                                    Nombre
+                                </p>
+                                <p class="text-gray-800 font-semibold text-base" th:text="${ticket.nombreActual}"></p>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                                <p class="al-label mb-1 text-xs uppercase tracking-wide text-gray-500">
+                                    Correo
+                                </p>
+                                <p class="text-gray-800 break-words" th:text="${ticket.emailActual}"></p>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                                <p class="al-label mb-1 text-xs uppercase tracking-wide text-gray-500">
+                                    Cargo
+                                </p>
+                                <p class="text-gray-800 font-medium" th:text="${ticket.cargoActual}"></p>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                                <p class="al-label mb-1 text-xs uppercase tracking-wide text-gray-500">
+                                    Teléfono
+                                </p>
+                                <p class="text-gray-800 font-medium" th:text="${ticket.telefonoActual}"></p>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                                <p class="al-label mb-1 text-xs uppercase tracking-wide text-gray-500">
+                                    Área / Punto de venta
+                                </p>
+                                <p class="text-gray-800 font-medium" th:text="${ticket.puntoActual}"></p>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                                <p class="al-label mb-1 text-xs uppercase tracking-wide text-gray-500">
+                                    Ciudad
+                                </p>
+                                <p class="text-gray-800 font-medium" th:text="${ticket.ciudad}"></p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Archivos adjuntos del ticket original -->
+                <div th:if="${medias != null and !medias.isEmpty()}"
+                     class="al-card shadow-md p-6">
+                    <h3 class="text-base font-bold mb-4 al-section-title flex items-center gap-2">
+                        <i class="fas fa-paperclip text-sm"></i> Archivos adjuntos
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div th:each="media : ${medias}">
+                            <div th:if="${media.mediaPath.toLowerCase().endsWith('.jpg') or media.mediaPath.toLowerCase().endsWith('.jpeg') or media.mediaPath.toLowerCase().endsWith('.png') or media.mediaPath.toLowerCase().endsWith('.gif') or media.mediaPath.toLowerCase().endsWith('.webp')}">
+                                <img th:src="@{'/uploads/' + ${media.mediaPath}}" alt="Imagen"
+                                     class="w-full h-36 object-cover rounded-lg cursor-pointer hover:opacity-80 hover:scale-105 transition-all"
+                                     onclick="abrirImagenGrande(this.src)">
+                            </div>
+                            <div th:if="${media.mediaPath.toLowerCase().endsWith('.mp4') or media.mediaPath.toLowerCase().endsWith('.webm') or media.mediaPath.toLowerCase().endsWith('.mov')}">
+                                <video controls class="w-full h-36 rounded-lg">
+                                    <source th:src="@{'/uploads/' + ${media.mediaPath}}" type="video/mp4">
+                                </video>
+                            </div>
+                            <div th:unless="${media.mediaPath.toLowerCase().endsWith('.jpg') or media.mediaPath.toLowerCase().endsWith('.jpeg') or media.mediaPath.toLowerCase().endsWith('.png') or media.mediaPath.toLowerCase().endsWith('.gif') or media.mediaPath.toLowerCase().endsWith('.webp') or media.mediaPath.toLowerCase().endsWith('.mp4') or media.mediaPath.toLowerCase().endsWith('.webm') or media.mediaPath.toLowerCase().endsWith('.mov')}">
+                                <div class="rounded-lg p-4 text-center" style="background:var(--al-blue-xpale);border:1.5px solid var(--al-blue-pale);">
+                                    <i class="fas fa-file-alt text-3xl mb-2" style="color:var(--al-blue);"></i>
+                                    <p class="text-xs text-gray-600 break-words truncate" th:text="${media.mediaPath}"></p>
+                                </div>
+                                <a th:href="@{'/uploads/' + ${media.mediaPath}}" download
+                                   class="al-btn-primary mt-2 flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg text-xs font-semibold shadow-sm">
+                                    <i class="fas fa-download"></i> Descargar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historial de conversación -->
+                <div class="al-card shadow-md p-6">
+                    <h3 class="text-base font-bold mb-4 al-section-title flex items-center gap-2">
+                        <i class="fas fa-comments text-sm"></i> Historial de conversación
+                    </h3>
+
+                    <div id="chat-historial" class="space-y-3 max-h-[520px] overflow-y-auto pr-1">
+
+                        <div th:if="${comentarios == null or comentarios.isEmpty()}"
+                             class="text-gray-400 text-sm p-4 text-center rounded-lg"
+                             style="border:1.5px dashed #b3d9f0;">
+                            Sin mensajes aún.
+                        </div>
+
+                        <div th:each="comentario : ${comentarios}"
+                             th:attr="data-comment-id=${comentario.id}"
+                             class="rounded-xl p-4 transition hover:shadow-sm"
+                             th:classappend="${comentario.remitente == 'ADMIN'} ? 'chat-admin' : 'chat-user'">
+
+                            <div class="flex items-center justify-between mb-2 pb-2" style="border-bottom:1px solid rgba(0,0,0,.06);">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs"
+                                         th:classappend="${comentario.remitente == 'ADMIN'} ? 'chat-avatar-admin' : 'chat-avatar-user'">
+                                        <i class="fas" th:classappend="${comentario.remitente == 'ADMIN'} ? 'fa-user-shield' : 'fa-user'"></i>
+                                    </div>
+                                    <span class="font-semibold text-sm"
+                                          th:style="${comentario.remitente == 'ADMIN'} ? 'color:var(--al-blue-dark)' : 'color:#374151'"
+                                          th:text="${comentario.remitente}"></span>
+                                </div>
+                                <span class="text-xs text-gray-400"
+                                      th:text="${#temporals.format(comentario.marcaTemporal,'dd/MM/yyyy HH:mm')}"></span>
+                            </div>
+
+                            <p class="text-gray-700 text-sm whitespace-pre-wrap leading-relaxed"
+                               th:text="${comentario.mensaje}"></p>
+
+                            <div th:if="${comentario.media != null and !comentario.media.isEmpty()}"
+                                 class="mt-3 pt-2" style="border-top:1px solid rgba(0,0,0,.06);">
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div th:each="m : ${comentario.media}">
+                                        <img th:if="${m.mediaPath.endsWith('.jpg') or m.mediaPath.endsWith('.jpeg') or m.mediaPath.endsWith('.png') or m.mediaPath.endsWith('.gif') or m.mediaPath.endsWith('.webp')}"
+                                             th:src="@{'/uploads/' + ${m.mediaPath}}"
+                                             class="w-full h-20 object-cover rounded-lg cursor-pointer hover:opacity-80"
+                                             onclick="abrirImagenGrande(this.src)">
+                                        <video th:if="${m.mediaPath.endsWith('.mp4') or m.mediaPath.endsWith('.webm') or m.mediaPath.endsWith('.mov')}"
+                                               controls class="w-full h-20 rounded-lg">
+                                            <source th:src="@{'/uploads/' + ${m.mediaPath}}" type="video/mp4">
+                                        </video>
+                                        <a th:unless="${m.mediaPath.endsWith('.jpg') or m.mediaPath.endsWith('.jpeg') or m.mediaPath.endsWith('.png') or m.mediaPath.endsWith('.gif') or m.mediaPath.endsWith('.webp') or m.mediaPath.endsWith('.mp4') or m.mediaPath.endsWith('.webm') or m.mediaPath.endsWith('.mov')}"
+                                           th:href="@{'/uploads/' + ${m.mediaPath}}" download
+                                           class="block p-2 rounded-lg text-center text-xs hover:opacity-80 transition"
+                                           style="background:var(--al-blue-xpale);color:var(--al-blue);">
+                                            <i class="fas fa-file-download text-lg mb-1"></i><br>Archivo
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volver mobile -->
+                <div class="md:hidden">
+                    <a href="/admin/tickets"
+                       class="al-btn-back flex items-center justify-center gap-2 w-full px-4 py-3 rounded-lg font-semibold text-sm bg-white">
+                        <i class="fas fa-arrow-left"></i> Volver a tickets
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- ══ COLUMNA DERECHA: panel de control ══ -->
+            <div class="lg:col-span-1 flex flex-col gap-6">
+
+                <!-- Badges actuales -->
+                <div class="al-card shadow-md p-4 flex flex-wrap gap-2 items-center">
+                    <span class="text-xs font-bold uppercase px-3 py-1.5 rounded-full"
+                          th:classappend="${ticket.estado == 'Abierto'}              ? 'bg-blue-100 text-blue-700'     :
+                                          (${ticket.estado == 'En Progreso'}         ? 'bg-yellow-100 text-yellow-700' :
+                                          (${ticket.estado == 'CERRADO'} ? 'bg-green-100 text-green-700'   :
+                                           'bg-gray-100 text-gray-600'))"
+                          th:text="${ticket.estado}">Estado</span>
+                    <span class="text-xs font-bold uppercase px-3 py-1.5 rounded-full"
+                          th:classappend="${ticket.priority == 'Alta'}  ? 'bg-red-100 text-red-700'       :
+                                          (${ticket.priority == 'Media'} ? 'bg-orange-100 text-orange-700' :
+                                           'bg-green-100 text-green-700')"
+                          th:text="${ticket.priority}">Prioridad</span>
+                </div>
+
+                <!-- Actualizar ticket -->
+                <form th:action="@{/admin/ticket/actualizar}" method="post"
+                      class="al-card shadow-md p-6 space-y-4">
+
+                    <h3 class="text-sm font-bold al-section-title flex items-center gap-2">
+                        <i class="fas fa-sliders-h text-xs"></i> Actualizar ticket
+                    </h3>
+
+                    <input type="hidden" name="id" th:value="${ticket.id}">
+
+                    <div>
+                        <label class="al-label block mb-1">Estado</label>
+                        <select name="estado" class="al-input w-full px-3 py-2 border rounded-lg text-sm focus:outline-none">
+                            <option value="Abierto"             th:selected="${ticket.estado == 'Abierto'}">Abierto</option>
+                            <option value="En Progreso"         th:selected="${ticket.estado == 'En Progreso'}">En Progreso</option>
+                            <option value="CERRADO" th:selected="${ticket.estado == 'CERRADO'}">Cerrado</option>
+                            <option value="No Aplica"           th:selected="${ticket.estado == 'No Aplica'}">No Aplica</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="al-label block mb-1">Prioridad</label>
+                        <select name="priority" class="al-input w-full px-3 py-2 border rounded-lg text-sm focus:outline-none">
+                            <option value="Alta"  th:selected="${ticket.priority == 'Alta'}">Alta</option>
+                            <option value="Media" th:selected="${ticket.priority == 'Media'}">Media</option>
+                            <option value="Baja"  th:selected="${ticket.priority == 'Baja'}">Baja</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="al-label block mb-1">Encargado</label>
+                        <select name="encargado" class="al-input w-full px-3 py-2 border rounded-lg text-sm focus:outline-none">
+                            <option value="German">German</option>
+                            <option value="Andres">Andres</option>
+                            <option value="Alejandro">Alejandro</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="al-btn-primary w-full px-4 py-3 rounded-lg font-semibold text-sm shadow-md">
+                        <i class="fas fa-save mr-2"></i>Guardar cambios
+                    </button>
+                </form>
+
+                <!-- Responder al usuario -->
+                <form th:action="@{/admin/tickets/responder}" method="post" enctype="multipart/form-data"
+                      class="al-card shadow-md p-6 space-y-4">
+
+                    <h3 class="text-sm font-bold al-section-title flex items-center gap-2">
+                        <i class="fas fa-paper-plane text-xs"></i> Responder al usuario
+                    </h3>
+
+                    <input type="hidden" name="ticketId" th:value="${ticket.id}">
+
+                    <div>
+                        <label class="al-label block mb-1">Mensaje</label>
+                        <textarea name="mensaje" rows="5"
+                                  placeholder="Escribe la respuesta..."
+                                  class="al-input w-full px-3 py-2 border rounded-lg text-sm resize-none focus:outline-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="al-label block mb-1">
+                            <i class="fas fa-paperclip mr-1"></i>Adjuntar archivos
+                        </label>
+                        <input type="file" name="archivos" multiple
+                               accept="image/*,video/*,.pdf,.doc,.docx"
+                               class="al-input w-full text-sm border rounded-lg px-3 py-2
+                                      file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0
+                                      file:text-xs file:font-semibold file:text-white transition"
+                               style="--file-bg:var(--al-blue);"
+                               onchange="">
+                        <style>
+                            input[type=file]::file-selector-button {
+                                background: var(--al-blue);
+                                color: #fff;
+                                border-radius: 6px;
+                                border: none;
+                                padding: 4px 12px;
+                                font-size: .75rem;
+                                font-weight: 600;
+                                cursor: pointer;
+                                transition: opacity .2s;
+                            }
+                            input[type=file]::file-selector-button:hover { opacity: .85; }
+                        </style>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition text-sm shadow-md">
+                        <i class="fas fa-paper-plane mr-2"></i>Enviar respuesta
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </main>
+</div>
+
+<!-- Modal imagen grande -->
+<script>
+    function abrirImagenGrande(src) {
+        const modal = document.createElement('div');
+        modal.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;
+            background:rgba(0,0,0,.9);display:flex;align-items:center;
+            justify-content:center;z-index:9999;cursor:pointer;`;
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.cssText = `max-width:90%;max-height:90%;border-radius:10px;`;
+        modal.appendChild(img);
+        modal.onclick = () => modal.remove();
+        document.body.appendChild(modal);
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
+
+<script>
+    const btn            = document.getElementById("btnNotificaciones");
+    const dropdown       = document.getElementById("dropdownNotificaciones");
+    const lista          = document.getElementById("listaNotificaciones");
+    const contador       = document.getElementById("contadorNotificaciones");
+    const btnMarcarTodas = document.getElementById("btnMarcarTodas");
+    const rolUsuario     = "ADMIN";
+
+    btn.addEventListener("click", () => dropdown.classList.toggle("hidden"));
+    document.addEventListener("click", e => {
+        if (!btn.contains(e.target) && !dropdown.contains(e.target))
+            dropdown.classList.add("hidden");
+    });
+
+    function actualizarContador() {
+        fetch(`/api/notificaciones/${rolUsuario}/no-leidas`)
+            .then(r => r.json())
+            .then(count => {
+                if (count > 0) { contador.textContent = count; contador.classList.remove("hidden"); }
+                else { contador.classList.add("hidden"); }
+            });
+    }
+
+    function renderNotificacion(n) {
+        const item = document.createElement("div");
+        item.className = "p-3 border-b hover:bg-gray-50 cursor-pointer flex items-start gap-2 transition-all duration-300";
+        item.dataset.id = n.id;
+        const punto = n.leida ? "" : `<span class="mt-1.5 w-2 h-2 bg-red-500 rounded-full inline-block shrink-0"></span>`;
+        item.innerHTML = `${punto}<div class="flex-1">
+            <div class='font-semibold text-gray-800'>${n.tipo}</div>
+            <div class='text-gray-600 text-xs'>${n.mensaje}</div>
+            <div class='text-gray-400 text-xs'>${new Date(n.fecha).toLocaleString()}</div>
+        </div>`;
+        item.addEventListener("click", () => {
+            fetch("/api/notificaciones/marcar-leida/" + n.id, { method: "POST" }).then(() => {
+                actualizarContador();
+                item.style.opacity = "0"; item.style.maxHeight = item.scrollHeight + "px";
+                setTimeout(() => { item.style.maxHeight="0"; item.style.padding="0"; item.style.borderWidth="0"; item.style.overflow="hidden"; }, 150);
+                setTimeout(() => { item.remove(); if (lista.children.length===0) lista.innerHTML='<div class="p-3 text-gray-500">Sin notificaciones</div>'; }, 400);
+            });
+            if (n.ticketId) setTimeout(() => { window.location.href="/admin/ticket/"+n.ticketId; }, 200);
+        });
+        return item;
+    }
+
+    function cargarNotificaciones() {
+        fetch(`/api/notificaciones/${rolUsuario}`)
+            .then(r => r.json())
+            .then(data => {
+                lista.innerHTML = "";
+                const noLeidas = data.filter(n => !n.leida);
+                if (noLeidas.length === 0) lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
+                else noLeidas.forEach(n => lista.appendChild(renderNotificacion(n)));
+                actualizarContador();
+            }).catch(err => console.error("Error cargando notificaciones", err));
+    }
+
+    btnMarcarTodas.addEventListener("click", () => {
+        fetch(`/api/notificaciones/${rolUsuario}/marcar-todas-leidas`, { method: "POST" }).then(() => {
+            [...lista.children].forEach(item => { item.style.opacity="0"; item.style.transition="opacity 0.3s"; });
+            setTimeout(() => { lista.innerHTML='<div class="p-3 text-gray-500">Sin notificaciones</div>'; actualizarContador(); }, 350);
+        });
+    });
+
+    function conectarWebSocket() {
+        const socket = new SockJS('/ws-notificaciones');
+        const stomp  = Stomp.over(socket);
+        stomp.debug  = null;
+        stomp.connect({}, function() {
+            stomp.subscribe('/topic/notificaciones/ADMIN', function(msg) {
+                const n = JSON.parse(msg.body);
+                if (lista.querySelector('.text-gray-500')) lista.innerHTML = "";
+                lista.insertBefore(renderNotificacion(n), lista.firstChild);
+                if (lista.children.length > 15) lista.removeChild(lista.lastChild);
+                actualizarContador();
+            });
+        }, function() {
+            console.warn("WebSocket desconectado, reintentando en 5s...");
+            setTimeout(conectarWebSocket, 5000);
+        });
+    }
+
+    cargarNotificaciones();
+    conectarWebSocket();
+</script>
+
+<!-- WebSocket chat en tiempo real -->
+<script th:inline="javascript">
+    (function() {
+        const ticketId = /*[[${ticket.id}]]*/ 0;
+        if (!ticketId) return;
+
+        const socket = new SockJS('/ws-notificaciones');
+        const stomp  = Stomp.over(socket);
+        stomp.debug  = null;
+
+        stomp.connect({}, function() {
+            stomp.subscribe('/topic/ticket/' + ticketId, function(msg) {
+                agregarComentarioAlChat(JSON.parse(msg.body));
+            });
+        }, function() { setTimeout(function() { location.reload(); }, 5000); });
+
+        function agregarComentarioAlChat(c) {
+            const contenedor = document.getElementById('chat-historial');
+            if (!contenedor) return;
+            const placeholder = contenedor.querySelector('.text-gray-400');
+            if (placeholder) placeholder.remove();
+            if (document.querySelector('[data-comment-id="' + c.id + '"]')) return;
+
+            const esAdmin = c.esAdmin;
+            const div = document.createElement('div');
+            div.className = 'rounded-xl p-4 transition hover:shadow-sm ' + (esAdmin ? 'chat-admin' : 'chat-user');
+            div.dataset.commentId = c.id;
+
+            let mediasHtml = '';
+            if (c.mediaPaths && c.mediaPaths.length > 0) {
+                mediasHtml = '<div class="mt-3 pt-2 grid grid-cols-3 gap-2" style="border-top:1px solid rgba(0,0,0,.06);">';
+                c.mediaPaths.forEach(function(path) {
+                    const l = path.toLowerCase();
+                    if (l.endsWith('.jpg')||l.endsWith('.jpeg')||l.endsWith('.png')||l.endsWith('.gif')||l.endsWith('.webp'))
+                        mediasHtml += '<img src="/uploads/'+path+'" class="w-full h-20 object-cover rounded-lg cursor-pointer hover:opacity-80" onclick="abrirImagenGrande(this.src)">';
+                    else if (l.endsWith('.mp4')||l.endsWith('.webm')||l.endsWith('.mov'))
+                        mediasHtml += '<video controls class="w-full h-20 rounded-lg"><source src="/uploads/'+path+'" type="video/mp4"></video>';
+                    else
+                        mediasHtml += '<a href="/uploads/'+path+'" download class="block p-2 rounded-lg text-center text-xs" style="background:var(--al-blue-xpale);color:var(--al-blue);">Archivo</a>';
+                });
+                mediasHtml += '</div>';
+            }
+
+            div.innerHTML = `
+                <div class="flex items-center justify-between mb-2 pb-2" style="border-bottom:1px solid rgba(0,0,0,.06);">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs ${esAdmin ? 'chat-avatar-admin' : 'chat-avatar-user'}">
+                            <i class="fas ${esAdmin ? 'fa-user-shield' : 'fa-user'}"></i>
+                        </div>
+                        <span class="font-semibold text-sm" style="color:${esAdmin ? 'var(--al-blue-dark)' : '#374151'}">${c.remitente}</span>
+                    </div>
+                    <span class="text-xs text-gray-400">${new Date(c.marcaTemporal).toLocaleString()}</span>
+                </div>
+                <p class="text-gray-700 text-sm whitespace-pre-wrap leading-relaxed">${c.mensaje}</p>
+                ${mediasHtml}
+            `;
+
+            contenedor.appendChild(div);
+            contenedor.scrollTop = contenedor.scrollHeight;
+        }
+    })();
+</script>
+
+</body>
+</html>

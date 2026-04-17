@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Dashboard | Austral Lens</title>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha512-pVnKx1qG6Y5Y0b+6Vg6QqY0Y6K3VQ0QyYqzKf1bqj5Yp0c5bX+3qk1Xk5s1V0K1a"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --al-blue:       #007DC8;
+            --al-blue-light: #0096C8;
+            --al-blue-dark:  #004B96;
+            --al-blue-mid:   #0064AF;
+            --al-blue-pale:  #d0eaf8;
+            --al-blue-xpale: #e8f4fd;
+        }
+
+        #admin-sidebar > div {
+            background: linear-gradient(180deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%) !important;
+            border-right: none !important;
+        }
+        .sidebar-active {
+            background: rgba(255,255,255,0.2) !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .sidebar-item { color: rgba(255,255,255,0.82); transition: background .15s, color .15s; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.15) !important; color: #fff !important; }
+        .sidebar-item svg { color: rgba(255,255,255,0.7); }
+        .sidebar-item:hover svg, .sidebar-active svg { color: #fff; }
+        .sidebar-sep { border-color: rgba(255,255,255,0.2) !important; }
+        .sidebar-logo-title { color: #fff; }
+        .sidebar-logo-sub   { color: rgba(255,255,255,0.6); }
+
+        .al-topbar {
+            background: linear-gradient(135deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%);
+            border: none !important;
+        }
+        .al-topbar h2, .al-topbar p { color: #fff !important; }
+        .al-topbar p { opacity: .8; }
+        .al-bell-btn { color: #fff !important; }
+        .al-bell-btn:hover { background: rgba(255,255,255,.15) !important; }
+
+        .al-hamburger { color: var(--al-blue-dark); }
+        .al-hamburger:hover { background: var(--al-blue-xpale); }
+
+        body { background: linear-gradient(135deg, var(--al-blue-xpale) 0%, #f0f8ff 100%) !important; }
+
+        .al-card { background: #fff; border: 1.5px solid #b3d9f0; border-radius: .75rem; }
+
+        .al-btn-primary {
+            background: linear-gradient(135deg, var(--al-blue-dark), var(--al-blue));
+            color: #fff; transition: opacity .2s;
+        }
+        .al-btn-primary:hover { opacity: .88; }
+
+        .al-section-title { color: var(--al-blue-dark); border-left: 4px solid var(--al-blue); padding-left: .5rem; }
+
+        /* Métricas */
+        .metric-icon-blue   { background: rgba(0,125,200,.12); }
+        .metric-num-blue    { color: var(--al-blue); }
+        .metric-icon-yellow { background: rgba(234,179,8,.12); }
+        .metric-icon-green  { background: rgba(34,197,94,.12); }
+
+        /* Botones de rango */
+        .al-range-btn {
+            border: 1.5px solid #b3d9f0;
+            color: var(--al-blue-mid);
+            transition: background .15s, color .15s;
+        }
+        .al-range-btn:hover { background: var(--al-blue-xpale); color: var(--al-blue-dark); }
+
+        @keyframes slideInDown { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
+        .animate-slide-in { animation: slideInDown .4s ease-out; }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+<!-- Botón hamburguesa mobile -->
+<button data-drawer-target="admin-sidebar"
+        data-drawer-toggle="admin-sidebar"
+        aria-controls="admin-sidebar"
+        type="button"
+        class="al-hamburger inline-flex items-center p-2 mt-2 ms-3 rounded-lg sm:hidden focus:outline-none focus:ring-2 focus:ring-sky-200">
+    <span class="sr-only">Abrir menú</span>
+    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h10"/>
+    </svg>
+</button>
+
+<!-- SIDEBAR -->
+<aside id="admin-sidebar"
+       class="fixed top-0 left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0"
+       aria-label="Sidebar">
+    <div class="h-full flex flex-col px-3 py-4 overflow-y-auto">
+
+        <!-- Logo -->
+        <div class="px-2 pb-4 mb-2 sidebar-sep border-b flex items-center gap-3">
+            <img src="/images/logo.png" alt="Logo" class="h-10 object-contain brightness-0 invert">
+            <div>
+                <span class="sidebar-logo-title font-bold text-base leading-tight block">Austral Lens</span>
+                <span class="sidebar-logo-sub text-xs">Administración</span>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <ul class="space-y-1 font-medium flex-1">
+            <li>
+                <a href="/admin/tickets"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-ticket-alt w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Tickets</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/dashboard"
+                   class="sidebar-item sidebar-active flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-chart-pie w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/usuarios"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-users w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Usuarios</span>
+                </a>
+            </li>
+            <li>
+                <a href="/admin/equipos"
+                   class="sidebar-item  flex items-center px-3 py-2.5 rounded-lg">
+                    <i class="fas fa-desktop w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Hoja de vida-Equipos</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Cerrar sesión -->
+        <div class="pt-3 sidebar-sep border-t">
+            <a href="/logout"
+               class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                <i class="fas fa-sign-out-alt w-5 text-center shrink-0"></i>
+                <span class="ms-3">Cerrar sesión</span>
+            </a>
+        </div>
+    </div>
+</aside>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="p-4 sm:ml-64">
+    <main class="w-full">
+
+        <!-- TOPBAR -->
+        <div class="al-topbar rounded-xl shadow-lg p-4 md:p-6 mb-6 flex justify-between items-center animate-slide-in">
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex w-12 h-12 rounded-full items-center justify-center"
+                     style="background:rgba(255,255,255,.18);">
+                    <i class="fas fa-chart-pie text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold">Dashboard</h2>
+                    <p class="text-xs md:text-sm">Métricas y estadísticas del sistema</p>
+                </div>
+            </div>
+
+            <div class="relative">
+                <button id="btnNotificaciones" class="al-bell-btn relative p-2 rounded-full transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6"
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M15 17h5l-1.405-1.405A2.032 2.032 0
+                      0118 14.158V11a6.002 6.002 0
+                      00-4-5.659V5a2 2 0
+                      10-4 0v.341C7.67 6.165 6 8.388
+                      6 11v3.159c0 .538-.214 1.055-.595
+                      1.436L4 17h5m6 0v1a3 3 0
+                      11-6 0v-1m6 0H9"/>
+                    </svg>
+                    <span id="contadorNotificaciones"
+                          class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 hidden">0</span>
+                </button>
+                <div id="dropdownNotificaciones"
+                     class="hidden absolute right-0 mt-3 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <div class="p-3 border-b font-semibold text-gray-700 flex justify-between items-center">
+                        <span>Notificaciones</span>
+                        <button id="btnMarcarTodas" class="text-xs hover:underline" style="color:var(--al-blue);">
+                            Marcar todas como leidas
+                        </button>
+                    </div>
+                    <div id="listaNotificaciones" class="max-h-80 overflow-y-auto text-sm">
+                        <div class="p-3 text-gray-500">Sin notificaciones</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETAS MÉTRICAS -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+
+            <div class="al-card shadow-md p-5 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full metric-icon-blue flex items-center justify-center shrink-0">
+                    <i class="fas fa-users text-lg" style="color:var(--al-blue);"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">Usuarios en el sistema</p>
+                    <p id="totalUsuarios" class="text-3xl font-bold mt-0.5" style="color:var(--al-blue);">—</p>
+                </div>
+            </div>
+
+            <div class="al-card shadow-md p-5 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full metric-icon-yellow flex items-center justify-center shrink-0">
+                    <i class="fas fa-ticket-alt text-yellow-500 text-lg"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">Tickets Totales</p>
+                    <p id="totalTickets" class="text-3xl font-bold text-yellow-500 mt-0.5">—</p>
+                </div>
+            </div>
+
+            <div class="al-card shadow-md p-5 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full metric-icon-green flex items-center justify-center shrink-0">
+                    <i class="fas fa-check-circle text-green-500 text-lg"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">Tickets Cerrados</p>
+                    <p id="ticketsCerrados" class="text-3xl font-bold text-green-500 mt-0.5">—</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FILTROS + EXPORTAR -->
+        <div class="al-card shadow-md p-4 mb-6">
+
+            <h3 class="text-sm font-bold mb-3 al-section-title flex items-center gap-2">
+                <i class="fas fa-filter text-xs"></i> Filtros
+            </h3>
+
+            <div class="flex flex-wrap items-end gap-3">
+                <div>
+                    <label class="block text-xs font-semibold mb-1" style="color:var(--al-blue-dark);">Desde</label>
+                    <input type="date" id="fechaInicio"
+                           class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                           style="border-color:#b3d9f0;">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1" style="color:var(--al-blue-dark);">Hasta</label>
+                    <input type="date" id="fechaFin"
+                           class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                           style="border-color:#b3d9f0;">
+                </div>
+                <button onclick="cargarDashboard()" class="al-btn-primary px-4 py-2 rounded-lg text-sm font-semibold shadow-md">
+                    <i class="fas fa-filter mr-1"></i> Filtrar
+                </button>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="filtroHoy()"    class="al-range-btn px-3 py-2 rounded-lg text-xs font-semibold bg-white">Hoy</button>
+                    <button onclick="filtro7Dias()"  class="al-range-btn px-3 py-2 rounded-lg text-xs font-semibold bg-white">7 días</button>
+                    <button onclick="filtro30Dias()" class="al-range-btn px-3 py-2 rounded-lg text-xs font-semibold bg-white">30 días</button>
+                    <button onclick="filtroMes()"    class="al-range-btn px-3 py-2 rounded-lg text-xs font-semibold bg-white">Este mes</button>
+                </div>
+            </div>
+
+            <!-- Exportar -->
+            <div class="mt-4 pt-4 flex flex-col sm:flex-row items-start sm:items-center gap-3"
+                 style="border-top:1.5px solid #b3d9f0;">
+                <div class="flex items-center gap-2 shrink-0">
+                    <i class="fas fa-file-excel text-green-600"></i>
+                    <span class="text-xs font-semibold" style="color:var(--al-blue-dark);">Reporte mensual:</span>
+                </div>
+                <input type="month" id="mesReporte"
+                       class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                       style="border-color:#b3d9f0;"/>
+                <button onclick="descargarReporte()"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition shadow-md">
+                    <i class="fas fa-download"></i> Descargar Excel
+                </button>
+            </div>
+
+        </div>
+
+        <!-- GRÁFICOS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+            <div class="al-card shadow-md p-5">
+                <h3 class="text-sm font-bold mb-4 al-section-title flex items-center gap-2">
+                    <i class="fas fa-chart-line text-xs"></i> Tickets creados por día
+                </h3>
+                <canvas id="creadosChart" height="220"></canvas>
+            </div>
+
+            <div class="al-card shadow-md p-5">
+                <h3 class="text-sm font-bold mb-4 al-section-title flex items-center gap-2">
+                    <i class="fas fa-chart-line text-xs" style="color:var(--al-green,#22c55e);"></i> Tickets cerrados por día
+                </h3>
+                <canvas id="cerradosChart" height="220"></canvas>
+            </div>
+
+            <div class="al-card shadow-md p-5 md:col-span-2">
+                <h3 class="text-sm font-bold mb-4 al-section-title flex items-center gap-2">
+                    <i class="fas fa-chart-bar text-xs"></i> Tickets por punto
+                </h3>
+                <div style="height:240px;">
+                    <canvas id="sedeChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
+
+<script>
+    const btn            = document.getElementById("btnNotificaciones");
+    const dropdown       = document.getElementById("dropdownNotificaciones");
+    const lista          = document.getElementById("listaNotificaciones");
+    const contador       = document.getElementById("contadorNotificaciones");
+    const btnMarcarTodas = document.getElementById("btnMarcarTodas");
+    const rolUsuario     = "ADMIN";
+
+    btn.addEventListener("click", () => dropdown.classList.toggle("hidden"));
+    document.addEventListener("click", e => {
+        if (!btn.contains(e.target) && !dropdown.contains(e.target))
+            dropdown.classList.add("hidden");
+    });
+
+    function actualizarContador() {
+        fetch(`/api/notificaciones/${rolUsuario}/no-leidas`)
+            .then(r => r.json())
+            .then(count => {
+                if (count > 0) { contador.textContent = count; contador.classList.remove("hidden"); }
+                else { contador.classList.add("hidden"); }
+            });
+    }
+
+    function renderNotificacion(n) {
+        const item = document.createElement("div");
+        item.className = "p-3 border-b hover:bg-gray-50 cursor-pointer flex items-start gap-2 transition-all duration-300";
+        item.dataset.id = n.id;
+        const punto = n.leida ? "" : `<span class="mt-1.5 min-w-2 min-h-2 w-2 h-2 bg-red-500 rounded-full inline-block"></span>`;
+        item.innerHTML = `${punto}<div class="flex-1">
+            <div class='font-semibold text-gray-800'>${n.tipo}</div>
+            <div class='text-gray-600 text-xs'>${n.mensaje}</div>
+            <div class='text-gray-400 text-xs'>${new Date(n.fecha).toLocaleString()}</div>
+        </div>`;
+        item.addEventListener("click", () => {
+            fetch("/api/notificaciones/marcar-leida/" + n.id, { method: "POST" }).then(() => {
+                actualizarContador();
+                item.style.opacity = "0";
+                item.style.maxHeight = item.scrollHeight + "px";
+                setTimeout(() => { item.style.maxHeight="0"; item.style.padding="0"; item.style.borderWidth="0"; item.style.overflow="hidden"; }, 150);
+                setTimeout(() => { item.remove(); if (lista.children.length===0) lista.innerHTML='<div class="p-3 text-gray-500">Sin notificaciones</div>'; }, 400);
+            });
+            if (n.ticketId) setTimeout(() => { window.location.href="/admin/ticket/"+n.ticketId; }, 200);
+        });
+        return item;
+    }
+
+    function cargarNotificaciones() {
+        fetch(`/api/notificaciones/${rolUsuario}`)
+            .then(r => r.json())
+            .then(data => {
+                lista.innerHTML = "";
+                const noLeidas = data.filter(n => !n.leida);
+                if (noLeidas.length === 0) lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
+                else noLeidas.forEach(n => lista.appendChild(renderNotificacion(n)));
+                actualizarContador();
+            }).catch(err => console.error("Error cargando notificaciones", err));
+    }
+
+    btnMarcarTodas.addEventListener("click", () => {
+        fetch(`/api/notificaciones/${rolUsuario}/marcar-todas-leidas`, { method: "POST" }).then(() => {
+            [...lista.children].forEach(item => { item.style.opacity="0"; item.style.transition="opacity 0.3s"; });
+            setTimeout(() => { lista.innerHTML='<div class="p-3 text-gray-500">Sin notificaciones</div>'; actualizarContador(); }, 350);
+        });
+    });
+
+    function conectarWebSocket() {
+        const socket = new SockJS('/ws-notificaciones');
+        const stomp = Stomp.over(socket);
+        stomp.debug = null;
+        stomp.connect({}, function() {
+            stomp.subscribe('/topic/notificaciones/ADMIN', function(msg) {
+                const n = JSON.parse(msg.body);
+                if (lista.querySelector('.text-gray-500')) lista.innerHTML = "";
+                lista.insertBefore(renderNotificacion(n), lista.firstChild);
+                if (lista.children.length > 15) lista.removeChild(lista.lastChild);
+                actualizarContador();
+            });
+        }, function() {
+            console.warn("WebSocket desconectado, reintentando en 5s...");
+            setTimeout(conectarWebSocket, 5000);
+        });
+    }
+
+    cargarNotificaciones();
+    conectarWebSocket();
+</script>
+
+<script>
+    let creadosChart, cerradosChart, sedeChart;
+
+    const colorAzul  = '#007DC8';
+    const fillAzul   = 'rgba(0,125,200,0.1)';
+    const colorVerde = '#22c55e';
+    const fillVerde  = 'rgba(34,197,94,0.1)';
+    const coloresBarra = [
+        'rgba(0,125,200,.75)','rgba(0,150,200,.75)','rgba(0,100,175,.75)',
+        'rgba(0,75,150,.75)', 'rgba(0,180,220,.75)','rgba(99,102,241,.75)',
+        'rgba(167,139,250,.75)','rgba(52,211,153,.75)','rgba(251,191,36,.75)',
+        'rgba(248,113,113,.75)','rgba(0,60,120,.75)'
+    ];
+
+    const opcionesBase = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 }, color: '#64748b' } },
+            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 }, color: '#64748b', stepSize: 1 } }
+        }
+    };
+
+    async function cargarDashboard() {
+        const desde = document.getElementById("fechaInicio").value;
+        const hasta = document.getElementById("fechaFin").value;
+        let url = "/admin/dashboard/data";
+        if (desde && hasta) url += `?desde=${desde}&hasta=${hasta}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        document.getElementById("totalUsuarios").innerText   = data.totalUsuarios;
+        document.getElementById("totalTickets").innerText    = data.totalTickets;
+        document.getElementById("ticketsCerrados").innerText = data.ticketsCerrados;
+
+        if (creadosChart)  creadosChart.destroy();
+        if (cerradosChart) cerradosChart.destroy();
+        if (sedeChart)     sedeChart.destroy();
+
+        creadosChart = new Chart(document.getElementById("creadosChart"), {
+            type: 'line',
+            data: {
+                labels: Object.keys(data.creadosPorDia),
+                datasets: [{ label:'Creados', data: Object.values(data.creadosPorDia),
+                    borderColor: colorAzul, backgroundColor: fillAzul,
+                    fill: true, borderWidth: 2, pointRadius: 3,
+                    pointBackgroundColor: colorAzul, tension: 0.4 }]
+            },
+            options: { ...opcionesBase, responsive: true, maintainAspectRatio: true }
+        });
+
+        cerradosChart = new Chart(document.getElementById("cerradosChart"), {
+            type: 'line',
+            data: {
+                labels: Object.keys(data.cerradosPorDia),
+                datasets: [{ label:'Cerrados', data: Object.values(data.cerradosPorDia),
+                    borderColor: colorVerde, backgroundColor: fillVerde,
+                    fill: true, borderWidth: 2, pointRadius: 3,
+                    pointBackgroundColor: colorVerde, tension: 0.4 }]
+            },
+            options: { ...opcionesBase, responsive: true, maintainAspectRatio: true }
+        });
+
+        sedeChart = new Chart(document.getElementById("sedeChart"), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(data.ticketsPorPunto),
+                datasets: [{ label:'Tickets', data: Object.values(data.ticketsPorPunto),
+                    backgroundColor: coloresBarra, borderRadius: 6, borderWidth: 0 }]
+            },
+            options: {
+                ...opcionesBase,
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y} tickets` } }
+                }
+            }
+        });
+    }
+
+    function formatearFecha(d) { return d.toISOString().split('T')[0]; }
+
+    function filtroHoy()    { const h=new Date(); document.getElementById("fechaInicio").value=formatearFecha(h); document.getElementById("fechaFin").value=formatearFecha(h); cargarDashboard(); }
+    function filtro7Dias()  { const h=new Date(),i=new Date(); i.setDate(h.getDate()-7);  document.getElementById("fechaInicio").value=formatearFecha(i); document.getElementById("fechaFin").value=formatearFecha(h); cargarDashboard(); }
+    function filtro30Dias() { const h=new Date(),i=new Date(); i.setDate(h.getDate()-30); document.getElementById("fechaInicio").value=formatearFecha(i); document.getElementById("fechaFin").value=formatearFecha(h); cargarDashboard(); }
+    function filtroMes()    { const h=new Date(); const i=new Date(h.getFullYear(),h.getMonth(),1); document.getElementById("fechaInicio").value=formatearFecha(i); document.getElementById("fechaFin").value=formatearFecha(h); cargarDashboard(); }
+
+    function descargarReporte() {
+        const mes = document.getElementById("mesReporte").value;
+        if (!mes) { alert("Selecciona un mes"); return; }
+        const [year, month] = mes.split("-");
+        window.location.href = `/admin/dashboard/reporte?year=${year}&month=${month}`;
+    }
+
+    filtro7Dias();
+</script>
+
+</body>
+</html>

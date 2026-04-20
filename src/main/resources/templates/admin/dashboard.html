@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.css" rel="stylesheet" />
 
+
     <style>
         :root {
             --al-blue:       #007DC8;
@@ -23,63 +24,178 @@
             --al-blue-xpale: #e8f4fd;
         }
 
-        #admin-sidebar > div {
-            background: linear-gradient(180deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%) !important;
-            border-right: none !important;
+        body {
+            background:
+                    radial-gradient(900px at 15% 0%, rgba(0,125,200,0.13), transparent 55%),
+                    radial-gradient(800px at 95% 18%, rgba(0,150,200,0.12), transparent 55%),
+                    linear-gradient(135deg, #f8fbff 0%, #eef8ff 45%, #ffffff 100%) !important;
+            color: #0f172a;
         }
-        .sidebar-active {
-            background: rgba(255,255,255,0.2) !important;
-            color: #fff !important;
+
+        #admin-sidebar > div {
+            background: rgba(255,255,255,0.92) !important;
+            backdrop-filter: blur(18px);
+            border-right: 1px solid rgba(0,75,150,0.12) !important;
+            box-shadow: 18px 0 50px rgba(15,23,42,0.08);
+        }
+
+        .sidebar-logo-title {
+            color: #0f172a;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar-logo-sub {
+            color: #64748b;
             font-weight: 600;
         }
-        .sidebar-item { color: rgba(255,255,255,0.82); transition: background .15s, color .15s; }
-        .sidebar-item:hover { background: rgba(255,255,255,0.15) !important; color: #fff !important; }
-        .sidebar-item svg { color: rgba(255,255,255,0.7); }
-        .sidebar-item:hover svg, .sidebar-active svg { color: #fff; }
-        .sidebar-sep { border-color: rgba(255,255,255,0.2) !important; }
-        .sidebar-logo-title { color: #fff; }
-        .sidebar-logo-sub   { color: rgba(255,255,255,0.6); }
+
+        .sidebar-sep {
+            border-color: rgba(0,75,150,0.12) !important;
+        }
+
+        .sidebar-item {
+            color: #475569;
+            transition: background .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+        }
+
+        .sidebar-item i {
+            color: #64748b;
+            transition: color .18s ease;
+        }
+
+        .sidebar-item:hover {
+            background: #f0f9ff !important;
+            color: var(--al-blue-dark) !important;
+            transform: translateX(2px);
+        }
+
+        .sidebar-item:hover i {
+            color: var(--al-blue);
+        }
+
+        .sidebar-active {
+            background: linear-gradient(135deg, #e0f2fe, #f0f9ff) !important;
+            color: var(--al-blue-dark) !important;
+            font-weight: 800;
+            border: 1px solid rgba(0,125,200,0.18);
+            box-shadow: 0 12px 28px rgba(0,125,200,0.12);
+        }
+
+        .sidebar-active i {
+            color: var(--al-blue) !important;
+        }
+
+        .al-hamburger {
+            color: var(--al-blue-dark);
+            background: rgba(255,255,255,0.86);
+            border: 1px solid rgba(0,75,150,0.12);
+            box-shadow: 0 10px 25px rgba(15,23,42,0.08);
+        }
+
+        .al-hamburger:hover {
+            background: #f0f9ff;
+        }
 
         .al-topbar {
-            background: linear-gradient(135deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%);
-            border: none !important;
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(0,75,150,0.12) !important;
+            box-shadow: 0 20px 55px rgba(15,23,42,0.08);
         }
-        .al-topbar h2, .al-topbar p { color: #fff !important; }
-        .al-topbar p { opacity: .8; }
-        .al-bell-btn { color: #fff !important; }
-        .al-bell-btn:hover { background: rgba(255,255,255,.15) !important; }
 
-        .al-hamburger { color: var(--al-blue-dark); }
-        .al-hamburger:hover { background: var(--al-blue-xpale); }
+        .al-topbar h2 {
+            color: #0f172a !important;
+            letter-spacing: -0.03em;
+        }
 
-        body { background: linear-gradient(135deg, var(--al-blue-xpale) 0%, #f0f8ff 100%) !important; }
+        .al-topbar p {
+            color: #64748b !important;
+            font-weight: 600;
+        }
 
-        .al-card { background: #fff; border: 1.5px solid #b3d9f0; border-radius: .75rem; }
+        .al-bell-btn {
+            color: var(--al-blue-dark) !important;
+            background: #f8fafc;
+            border: 1px solid rgba(0,75,150,0.12);
+            box-shadow: 0 8px 22px rgba(15,23,42,0.06);
+        }
+
+        .al-bell-btn:hover {
+            background: #e0f2fe !important;
+            color: var(--al-blue) !important;
+        }
+
+        .al-card {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(0,75,150,0.12);
+            border-radius: 1.25rem;
+            box-shadow: 0 24px 70px rgba(15,23,42,0.08);
+        }
+
+        .al-section-title {
+            color: #0f172a;
+            border-left: 4px solid var(--al-blue);
+            padding-left: .75rem;
+            letter-spacing: -0.01em;
+        }
 
         .al-btn-primary {
-            background: linear-gradient(135deg, var(--al-blue-dark), var(--al-blue));
-            color: #fff; transition: opacity .2s;
+            background: linear-gradient(135deg, var(--al-blue), var(--al-blue-light));
+            color: #fff;
+            transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+            box-shadow: 0 12px 26px rgba(0,125,200,0.22);
         }
-        .al-btn-primary:hover { opacity: .88; }
 
-        .al-section-title { color: var(--al-blue-dark); border-left: 4px solid var(--al-blue); padding-left: .5rem; }
-
-        /* Métricas */
-        .metric-icon-blue   { background: rgba(0,125,200,.12); }
-        .metric-num-blue    { color: var(--al-blue); }
-        .metric-icon-yellow { background: rgba(234,179,8,.12); }
-        .metric-icon-green  { background: rgba(34,197,94,.12); }
-
-        /* Botones de rango */
-        .al-range-btn {
-            border: 1.5px solid #b3d9f0;
-            color: var(--al-blue-mid);
-            transition: background .15s, color .15s;
+        .al-btn-primary:hover {
+            filter: brightness(1.03);
+            transform: translateY(-1px);
+            box-shadow: 0 16px 34px rgba(0,125,200,0.28);
         }
-        .al-range-btn:hover { background: var(--al-blue-xpale); color: var(--al-blue-dark); }
 
-        @keyframes slideInDown { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
-        .animate-slide-in { animation: slideInDown .4s ease-out; }
+        .al-input {
+            background: #ffffff;
+            border: 1px solid #cfe8f7;
+            color: #0f172a;
+            transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+
+        .al-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .al-input:focus {
+            border-color: var(--al-blue);
+            box-shadow: 0 0 0 4px rgba(0,125,200,0.12);
+            background: #ffffff;
+        }
+
+        .al-thead {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe) !important;
+            color: var(--al-blue-dark) !important;
+        }
+
+        .al-table-wrap {
+            border: 1px solid rgba(0,75,150,0.12);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+
+        .al-page-active {
+            background: var(--al-blue) !important;
+            color: #fff !important;
+            border-color: var(--al-blue) !important;
+            box-shadow: 0 8px 18px rgba(0,125,200,0.22);
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-slide-in {
+            animation: slideInDown .4s ease-out;
+        }
+
     </style>
 </head>
 
@@ -103,51 +219,43 @@
        aria-label="Sidebar">
     <div class="h-full flex flex-col px-3 py-4 overflow-y-auto">
 
-        <!-- Logo -->
         <div class="px-2 pb-4 mb-2 sidebar-sep border-b flex items-center gap-3">
-            <img src="/images/logo.png" alt="Logo" class="h-10 object-contain brightness-0 invert">
+            <div class="h-11 w-11 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center shadow-sm">
+                <img src="/images/logo.png" alt="Logo" class="h-8 object-contain">
+            </div>
             <div>
-                <span class="sidebar-logo-title font-bold text-base leading-tight block">Austral Lens</span>
+                <span class="sidebar-logo-title font-black text-base leading-tight block">Austral Lens</span>
                 <span class="sidebar-logo-sub text-xs">Administración</span>
             </div>
         </div>
 
-        <!-- Nav -->
         <ul class="space-y-1 font-medium flex-1">
             <li>
                 <a href="/admin/tickets"
-                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                   class="sidebar-item  flex items-center px-3 py-2.5 rounded-xl">
                     <i class="fas fa-ticket-alt w-5 text-center shrink-0"></i>
                     <span class="ms-3">Tickets</span>
                 </a>
             </li>
             <li>
                 <a href="/admin/dashboard"
-                   class="sidebar-item sidebar-active flex items-center px-3 py-2.5 rounded-lg">
+                   class="sidebar-item sidebar-active flex items-center px-3 py-2.5 rounded-xl">
                     <i class="fas fa-chart-pie w-5 text-center shrink-0"></i>
                     <span class="ms-3">Dashboard</span>
                 </a>
             </li>
             <li>
                 <a href="/admin/usuarios"
-                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-xl">
                     <i class="fas fa-users w-5 text-center shrink-0"></i>
                     <span class="ms-3">Usuarios</span>
                 </a>
             </li>
-            <li>
-                <a href="/admin/equipos"
-                   class="sidebar-item  flex items-center px-3 py-2.5 rounded-lg">
-                    <i class="fas fa-desktop w-5 text-center shrink-0"></i>
-                    <span class="ms-3">Hoja de vida-Equipos</span>
-                </a>
-            </li>
         </ul>
 
-        <!-- Cerrar sesión -->
         <div class="pt-3 sidebar-sep border-t">
             <a href="/logout"
-               class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+               class="sidebar-item flex items-center px-3 py-2.5 rounded-xl hover:!text-red-600">
                 <i class="fas fa-sign-out-alt w-5 text-center shrink-0"></i>
                 <span class="ms-3">Cerrar sesión</span>
             </a>
@@ -172,33 +280,23 @@
                 </div>
             </div>
 
-            <div class="relative">
-                <button id="btnNotificaciones" class="al-bell-btn relative p-2 rounded-full transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6"
-                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M15 17h5l-1.405-1.405A2.032 2.032 0
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <button id="btnNotificaciones" class="al-bell-btn relative p-2 rounded-full transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6"
+                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M15 17h5l-1.405-1.405A2.032 2.032 0
                       0118 14.158V11a6.002 6.002 0
                       00-4-5.659V5a2 2 0
                       10-4 0v.341C7.67 6.165 6 8.388
                       6 11v3.159c0 .538-.214 1.055-.595
                       1.436L4 17h5m6 0v1a3 3 0
                       11-6 0v-1m6 0H9"/>
-                    </svg>
-                    <span id="contadorNotificaciones"
-                          class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 hidden">0</span>
-                </button>
-                <div id="dropdownNotificaciones"
-                     class="hidden absolute right-0 mt-3 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                    <div class="p-3 border-b font-semibold text-gray-700 flex justify-between items-center">
-                        <span>Notificaciones</span>
-                        <button id="btnMarcarTodas" class="text-xs hover:underline" style="color:var(--al-blue);">
-                            Marcar todas como leidas
-                        </button>
-                    </div>
-                    <div id="listaNotificaciones" class="max-h-80 overflow-y-auto text-sm">
-                        <div class="p-3 text-gray-500">Sin notificaciones</div>
-                    </div>
+                        </svg>
+                        <span id="contadorNotificaciones"
+                              class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 hidden">0</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -322,6 +420,22 @@
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flowbite@2.3.0/dist/flowbite.min.js"></script>
 
+<!-- Dropdown notificaciones: fuera del stacking context del topbar -->
+<!-- Dropdown notificaciones: fuera del stacking context del topbar -->
+<div id="dropdownNotificaciones"
+     class="hidden fixed w-80 bg-white border border-gray-200 rounded-lg shadow-xl"
+     style="z-index:99999; top:0; left:0;">
+    <div class="p-3 border-b font-semibold text-gray-700 flex justify-between items-center">
+        <span>Notificaciones</span>
+        <button id="btnMarcarTodas" class="text-xs hover:underline" style="color:var(--al-blue);">
+            Marcar todas como leidas
+        </button>
+    </div>
+    <div id="listaNotificaciones" class="max-h-80 overflow-y-auto text-sm">
+        <div class="p-3 text-gray-500">Sin notificaciones</div>
+    </div>
+</div>
+
 <script>
     const btn            = document.getElementById("btnNotificaciones");
     const dropdown       = document.getElementById("dropdownNotificaciones");
@@ -330,41 +444,100 @@
     const btnMarcarTodas = document.getElementById("btnMarcarTodas");
     const rolUsuario     = "ADMIN";
 
-    btn.addEventListener("click", () => dropdown.classList.toggle("hidden"));
-    document.addEventListener("click", e => {
-        if (!btn.contains(e.target) && !dropdown.contains(e.target))
+    /* posicionar dropdown justo bajo el botón */
+    function posicionarDropdown() {
+        const rect = btn.getBoundingClientRect();
+        dropdown.style.top  = (rect.bottom + window.scrollY + 8) + 'px';
+        dropdown.style.left = Math.max(8, rect.right + window.scrollX - 320) + 'px';
+    }
+
+    /* FIX 1: evitar cierre inmediato */
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (dropdown.classList.contains("hidden")) {
+            posicionarDropdown();
+            dropdown.classList.remove("hidden");
+        } else {
             dropdown.classList.add("hidden");
+        }
     });
+
+    /* FIX 2: permitir interacción dentro del dropdown */
+    dropdown.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+
+    /* FIX 3: cerrar solo cuando haces click afuera */
+    document.addEventListener("click", () => {
+        dropdown.classList.add("hidden");
+    });
+
+    window.addEventListener("scroll", posicionarDropdown);
+    window.addEventListener("resize", posicionarDropdown);
 
     function actualizarContador() {
         fetch(`/api/notificaciones/${rolUsuario}/no-leidas`)
             .then(r => r.json())
             .then(count => {
-                if (count > 0) { contador.textContent = count; contador.classList.remove("hidden"); }
-                else { contador.classList.add("hidden"); }
+                if (count > 0) {
+                    contador.textContent = count;
+                    contador.classList.remove("hidden");
+                } else {
+                    contador.classList.add("hidden");
+                }
             });
     }
 
     function renderNotificacion(n) {
         const item = document.createElement("div");
+
         item.className = "p-3 border-b hover:bg-gray-50 cursor-pointer flex items-start gap-2 transition-all duration-300";
         item.dataset.id = n.id;
-        const punto = n.leida ? "" : `<span class="mt-1.5 min-w-2 min-h-2 w-2 h-2 bg-red-500 rounded-full inline-block"></span>`;
-        item.innerHTML = `${punto}<div class="flex-1">
+
+        const punto = n.leida
+            ? ""
+            : `<span class="mt-1.5 min-w-2 min-h-2 w-2 h-2 bg-red-500 rounded-full inline-block"></span>`;
+
+        item.innerHTML = `
+        ${punto}
+        <div class="flex-1">
             <div class='font-semibold text-gray-800'>${n.tipo}</div>
             <div class='text-gray-600 text-xs'>${n.mensaje}</div>
             <div class='text-gray-400 text-xs'>${new Date(n.fecha).toLocaleString()}</div>
-        </div>`;
+        </div>
+    `;
+
         item.addEventListener("click", () => {
-            fetch("/api/notificaciones/marcar-leida/" + n.id, { method: "POST" }).then(() => {
-                actualizarContador();
-                item.style.opacity = "0";
-                item.style.maxHeight = item.scrollHeight + "px";
-                setTimeout(() => { item.style.maxHeight="0"; item.style.padding="0"; item.style.borderWidth="0"; item.style.overflow="hidden"; }, 150);
-                setTimeout(() => { item.remove(); if (lista.children.length===0) lista.innerHTML='<div class="p-3 text-gray-500">Sin notificaciones</div>'; }, 400);
-            });
-            if (n.ticketId) setTimeout(() => { window.location.href="/admin/ticket/"+n.ticketId; }, 200);
+            fetch("/api/notificaciones/marcar-leida/" + n.id, { method: "POST" })
+                .then(() => {
+                    actualizarContador();
+
+                    item.style.opacity = "0";
+                    item.style.maxHeight = item.scrollHeight + "px";
+
+                    setTimeout(() => {
+                        item.style.maxHeight = "0";
+                        item.style.padding = "0";
+                        item.style.borderWidth = "0";
+                        item.style.overflow = "hidden";
+                    }, 150);
+
+                    setTimeout(() => {
+                        item.remove();
+                        if (lista.children.length === 0) {
+                            lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
+                        }
+                    }, 400);
+                });
+
+            /* 🔥 navegación al ticket */
+            if (n.ticketId) {
+                setTimeout(() => {
+                    window.location.href = "/admin/ticket/" + n.ticketId;
+                }, 200);
+            }
         });
+
         return item;
     }
 
@@ -373,34 +546,58 @@
             .then(r => r.json())
             .then(data => {
                 lista.innerHTML = "";
+
                 const noLeidas = data.filter(n => !n.leida);
-                if (noLeidas.length === 0) lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
-                else noLeidas.forEach(n => lista.appendChild(renderNotificacion(n)));
+
+                if (noLeidas.length === 0) {
+                    lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
+                } else {
+                    noLeidas.forEach(n => lista.appendChild(renderNotificacion(n)));
+                }
+
                 actualizarContador();
-            }).catch(err => console.error("Error cargando notificaciones", err));
+            })
+            .catch(err => console.error("Error cargando notificaciones", err));
     }
 
     btnMarcarTodas.addEventListener("click", () => {
-        fetch(`/api/notificaciones/${rolUsuario}/marcar-todas-leidas`, { method: "POST" }).then(() => {
-            [...lista.children].forEach(item => { item.style.opacity="0"; item.style.transition="opacity 0.3s"; });
-            setTimeout(() => { lista.innerHTML='<div class="p-3 text-gray-500">Sin notificaciones</div>'; actualizarContador(); }, 350);
-        });
+        fetch(`/api/notificaciones/${rolUsuario}/marcar-todas-leidas`, { method: "POST" })
+            .then(() => {
+                [...lista.children].forEach(item => {
+                    item.style.opacity = "0";
+                    item.style.transition = "opacity 0.3s";
+                });
+
+                setTimeout(() => {
+                    lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
+                    actualizarContador();
+                }, 350);
+            });
     });
 
     function conectarWebSocket() {
         const socket = new SockJS('/ws-notificaciones');
         const stomp = Stomp.over(socket);
         stomp.debug = null;
-        stomp.connect({}, function() {
-            stomp.subscribe('/topic/notificaciones/ADMIN', function(msg) {
+
+        stomp.connect({}, function () {
+            stomp.subscribe('/topic/notificaciones/ADMIN', function (msg) {
                 const n = JSON.parse(msg.body);
-                if (lista.querySelector('.text-gray-500')) lista.innerHTML = "";
+
+                if (lista.querySelector('.text-gray-500')) {
+                    lista.innerHTML = "";
+                }
+
                 lista.insertBefore(renderNotificacion(n), lista.firstChild);
-                if (lista.children.length > 15) lista.removeChild(lista.lastChild);
+
+                if (lista.children.length > 15) {
+                    lista.removeChild(lista.lastChild);
+                }
+
                 actualizarContador();
             });
-        }, function() {
-            console.warn("WebSocket desconectado, reintentando en 5s...");
+        }, function () {
+            console.warn("WebSocket desconectado, reintentando...");
             setTimeout(conectarWebSocket, 5000);
         });
     }

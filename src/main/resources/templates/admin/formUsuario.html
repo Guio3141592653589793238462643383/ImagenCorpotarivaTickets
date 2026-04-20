@@ -14,74 +14,157 @@
 
     <style>
         :root {
-            --al-blue:       #007DC8;
-            --al-blue-light: #0096C8;
-            --al-blue-dark:  #004B96;
-            --al-blue-mid:   #0064AF;
-            --al-blue-pale:  #d0eaf8;
-            --al-blue-xpale: #e8f4fd;
+            --al-white: #ffffff;
+            --al-gray-50: #f9fafb;
+            --al-gray-100: #f3f4f6;
+            --al-gray-200: #e5e7eb;
+            --al-gray-300: #d1d5db;
+            --al-gray-500: #6b7280;
+            --al-gray-700: #374151;
+            --al-gray-900: #111827;
+
+            --al-accent: #111827; /* negro elegante */
         }
 
+        /* SIDEBAR */
         #admin-sidebar > div {
-            background: linear-gradient(180deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%) !important;
-            border-right: none !important;
+            background: var(--al-white) !important;
+            border-right: 1px solid var(--al-gray-200);
         }
-        .sidebar-active { background: rgba(255,255,255,.2) !important; color:#fff !important; font-weight:600; }
-        .sidebar-item   { color: rgba(255,255,255,.82); transition: background .15s, color .15s; }
-        .sidebar-item:hover { background: rgba(255,255,255,.15) !important; color:#fff !important; }
-        .sidebar-sep    { border-color: rgba(255,255,255,.2) !important; }
-        .sidebar-logo-title { color:#fff; }
-        .sidebar-logo-sub   { color: rgba(255,255,255,.6); }
 
+        .sidebar-active {
+            background: var(--al-gray-100) !important;
+            color: var(--al-gray-900) !important;
+            font-weight: 600;
+        }
+
+        .sidebar-item {
+            color: var(--al-gray-600);
+            transition: all .15s;
+        }
+
+        .sidebar-item:hover {
+            background: var(--al-gray-100) !important;
+            color: var(--al-gray-900) !important;
+        }
+
+        .sidebar-sep {
+            border-color: var(--al-gray-200) !important;
+        }
+
+        .sidebar-logo-title {
+            color: var(--al-gray-900);
+        }
+
+        .sidebar-logo-sub {
+            color: var(--al-gray-500);
+        }
+
+        /* TOPBAR */
         .al-topbar {
-            background: linear-gradient(135deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%);
-            border: none !important;
+            background: var(--al-white);
+            border: 1px solid var(--al-gray-200);
         }
-        .al-topbar h2, .al-topbar p { color:#fff !important; }
-        .al-topbar p { opacity:.82; }
-        .al-bell-btn { color:#fff !important; }
-        .al-bell-btn:hover { background: rgba(255,255,255,.15) !important; }
 
-        .al-hamburger { color: var(--al-blue-dark); }
+        .al-topbar h2 {
+            color: var(--al-gray-900) !important;
+        }
 
-        body { background: linear-gradient(135deg, var(--al-blue-xpale) 0%, #f0f8ff 100%) !important; }
+        .al-topbar p {
+            color: var(--al-gray-500) !important;
+        }
 
-        .al-card { background:#fff; border:1.5px solid #b3d9f0; border-radius:.75rem; }
+        .al-bell-btn {
+            color: var(--al-gray-700) !important;
+        }
 
+        .al-bell-btn:hover {
+            background: var(--al-gray-100) !important;
+        }
+
+        /* HAMBURGUESA */
+        .al-hamburger {
+            color: var(--al-gray-700);
+        }
+
+        /* BODY */
+        body {
+            background: var(--al-gray-50) !important;
+        }
+
+        /* CARDS */
+        .al-card {
+            background: var(--al-white);
+            border: 1px solid var(--al-gray-200);
+            border-radius: 0.75rem;
+        }
+
+        /* BOTÓN PRINCIPAL */
         .al-btn-primary {
-            background: linear-gradient(135deg, var(--al-blue-dark), var(--al-blue));
-            color:#fff; transition: opacity .2s;
+            background: var(--al-gray-900);
+            color: #fff;
+            transition: all .2s;
         }
-        .al-btn-primary:hover { opacity:.88; }
 
-        .al-section-title { color: var(--al-blue-dark); border-left:4px solid var(--al-blue); padding-left:.5rem; }
-        .al-label { color: var(--al-blue-dark); font-size:.8rem; font-weight:600; }
+        .al-btn-primary:hover {
+            background: #000;
+        }
 
+        /* BOTÓN VOLVER */
+        .al-btn-back {
+            border: 1px solid var(--al-gray-300);
+            color: var(--al-gray-700);
+            transition: all .15s;
+        }
+
+        .al-btn-back:hover {
+            background: var(--al-gray-100);
+            color: var(--al-gray-900);
+        }
+
+        /* INPUTS */
         .al-input {
-            border-color: #b3d9f0 !important;
-            transition: border-color .15s, box-shadow .15s;
+            border: 1px solid var(--al-gray-300) !important;
+            background: var(--al-white);
+            transition: all .15s;
         }
+
         .al-input:focus {
             outline: none;
-            border-color: var(--al-blue) !important;
-            box-shadow: 0 0 0 3px rgba(0,125,200,.12);
+            border-color: var(--al-gray-900) !important;
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
         }
 
-        .al-btn-back {
-            border:1.5px solid #b3d9f0; color: var(--al-blue-mid);
-            transition: background .15s, color .15s;
+        /* LABELS */
+        .al-label {
+            color: var(--al-gray-700);
+            font-size: .75rem;
+            font-weight: 600;
         }
-        .al-btn-back:hover { background: var(--al-blue-xpale); color: var(--al-blue-dark); }
 
-        /* Panel lateral */
+        /* SECCIONES */
+        .al-section-title {
+            color: var(--al-gray-900);
+            border-left: 3px solid var(--al-gray-900);
+            padding-left: .5rem;
+        }
+
+        /* PANEL LATERAL */
         .al-side-panel {
-            background: var(--al-blue-xpale);
-            border: 1.5px solid var(--al-blue-pale);
+            background: var(--al-white);
+            border: 1px solid var(--al-gray-200);
             border-radius: .75rem;
         }
 
-        @keyframes slideInDown { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
-        .animate-slide-in { animation: slideInDown .4s ease-out; }
+        /* ANIMACIÓN */
+        @keyframes slideInDown {
+            from { opacity:0; transform:translateY(-10px); }
+            to { opacity:1; transform:translateY(0); }
+        }
+
+        .animate-slide-in {
+            animation: slideInDown .35s ease-out;
+        }
     </style>
 </head>
 
@@ -130,13 +213,6 @@
                 <a href="/admin/usuarios" class="sidebar-item sidebar-active flex items-center px-3 py-2.5 rounded-lg">
                     <i class="fas fa-users w-5 text-center shrink-0"></i>
                     <span class="ms-3">Usuarios</span>
-                </a>
-            </li>
-            <li>
-                <a href="/admin/equipos"
-                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
-                    <i class="fas fa-desktop w-5 text-center shrink-0"></i>
-                    <span class="ms-3">Hoja de vida-Equipos</span>
                 </a>
             </li>
         </ul>

@@ -15,8 +15,8 @@
             --surface-3: #21262d;
             --surface-4: #30363d;
             --border: #30363d;
-            --text-primary: #0d1117;|
-            --text-secondary: #0d1117;
+            --text-primary: #e6edf3;
+            --text-secondary: #c9d1d9;
             --text-muted: #9aa4af;
             --accent: #0ea5e9;
             --accent-glow: rgba(14,165,233,0.12);
@@ -55,6 +55,17 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--accent);
         }
+        input, textarea {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            caret-color: #ffffff !important;
+            background-color: #21262d !important;
+        }
+
+        input::placeholder {
+            color: #9aa4af !important;
+            opacity: 1 !important;
+        }
     </style>
 </head>
 
@@ -70,7 +81,7 @@
 
             <div class="text-center space-y-4">
                 <div class="flex justify-center">
-                    <div class="flex h-20 w-20 items-center justify-center rounded-2xl border border-[#0ea5e9]/25 bg-[#0ea5e9]/10 shadow-[0_0_28px_rgba(14,165,233,0.12)]">
+                    <div class="bg-[#0ea5e9]/10 shadow-[0_0_28px_rgba(14,165,233,0.12)]">
                         <img src="/images/logo.png"
                              alt="Logo"
                              class="h-14 w-14 object-contain brightness-0 invert opacity-95">
@@ -120,7 +131,7 @@
                             name="email"
                             required
                             placeholder="ejemplo@correo.com"
-                            class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#6b7280] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"
+                            class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"
                     />
                 </div>
             </div>
@@ -137,7 +148,7 @@
                             name="password"
                             required
                             placeholder="••••••••"
-                            class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#6b7280] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"
+                            class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"
                     />
                 </div>
             </div>

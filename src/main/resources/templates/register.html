@@ -3,275 +3,265 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro - Centro de Tickets</title>
-  <!-- CSS compilado de Tailwind + animaciones personalizadas -->
+  <title>Registro - Centro de Imagen Corporativa - Austral Lens</title>
   <link th:href="@{/main.css}" rel="stylesheet"/>
-  <!-- Font Awesome para los íconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <style>
+    :root {
+      --surface-1: #0d1117;
+      --surface-2: #161b22;
+      --surface-3: #21262d;
+      --surface-4: #30363d;
+      --border: #30363d;
+      --text-primary: #e6edf3;
+      --text-secondary: #c9d1d9;
+      --text-muted: #9aa4af;
+      --accent: #0ea5e9;
+      --accent-glow: rgba(14,165,233,0.12);
+    }
 
+    body {
+      background:
+              radial-gradient(720px at 15% 0%, rgba(14,165,233,0.14), transparent 58%),
+              radial-gradient(680px at 90% 18%, rgba(56,189,248,0.08), transparent 55%),
+              var(--surface-1) !important;
+      background-attachment: fixed;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .animate-float { animation: float 3.5s ease-in-out infinite; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--surface-2); }
+    ::-webkit-scrollbar-thumb { background: var(--surface-4); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    input, textarea, select {
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      caret-color: #ffffff !important;
+      background-color: #21262d !important;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #8b949e !important;
+      opacity: 1 !important;
+    }
+    select option {
+      background-color: #21262d;
+      color: #ffffff;
+    }
+  </style>
 </head>
-<body class="bg-sky-100">
-<div class="min-h-screen flex flex-col md:flex-row">
-  <!-- PANEL IZQUIERDO → FORMULARIO -->
+
+<body class="min-h-screen text-white">
+
+<div class="min-h-screen flex flex-col md:flex-row-reverse">
+
+  <!-- PANEL FORMULARIO -->
   <div class="flex-1 flex items-center justify-center p-6 md:p-10">
-    <form
-            th:action="@{/register}" method="post"
-            class="bg-white backdrop-blur-md border border-sky-200 rounded-2xl p-8 w-full max-w-md space-y-4 shadow-xl hover:scale-[1.01] transition-transform"
-    >
-      <div class="text-center mb-6">
-        <i class="fas fa-flask text-4xl text-sky-500 mb-2 animate-bounce"></i>
-        <h2 class="text-2xl font-bold text-sky-700">Crear Cuenta</h2>
-        <p class="text-sm text-gray-600">Registro Centro de soporte TI - Austral Lens</p>
+    <form th:action="@{/register}" method="post"
+          class="w-full max-w-lg space-y-5 rounded-2xl border border-[#30363d] bg-[#161b22]/95 p-8 md:p-10 shadow-2xl shadow-black/40 backdrop-blur-xl transition hover:border-[#0ea5e9]/35">
+
+      <div class="text-center space-y-4 mb-2">
+        <div class="flex justify-center">
+          <div class="flex h-20 w-20 items-center justify-center rounded-2xl border border-[#0ea5e9]/25 bg-[#0ea5e9]/10 shadow-[0_0_28px_rgba(14,165,233,0.12)]">
+            <img src="/images/logo.png" alt="Logo" class="h-14 w-14 object-contain brightness-0 invert opacity-95">
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#38bdf8]">Centro de Imagen Corporativa</p>
+          <h2 class="mt-2 text-3xl font-black text-white">Crear Cuenta</h2>
+          <p class="mt-1 text-sm text-[#9aa4af]">Registro en el portal de Austral Lens</p>
+        </div>
       </div>
 
+      <div th:if="${success}" class="rounded-xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-300">
+        <i class="fas fa-check-circle mr-1"></i><span th:text="${success}"></span>
+      </div>
+      <div th:if="${error}" class="rounded-xl border border-red-400/25 bg-red-400/10 px-4 py-3 text-sm font-semibold text-red-300">
+        <i class="fas fa-exclamation-circle mr-1"></i><span th:text="${error}"></span>
+      </div>
+
+      <!-- Nombre -->
       <div>
-        <label class="block text-sky-700 font-semibold mb-1">
-          Nombre completo: <span class="text-red-500">*</span>
-        </label>
-        <input
-                type="text" name="nombre"
-                placeholder="Ingrese su nombre completo"
-                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,110}"
-                required
-                class="w-full px-3 py-2 border border-sky-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none"
-        />
+        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Nombre completo <span class="text-red-400">*</span></label>
+        <div class="relative">
+          <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
+          <input type="text" name="nombre" placeholder="Ingrese su nombre completo"
+                 pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,110}" required
+                 class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"/>
+        </div>
       </div>
 
+      <!-- Cédula -->
       <div>
-        <label class="block text-sky-700 font-semibold mb-1">
-          Número de identificación (C.C): <span class="text-red-500">*</span>
-        </label>
-        <input
-                type="text" name="cedula"
-                placeholder="Ingrese su cédula"
-                required
-                pattern="[0-9]{6,12}"
-                class="w-full px-3 py-2 border border-sky-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none"
-        />
+        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Número de identificación (C.C) <span class="text-red-400">*</span></label>
+        <div class="relative">
+          <i class="fas fa-id-card absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
+          <input type="text" name="cedula" placeholder="Ingrese su cédula"
+                 pattern="[0-9]{6,12}" required
+                 class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"/>
+        </div>
       </div>
 
+      <!-- Teléfono -->
       <div>
-        <label class="block text-sky-700 font-semibold mb-1">
-          Número de teléfono: <span class="text-red-500">*</span>
-        </label>
-        <input
-                type="tel" name="telefono"
-                placeholder="Ej: 313 12345678"
-                required
-                pattern="[0-9 +\-()]{7,15}"
-                class="w-full px-3 py-2 border border-sky-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none"
-        />
+        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Número de teléfono <span class="text-red-400">*</span></label>
+        <div class="relative">
+          <i class="fas fa-phone absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
+          <input type="tel" name="telefono" placeholder="Ej: 313 12345678"
+                 pattern="[0-9 +\-()]{7,15}" required
+                 class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"/>
+        </div>
       </div>
 
+      <!-- Ciudad -->
       <div>
-        <label class="block text-sky-700 font-semibold mb-1">
-          Ciudad en la que trabaja: <span class="text-red-500">*</span>
-        </label>
-        <select
-                required name="ciudad"
-                class="w-full px-3 py-2 border border-sky-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none bg-white"
-        >
-          <option value="">Seleccione una ciudad</option>
-          <option value="BARRANQUILLA">BARRANQUILLA</option>
-          <option value="BOGOTA">BOGOTA</option>
-          <option value="BUCARAMANGA">BUCARAMANGA</option>
-          <option value="CALI">CALI</option>
-          <option value="CHIA">CHIA</option>
-          <option value="CUCUTA">CUCUTA</option>
-          <option value="MANIZALES">MANIZALES</option>
-          <option value="MEDELLIN">MEDELLIN</option>
-          <option value="NEIVA">NEIVA</option>
-          <option value="PEREIRA">PEREIRA</option>
-          <option value="RIONEGRO">RIONEGRO</option>
-          <option value="SOACHA">SOACHA</option>
-          <option value="TUNJA">TUNJA</option>
-        </select>
-
+        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Ciudad en la que trabaja <span class="text-red-400">*</span></label>
+        <div class="relative">
+          <i class="fas fa-map-marker-alt absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
+          <select required name="ciudad"
+                  class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10 appearance-none">
+            <option value="">Seleccione una ciudad</option>
+            <option>BARRANQUILLA</option><option>BOGOTA</option><option>BUCARAMANGA</option>
+            <option>CALI</option><option>CHIA</option><option>CUCUTA</option>
+            <option>MANIZALES</option><option>MEDELLIN</option><option>NEIVA</option>
+            <option>PEREIRA</option><option>RIONEGRO</option><option>SOACHA</option><option>TUNJA</option>
+          </select>
+        </div>
       </div>
 
+      <!-- Punto de venta -->
       <div>
-        <label class="block text-sky-700 font-semibold mb-1">
-          Área/Punto de venta: <span class="text-red-500">*</span>
-        </label>
-        <select
-                required name="punto"
-                class="w-full px-3 py-2 border border-sky-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none bg-white"
-        >
-          <option value="">Seleccione un punto</option>
-          <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
-          <option value="ARCHIVO">ARCHIVO</option>
-          <option value="BARRANQUILLA">BARRANQUILLA</option>
-          <option value="BODEGA">BODEGA</option>
-          <option value="BUCARAMANGA">BUCARAMANGA</option>
-          <option value="CALI">CALI</option>
-          <option value="CENTRO">CENTRO</option>
-          <option value="CHAPINERO">CHAPINERO</option>
-          <option value="CHIA">CHIA</option>
-          <option value="CUCUTA">CUCUTA</option>
-          <option value="LABORATORIO">LABORATORIO</option>
-          <option value="MANIZALES">MANIZALES</option>
-          <option value="MEDELLIN">MEDELLIN</option>
-          <option value="NEIVA">NEIVA</option>
-          <option value="OLAYA">OLAYA</option>
-          <option value="PEREIRA">PEREIRA</option>
-          <option value="PRINCIPAL">PRINCIPAL</option>
-          <option value="RIONEGRO">RIONEGRO</option>
-          <option value="TUNJA">TUNJA</option>
-        </select>
+        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Área/Punto de venta <span class="text-red-400">*</span></label>
+        <div class="relative">
+          <i class="fas fa-store absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
+          <select required name="punto"
+                  class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10 appearance-none">
+            <option value="">Seleccione un punto</option>
+            <option>ADMINISTRATIVO</option><option>ARCHIVO</option><option>BARRANQUILLA</option>
+            <option>BODEGA</option><option>BUCARAMANGA</option><option>CALI</option>
+            <option>CENTRO</option><option>CHAPINERO</option><option>CHIA</option>
+            <option>CUCUTA</option><option>LABORATORIO</option><option>MANIZALES</option>
+            <option>MEDELLIN</option><option>NEIVA</option><option>OLAYA</option>
+            <option>PEREIRA</option><option>PRINCIPAL</option><option>RIONEGRO</option><option>TUNJA</option>
+          </select>
+        </div>
       </div>
 
+      <!-- Cargo -->
       <div>
-        <label class="block text-sky-700 font-semibold mb-1">
-          Cargo: <span class="text-red-500">*</span>
-        </label>
-        <select
-                required name="cargo"
-                class="w-full px-3 py-2 border border-sky-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none bg-white"
-        >
-          <option value="">Seleccione un cargo</option>
-          <option value="ADMINISTRADOR/A">ADMINISTRADOR/A</option>
-          <option value="ANALISTA DE CARTERA">ANALISTA DE CARTERA</option>
-          <option value="ASESOR JURIDICO">ASESOR JURIDICO</option>
-          <option value="ASISTENTE DE AUDITORIA">ASISTENTE DE AUDITORIA</option>
-          <option value="ASISTENTE DE CONTABILIDAD">ASISTENTE DE CONTABILIDAD</option>
-          <option value="ASISTENTE DE GERENCIA">ASISTENTE DE GERENCIA</option>
-          <option value="ASISTENTE DE NOMINA">ASISTENTE DE NOMINA</option>
-          <option value="ASISTENTE DE TALENTO HUMANO">ASISTENTE DE TALENTO HUMANO</option>
-          <option value="AUDITOR INTERNO">AUDITOR INTERNO</option>
-          <option value="AUXILIAR DE ARCHIVO">AUXILIAR DE ARCHIVO</option>
-          <option value="AUXILIAR DE BODEGA">AUXILIAR DE BODEGA</option>
-          <option value="AUXILIAR DE IMAGEN CORPORATIVA">AUXILIAR DE IMAGEN CORPORATIVA</option>
-          <option value="AUXILIAR DE LABORATORIO">AUXILIAR DE LABORATORIO</option>
-          <option value="AUXILIAR DE LABORATORIO - ANTIRREFLEJO">AUXILIAR DE LABORATORIO - ANTIRREFLEJO</option>
-          <option value="AUXILIAR DE LABORATORIO - CALL CENTER">AUXILIAR DE LABORATORIO - CALL CENTER</option>
-          <option value="AUXILIAR DE LABORATORIO - CONTROL DE CALIDAD">AUXILIAR DE LABORATORIO - CONTROL DE CALIDAD</option>
-          <option value="AUXILIAR DE LABORATORIO - ENCINTADO">AUXILIAR DE LABORATORIO - ENCINTADO</option>
-          <option value="AUXILIAR DE LABORATORIO - TALLA">AUXILIAR DE LABORATORIO - TALLA</option>
-          <option value="AUXILIAR DE PUNTO DE VENTA">AUXILIAR DE PUNTO DE VENTA</option>
-          <option value="AUXILIAR DE SERVICIOS GENERALES">AUXILIAR DE SERVICIOS GENERALES</option>
-          <option value="AUXILIAR DE SERVICIOS VARIOS">AUXILIAR DE SERVICIOS VARIOS</option>
-          <option value="BISELADOR/A">BISELADOR/A</option>
-          <option value="CAJERO">CAJERO</option>
-          <option value="COORDINADOR DE ARCHIVO Y SUMINISTROS">COORDINADOR DE ARCHIVO Y SUMINISTROS</option>
-          <option value="COORDINADOR DE BISEL">COORDINADOR DE BISEL</option>
-          <option value="COORDINADOR DE BODEGA">COORDINADOR DE BODEGA</option>
-          <option value="COORDINADOR DE LABORATORIO">COORDINADOR DE LABORATORIO</option>
-          <option value="COORDINADORA CONTABLE">COORDINADORA CONTABLE</option>
-          <option value="DIRECTOR CIENTIFICO">DIRECTOR CIENTIFICO</option>
-          <option value="DIRECTOR COMERCIAL">DIRECTOR COMERCIAL</option>
-          <option value="DIRECTORA CONTABLE Y TESORERIA">DIRECTORA CONTABLE Y TESORERIA</option>
-          <option value="DIRECTORA DE GESTION DE MARCA">DIRECTORA DE GESTION DE MARCA</option>
-          <option value="DIRECTORA DE HSEQ">DIRECTORA DE HSEQ</option>
-          <option value="DIRECTORA DE IMAGEN COORPORATIVA">DIRECTORA DE IMAGEN COORPORATIVA</option>
-          <option value="DIRECTORA DE TALENTO HUMANO">DIRECTORA DE TALENTO HUMANO</option>
-          <option value="EJECUTIVO COMERCIAL">EJECUTIVO COMERCIAL</option>
-          <option value="GERENTE ADMINISTRATIVO Y FINANCIERO">GERENTE ADMINISTRATIVO Y FINANCIERO</option>
-          <option value="GERENTE COMERCIAL">GERENTE COMERCIAL</option>
-          <option value="JEFE DE BODEGA">JEFE DE BODEGA</option>
-          <option value="JEFE DE LABORATORIO">JEFE DE LABORATORIO</option>
-          <option value="LIDER DE SISTEMAS">LIDER DE SISTEMAS</option>
-          <option value="MENSAJERO">MENSAJERO</option>
-          <option value="PRESIDENTE">PRESIDENTE</option>
-          <option value="APRENDIZ">APRENDIZ</option>
-        </select>
+        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Cargo <span class="text-red-400">*</span></label>
+        <div class="relative">
+          <i class="fas fa-briefcase absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
+          <select required name="cargo"
+                  class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10 appearance-none">
+            <option value="">Seleccione un cargo</option>
+            <option>ADMINISTRADOR/A</option><option>ANALISTA DE CARTERA</option><option>ASESOR JURIDICO</option>
+            <option>ASISTENTE DE AUDITORIA</option><option>ASISTENTE DE CONTABILIDAD</option>
+            <option>ASISTENTE DE GERENCIA</option><option>ASISTENTE DE NOMINA</option>
+            <option>ASISTENTE DE TALENTO HUMANO</option><option>AUDITOR INTERNO</option>
+            <option>AUXILIAR DE ARCHIVO</option><option>AUXILIAR DE BODEGA</option>
+            <option>AUXILIAR DE IMAGEN CORPORATIVA</option><option>AUXILIAR DE LABORATORIO</option>
+            <option>AUXILIAR DE LABORATORIO - ANTIRREFLEJO</option>
+            <option>AUXILIAR DE LABORATORIO - CALL CENTER</option>
+            <option>AUXILIAR DE LABORATORIO - CONTROL DE CALIDAD</option>
+            <option>AUXILIAR DE LABORATORIO - ENCINTADO</option>
+            <option>AUXILIAR DE LABORATORIO - TALLA</option>
+            <option>AUXILIAR DE PUNTO DE VENTA</option><option>AUXILIAR DE SERVICIOS GENERALES</option>
+            <option>AUXILIAR DE SERVICIOS VARIOS</option><option>BISELADOR/A</option><option>CAJERO</option>
+            <option>COORDINADOR DE ARCHIVO Y SUMINISTROS</option><option>COORDINADOR DE BISEL</option>
+            <option>COORDINADOR DE BODEGA</option><option>COORDINADOR DE LABORATORIO</option>
+            <option>COORDINADORA CONTABLE</option><option>DIRECTOR CIENTIFICO</option>
+            <option>DIRECTOR COMERCIAL</option><option>DIRECTORA CONTABLE Y TESORERIA</option>
+            <option>DIRECTORA DE GESTION DE MARCA</option><option>DIRECTORA DE HSEQ</option>
+            <option>DIRECTORA DE IMAGEN COORPORATIVA</option><option>DIRECTORA DE TALENTO HUMANO</option>
+            <option>EJECUTIVO COMERCIAL</option><option>GERENTE ADMINISTRATIVO Y FINANCIERO</option>
+            <option>GERENTE COMERCIAL</option><option>JEFE DE BODEGA</option>
+            <option>JEFE DE LABORATORIO</option><option>LIDER DE SISTEMAS</option>
+            <option>MENSAJERO</option><option>PRESIDENTE</option><option>APRENDIZ</option>
+          </select>
+        </div>
       </div>
 
+      <!-- Email -->
       <div>
-        <label class="block text-sky-700 font-semibold mb-1">
-          Email: <span class="text-red-500">*</span>
-        </label>
-        <input
-                type="email" name="email"
-                placeholder="ejemplo@correo.com"
-                required
-                class="w-full px-3 py-2 border border-sky-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none"
-        />
+        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Email <span class="text-red-400">*</span></label>
+        <div class="relative">
+          <i class="fas fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
+          <input type="email" name="email" placeholder="ejemplo@correo.com" required
+                 class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"/>
+        </div>
       </div>
 
+      <!-- Contraseña -->
       <div>
-        <label class="block text-sky-700 font-semibold mb-1">
-          Contraseña: <span class="text-red-500">*</span>
-        </label>
-        <input
-                id="password"
-                type="password" name="password"
-                placeholder="Ingrese su contraseña"
-                required
-                class="w-full px-3 py-2 border border-sky-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none"
-        />
+        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Contraseña <span class="text-red-400">*</span></label>
+        <div class="relative">
+          <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
+          <input id="password" type="password" name="password" placeholder="••••••••" required
+                 class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"/>
+        </div>
       </div>
 
+      <!-- Confirmar contraseña -->
       <div>
-        <label class="block text-sky-700 font-semibold mb-1">
-          Confirmar contraseña: <span class="text-red-500">*</span>
-        </label>
-        <input
-                id="confirmPassword"
-                type="password" name="confirmPassword"
-                placeholder="Repita su contraseña"
-                required
-                class="w-full px-3 py-2 border border-sky-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:outline-none"
-        />
+        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Confirmar contraseña <span class="text-red-400">*</span></label>
+        <div class="relative">
+          <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
+          <input id="confirmPassword" type="password" name="confirmPassword" placeholder="••••••••" required
+                 class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"/>
+        </div>
       </div>
 
-      <label class="flex items-center space-x-2 text-sky-700">
-        <input
-                type="checkbox"
-                onclick="togglePasswordVisibility()"
-                class="accent-sky-500 cursor-pointer"
-        />
+      <!-- Mostrar contraseña -->
+      <label class="flex items-center space-x-2 text-sm text-[#c9d1d9]">
+        <input type="checkbox" onclick="togglePasswordVisibility()" class="cursor-pointer accent-[#0ea5e9]">
         <span>Mostrar contraseña</span>
       </label>
-      <label class="flex items-start space-x-2 text-sky-700 text-sm">
-        <input
-                type="checkbox"
-                id="habeasdata"
-                required
-                class="accent-sky-500 cursor-pointer mt-1"
-        />
 
-        <span>
-        Autorizo el tratamiento de mis datos personales de acuerdo con la política
-        de privacidad y la legislación de Habeas Data vigente en Colombia.
-    </span>
+      <!-- Habeas Data -->
+      <label class="flex items-start space-x-2 text-sm text-[#9aa4af]">
+        <input type="checkbox" id="habeasdata" required class="cursor-pointer accent-[#0ea5e9] mt-0.5">
+        <span>Autorizo el tratamiento de mis datos personales de acuerdo con la política de privacidad y la legislación de Habeas Data vigente en Colombia.</span>
       </label>
 
-      <div class="space-y-3">
-        <button
-                type="submit"
-                id="LoginBt"
-                class="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 rounded-lg transition-all hover:scale-105 active:scale-95"
-        >
-          Registrarse
-        </button>
+      <!-- Botones -->
+      <button type="submit" id="LoginBt"
+              class="w-full rounded-xl bg-[#0ea5e9] py-3 font-bold text-white shadow-lg shadow-[#0ea5e9]/20 transition hover:brightness-110 active:scale-95">
+        <i class="fas fa-user-plus mr-2"></i>Registrarse
+      </button>
 
-        <button
-                type="button"
-                onclick="window.location.href='/login'"
-                class="w-full bg-white hover:bg-sky-50 text-sky-600 border-2 border-sky-400 font-semibold py-2 rounded-lg transition-all hover:scale-105 active:scale-95"
-        >
-          Ya tengo cuenta
-        </button>
-      </div>
+      <button type="button" onclick="window.location.href='/login'"
+              class="w-full rounded-xl border border-[#30363d] bg-transparent py-3 font-bold text-[#38bdf8] transition hover:border-[#0ea5e9] hover:bg-[#0ea5e9]/10 active:scale-95">
+        <i class="fas fa-arrow-left mr-2"></i>Ya tengo cuenta
+      </button>
+
     </form>
   </div>
 
-  <!-- PANEL DERECHO → LOGO Y DECORACIÓN -->
-  <div class="hidden md:flex flex-1 flex-col items-center justify-center bg-gradient-to-br from-sky-400 to-sky-600 text-white p-8">
-    <div class="w-72 h-72 bg-white/20 rounded-lg flex items-center justify-center mb-8 backdrop-blur-sm p-4">
-      <img src="/images/logo.png" alt="Logo Laboratorio" class="w-full h-full object-contain">
+  <!-- PANEL DECORATIVO -->
+  <div class="hidden md:flex flex-1 flex-col items-center justify-center border-r border-[#30363d] bg-[#161b22]/80 p-10 text-white shadow-2xl shadow-black/30 backdrop-blur-xl">
+    <div class="relative mb-8 flex h-72 w-72 items-center justify-center rounded-[2rem] border border-[#30363d] bg-[#21262d] p-6 shadow-2xl shadow-black/35">
+      <div class="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.18),transparent_58%)]"></div>
+      <img src="/images/logo.png" alt="Logo Laboratorio" class="relative z-10 h-full w-full object-contain brightness-0 invert opacity-95">
     </div>
-
-    <div class="flex justify-center space-x-8 mb-8">
-      <i class="fas fa-laptop-code text-6xl opacity-90 animate-float"></i>
-      <i class="fas fa-server text-6xl opacity-90 animate-float" style="animation-delay: 0.3s;"></i>
-      <i class="fas fa-network-wired text-6xl opacity-90 animate-float" style="animation-delay: 0.6s;"></i>
+    <div class="mb-8 flex justify-center space-x-8">
+      <i class="fas fa-palette text-6xl text-[#38bdf8] opacity-90 animate-float"></i>
+      <i class="fas fa-image text-6xl text-[#38bdf8] opacity-90 animate-float" style="animation-delay: 0.3s;"></i>
+      <i class="fas fa-bullhorn text-6xl text-[#38bdf8] opacity-90 animate-float" style="animation-delay: 0.6s;"></i>
     </div>
-
-    <h1 class="text-3xl font-bold mt-8 text-center">¿Necesitas ayuda y soporte?</h1>
-    <p class="text-sm mt-2 text-center opacity-90">Regístrate para solicitar tu soporte</p>
+    <div class="max-w-md text-center">
+      <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#38bdf8]">Austral Lens</p>
+      <h1 class="mt-3 text-3xl font-black tracking-tight text-white">Imagen Corporativa</h1>
+      <p class="mt-3 text-sm leading-6 text-[#9aa4af]">Regístrate para crear solicitudes, consultar el estado de tus tickets y comunicarte con el equipo de Imagen Corporativa.</p>
+    </div>
   </div>
+
 </div>
 
 <script>
@@ -282,39 +272,17 @@
       const type = password.type === "password" ? "text" : "password";
       password.type = type;
       confirm.type = type;
-    }
+    };
 
     const habeasCheckbox = document.getElementById("habeasdata");
     const loginBtn = document.getElementById("LoginBt");
     loginBtn.disabled = true;
-
     habeasCheckbox.addEventListener("change", function () {
       loginBtn.disabled = !this.checked;
     });
-
-    window.handleSubmit = function (event) {
-      event.preventDefault();
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-
-      if (!habeasCheckbox.checked) {
-        alert("Debes autorizar el tratamiento de datos personales para continuar.");
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        alert("Las contraseñas no coinciden");
-        return;
-      }
-
-      loginBtn.disabled = true;
-      loginBtn.innerText = "Registrando...";
-
-      console.log("Formulario enviado");
-      alert("¡Registro exitoso! Bienvenido al sistema de laboratorio.");
-    }
   });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/flowbite@2.2.1/dist/flowbite.min.js"></script>
 </body>
 </html>

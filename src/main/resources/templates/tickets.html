@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Ticket | Austral Lens</title>
+    <link th:href="@{/main.css}" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        :root {
+            --bg-base:      #0d1117;
+            --bg-card:      #161b22;
+            --bg-elevated:  #21262d;
+            --border:       #30363d;
+            --accent:       #0ea5e9;
+            --accent-light: #38bdf8;
+            --accent-glow:  rgba(14,165,233,0.12);
+            --text-primary: #ffffff;
+            --text-secondary:#c9d1d9;
+            --text-muted:   #9aa4af;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            position: relative;
+        }
+
+        /* Radial background glow */
+        body::before {
+            content: '';
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            background:
+                    radial-gradient(720px at 15% 0%, rgba(14,165,233,0.14), transparent 58%),
+                    radial-gradient(680px at 90% 18%, rgba(56,189,248,0.08), transparent 55%);
+            z-index: 0;
+        }
+
+        /* ── NAV ── */
+        nav.main-nav {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: rgba(22,27,34,0.9);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            padding: 12px 24px;
+        }
+        nav.main-nav .nav-inner {
+            max-width: 1152px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-logo-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: 1px solid rgba(14,165,233,0.2);
+            background: rgba(14,165,233,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 0 28px var(--accent-glow);
+        }
+        .nav-logo-box img {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+        .nav-logo-box .nav-initials {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--accent-light);
+            letter-spacing: -0.5px;
+        }
+        .nav-brand-text p:first-child { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; }
+        .nav-brand-text p:last-child  { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+        .nav-actions { display: flex; gap: 8px; }
+        .nav-btn {
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .nav-btn:hover                { border-color: rgba(14,165,233,0.45); color: #fff; }
+        .nav-btn.danger:hover         { border-color: rgba(248,113,113,0.4); color: #fca5a5; }
+
+        /* ── HEADER ── */
+        header.page-header {
+            position: relative;
+            z-index: 10;
+            padding: 24px;
+        }
+        .header-inner {
+            max-width: 1152px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s, border-color 0.2s, color 0.2s;
+        }
+        .btn-back:hover { transform: translateX(-4px); border-color: rgba(14,165,233,0.45); color: var(--accent-light); }
+        .header-title-block { text-align: center; }
+        .header-label { font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-light); }
+        .header-title { font-size: clamp(22px,4vw,30px); font-weight: 900; color: #fff; margin-top: 4px; }
+        .header-spacer { width: 120px; }
+
+        /* ── MAIN GRID ── */
+        main {
+            position: relative;
+            z-index: 10;
+            max-width: 1152px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 24px 48px;
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        @media (min-width: 1024px) {
+            main { grid-template-columns: minmax(0,0.9fr) minmax(360px,0.55fr); }
+            .sidebar { position: sticky; top: 96px; align-self: start; }
+        }
+
+        /* ── CARDS ── */
+        .card {
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            box-shadow: 0 20px 48px rgba(0,0,0,0.35);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .card:hover { border-color: rgba(14,165,233,0.35); box-shadow: 0 24px 56px rgba(0,0,0,0.5); }
+        .card-header {
+            padding: 28px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-base));
+            border-radius: 24px 24px 0 0;
+        }
+        .card-body { padding: 28px; }
+
+        /* ── TICKET BADGE ── */
+        .ticket-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            border: 1px solid rgba(14,165,233,0.25);
+            background: rgba(14,165,233,0.1);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent-light);
+        }
+        .ticket-title {
+            margin-top: 16px;
+            font-size: clamp(22px,3.5vw,28px);
+            font-weight: 900;
+            color: #fff;
+        }
+        .ticket-date {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ── STATUS BADGE ── */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 900;
+        }
+        .status-abierto    { border: 1px solid rgba(56,189,248,0.25); background: rgba(56,189,248,0.1); color: var(--accent-light); }
+        .status-en-progreso{ border: 1px solid rgba(251,191,36,0.25); background: rgba(251,191,36,0.1); color: #fbbf24; }
+        .status-cerrado    { border: 1px solid rgba(248,113,113,0.25); background: rgba(248,113,113,0.1); color: #f87171; }
+        .status-default    { border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-muted); }
+
+        /* ── INFO BLOCKS ── */
+        .info-block { margin-bottom: 20px; }
+        .info-block.featured {
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(14,165,233,0.2);
+            background: rgba(14,165,233,0.05);
+        }
+        .info-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .info-label i { color: var(--accent-light); }
+        .info-value {
+            font-size: 13px;
+            line-height: 1.75;
+            color: var(--text-secondary);
+            margin-left: 26px;
+        }
+        .info-value-box {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-left: 26px;
+            font-size: 13px;
+            line-height: 1.75;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 17px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        .section-title i { color: var(--accent-light); }
+
+        /* ── ATTACHMENTS ── */
+        .attachments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+        .attachment-card {
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: var(--bg-elevated);
+            padding: 16px;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+        .attachment-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(14,165,233,0.45);
+            box-shadow: 0 16px 32px rgba(0,0,0,0.3);
+        }
+        .attachment-preview {
+            height: 112px;
+            border-radius: 12px;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 28px;
+        }
+        .preview-image { border-color: rgba(56,189,248,0.25); background: rgba(56,189,248,0.1); color: var(--accent-light); }
+        .preview-video { border-color: rgba(167,139,250,0.25); background: rgba(167,139,250,0.1); color: #c4b5fd; }
+        .preview-file  { border-color: rgba(96,165,250,0.25); background: rgba(96,165,250,0.1); color: #93c5fd; }
+        .attachment-preview img,
+        .attachment-preview video {
+            width: 100%; height: 100%; object-fit: cover; border-radius: 10px;
+        }
+        .attachment-name { font-size: 13px; font-weight: 900; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .attachment-detail { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+        .btn-download {
+            margin-top: 16px;
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.2);
+            transition: filter 0.2s, transform 0.15s;
+        }
+        .btn-download:hover { filter: brightness(1.1); }
+        .btn-download:active { transform: scale(0.97); }
+
+        /* ── CHAT HISTORIAL ── */
+        .chat-container {
+            max-height: 620px;
+            overflow-y: auto;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--bg-base);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+        .comment-row {
+            display: flex;
+            gap: 12px;
+        }
+        .comment-row.mine { justify-content: flex-end; }
+        .comment-row.theirs { justify-content: flex-start; }
+        .avatar {
+            width: 40px; height: 40px; border-radius: 12px; border: 1px solid;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+        }
+        .avatar.accent { border-color: rgba(14,165,233,0.25); background: rgba(14,165,233,0.1); color: var(--accent-light); }
+        .avatar.neutral { border-color: var(--border); background: var(--bg-elevated); color: var(--text-secondary); }
+        .comment-body {
+            max-width: 86%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .comment-row.mine  .comment-body { align-items: flex-end; }
+        .comment-row.theirs .comment-body { align-items: flex-start; }
+        .comment-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .comment-row.mine  .comment-meta { justify-content: flex-end; }
+        .comment-row.theirs .comment-meta { justify-content: flex-start; }
+        .comment-sender { font-weight: 900; color: var(--text-secondary); }
+        .comment-files-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            border: 1px solid rgba(14,165,233,0.2);
+            background: rgba(14,165,233,0.1);
+            font-weight: 700;
+            color: var(--accent-light);
+        }
+        .bubble {
+            border-radius: 20px;
+            padding: 12px 16px;
+            font-size: 13px;
+            line-height: 1.75;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+        .bubble.mine   { background: var(--accent); color: #fff; border: 1px solid rgba(56,189,248,0.2); border-top-right-radius: 4px; box-shadow: 0 4px 16px rgba(14,165,233,0.1); }
+        .bubble.theirs { background: var(--bg-elevated); color: var(--text-secondary); border: 1px solid var(--border); border-top-left-radius: 4px; }
+        .comment-role { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+
+        /* comment media attachments */
+        .comment-media-grid {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .comment-media-grid img,
+        .comment-media-grid video { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; }
+        .comment-file-link {
+            display: block;
+            background: rgba(14,165,233,0.08);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            color: var(--accent-light);
+            text-decoration: none;
+            font-size: 11px;
+        }
+        .comment-file-link:hover { background: rgba(14,165,233,0.15); }
+
+        /* ── SIDEBAR SECTIONS ── */
+        .sidebar { display: flex; flex-direction: column; gap: 24px; }
+
+        /* Timeline */
+        .timeline { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+        .timeline-step { display: flex; gap: 12px; }
+        .step-dot {
+            width: 28px; height: 28px; border-radius: 50%; border: 1px solid;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; flex-shrink: 0; margin-top: 2px;
+        }
+        .step-dot.done   { border-color: rgba(14,165,233,0.25); background: rgba(14,165,233,0.1); color: var(--accent-light); }
+        .step-dot.pending{ border-color: var(--border); background: var(--bg-elevated); color: var(--text-muted); }
+        .step-info p:first-child { font-size: 13px; font-weight: 900; color: #fff; }
+        .step-info p:last-child  { font-size: 11px; line-height: 1.5; color: var(--text-muted); margin-top: 4px; }
+
+        /* Reply form */
+        .reply-box {
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--bg-elevated);
+            padding: 12px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .reply-box:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
+        }
+        .reply-box textarea {
+            width: 100%;
+            min-height: 144px;
+            background: transparent;
+            border: none;
+            outline: none;
+            resize: none;
+            color: #fff;
+            font-size: 13px;
+            line-height: 1.6;
+            padding: 8px;
+        }
+        .reply-box textarea::placeholder { color: var(--text-muted); }
+        .reply-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            margin-top: 4px;
+        }
+        .reply-file-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .reply-file-label:hover { border-color: rgba(14,165,233,0.45); color: #fff; }
+        .reply-file-input { display: none; }
+        .btn-send {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 900;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.2);
+            transition: filter 0.2s, transform 0.15s;
+        }
+        .btn-send:hover   { filter: brightness(1.1); }
+        .btn-send:active  { transform: scale(0.97); }
+        .btn-send:disabled{ opacity: 0.6; cursor: not-allowed; }
+        .btn-cancel {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-cancel:hover { border-color: rgba(248,113,113,0.3); color: #fca5a5; }
+
+        /* Closed ticket banner */
+        .closed-banner {
+            border-radius: 16px;
+            border: 1px solid rgba(248,113,113,0.25);
+            background: rgba(248,113,113,0.08);
+            padding: 24px;
+            text-align: center;
+        }
+        .closed-banner i { font-size: 32px; color: #f87171; margin-bottom: 12px; }
+        .closed-banner h3 { font-size: 17px; font-weight: 900; color: #fca5a5; margin-bottom: 8px; }
+        .closed-banner p { font-size: 13px; color: var(--text-secondary); }
+
+        /* section dividers */
+        .section-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+        /* file info hint */
+        .file-hint { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+        /* ── FOOTER ── */
+        footer {
+            position: relative;
+            z-index: 10;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+        .footer-inner {
+            max-width: 1152px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+            gap: 32px;
+        }
+        .footer-col h3 { font-weight: 700; font-size: 15px; color: #fff; margin-bottom: 8px; }
+        .footer-col p  { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+        .footer-col a  { color: var(--text-muted); text-decoration: none; }
+        .footer-col a:hover { color: var(--accent-light); }
+        .footer-copy {
+            background: var(--bg-base);
+            border-top: 1px solid var(--border);
+            text-align: center;
+            padding: 16px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ── ALERTS ── */
+        .al-alert { border-radius: 12px; padding: 12px 20px; margin: 8px 24px; font-size: 13px; font-weight: 600; }
+        .al-alert-success { border: 1px solid rgba(52,211,153,0.25); background: rgba(52,211,153,0.08); color: #6ee7b7; }
+        .al-alert-error   { border: 1px solid rgba(248,113,113,0.25); background: rgba(248,113,113,0.08); color: #fca5a5; }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeIn      { from { opacity:0; } to { opacity:1; } }
+        @keyframes slideInDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+        .animate-fade-in  { animation: fadeIn 0.3s ease-in; }
+        .animate-slide-in { animation: slideInDown 0.5s ease-out; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 640px) {
+            nav.main-nav { padding: 12px 16px; }
+            header.page-header { padding: 16px; }
+            main { padding: 0 16px 48px; }
+            .card-header, .card-body { padding: 20px; }
+            .header-spacer { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="main-nav">
+    <div class="nav-inner">
+        <div class="nav-brand">
+            <div class="nav-logo-box">
+                <img src="/images/logo.png" alt="Austral Lens"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <span class="nav-initials" style="display:none">AL</span>
+            </div>
+            <div class="nav-brand-text">
+                <p>Austral Lens</p>
+                <p>Soporte al usuario</p>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <a href="/perfil" class="nav-btn">Mi perfil</a>
+            <a href="/logout" class="nav-btn danger">Cerrar sesión</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Alerts -->
+<div th:replace="~{fragments/_alertas :: alertas}"></div>
+
+<!-- Header -->
+<header class="page-header animate-slide-in">
+    <div class="header-inner">
+        <a href="/menu" class="btn-back">
+            <i class="fas fa-arrow-left"></i>
+            Volver al menú
+        </a>
+        <div class="header-title-block">
+            <p class="header-label">Seguimiento de solicitud</p>
+            <h1 class="header-title">Detalle del Ticket</h1>
+        </div>
+        <div class="header-spacer"></div>
+    </div>
+</header>
+
+<main>
+    <!-- ── LEFT COLUMN ── -->
+    <div class="main-col" style="display:flex;flex-direction:column;gap:24px;">
+
+        <!-- Ticket info card -->
+        <article class="card animate-fade-in">
+            <div class="card-header">
+                <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between;">
+                    <div>
+                        <span class="ticket-badge">
+                            <i class="fas fa-ticket-alt"></i>
+                            Ticket #<span th:text="${ticket.id}"></span>
+                        </span>
+                        <h2 class="ticket-title" th:text="${ticket.tema}">Problema con acceso VPN</h2>
+                        <p class="ticket-date">
+                            <i class="far fa-calendar-alt"></i>
+                            <span th:text="'Creado el ' + ${#temporals.format(ticket.marcaTemporal,'dd/MM/yyyy HH:mm')}"></span>
+                        </p>
+                    </div>
+                    <span class="status-badge"
+                          th:classappend="${ticket.estado == 'Abierto'}       ? 'status-abierto' :
+                                         (${ticket.estado == 'En Progreso'}   ? 'status-en-progreso' :
+                                         (${ticket.estado == 'CERRADO'}       ? 'status-cerrado'     : 'status-default'))">
+                        <i class="fas fa-circle-check"></i>
+                        <span th:text="${ticket.estado}"></span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <!-- Tema -->
+                <div class="info-block featured">
+                    <div class="info-label"><i class="fas fa-tag"></i> Tema</div>
+                    <p class="info-value" th:text="${ticket.tema}"></p>
+                </div>
+                <!-- Tipo consulta -->
+                <div class="info-block">
+                    <div class="info-label"><i class="fas fa-question-circle"></i> Tipo de consulta</div>
+                    <p class="info-value" th:text="${ticket.tipoDePregunta}"></p>
+                </div>
+                <!-- Descripción -->
+                <div class="info-block">
+                    <div class="info-label"><i class="fas fa-align-left"></i> Tu consulta</div>
+                    <div class="info-value-box" th:text="${ticket.description}"></div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Attachments -->
+        <article class="card" th:if="${medias != null and !medias.isEmpty()}" style="padding:28px;">
+            <div class="section-title">
+                <i class="fas fa-paperclip"></i>
+                Archivos Adjuntos
+                <span style="margin-left:auto;font-size:13px;font-weight:600;color:var(--text-muted);" th:text="${medias.size()} + ' archivos cargados'"></span>
+            </div>
+
+            <div class="attachments-grid">
+                <div th:each="media : ${medias}" class="attachment-card">
+
+                    <!-- Imagen -->
+                    <div th:if="${media.mediaPath.toLowerCase().endsWith('.jpg')
+                              or media.mediaPath.toLowerCase().endsWith('.jpeg')
+                              or media.mediaPath.toLowerCase().endsWith('.png')
+                              or media.mediaPath.toLowerCase().endsWith('.gif')
+                              or media.mediaPath.toLowerCase().endsWith('.webp')}">
+                        <div class="attachment-preview preview-image" style="padding:0;overflow:hidden;">
+                            <img th:src="@{'/uploads/' + ${media.mediaPath}}"
+                                 alt="Imagen del ticket"
+                                 onclick="abrirImagenGrande(this.src)"
+                                 style="cursor:pointer;">
+                        </div>
+                        <p class="attachment-name" th:text="${media.mediaPath}"></p>
+                        <p class="attachment-detail">Imagen adjunta</p>
+                        <a th:href="@{'/uploads/' + ${media.mediaPath}}" download class="btn-download">
+                            <i class="fas fa-download"></i> Descargar archivo
+                        </a>
+                    </div>
+
+                    <!-- Video -->
+                    <div th:if="${media.mediaPath.toLowerCase().endsWith('.mp4')
+                             or media.mediaPath.toLowerCase().endsWith('.webm')
+                             or media.mediaPath.toLowerCase().endsWith('.ogg')
+                             or media.mediaPath.toLowerCase().endsWith('.mov')}">
+                        <div class="attachment-preview preview-video" style="padding:0;overflow:hidden;">
+                            <video controls>
+                                <source th:src="@{'/uploads/' + ${media.mediaPath}}" type="video/mp4">
+                            </video>
+                        </div>
+                        <p class="attachment-name" th:text="${media.mediaPath}"></p>
+                        <p class="attachment-detail">Video adjunto</p>
+                        <a th:href="@{'/uploads/' + ${media.mediaPath}}" download class="btn-download">
+                            <i class="fas fa-download"></i> Descargar archivo
+                        </a>
+                    </div>
+
+                    <!-- Archivo genérico -->
+                    <div th:unless="${media.mediaPath.toLowerCase().endsWith('.jpg')
+                                 or media.mediaPath.toLowerCase().endsWith('.jpeg')
+                                 or media.mediaPath.toLowerCase().endsWith('.png')
+                                 or media.mediaPath.toLowerCase().endsWith('.gif')
+                                 or media.mediaPath.toLowerCase().endsWith('.webp')
+                                 or media.mediaPath.toLowerCase().endsWith('.mp4')
+                                 or media.mediaPath.toLowerCase().endsWith('.webm')
+                                 or media.mediaPath.toLowerCase().endsWith('.ogg')
+                                 or media.mediaPath.toLowerCase().endsWith('.mov')}">
+                        <div class="attachment-preview preview-file">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <p class="attachment-name" th:text="${media.mediaPath}"></p>
+                        <p class="attachment-detail">Documento de soporte</p>
+                        <a th:href="@{'/uploads/' + ${media.mediaPath}}" download class="btn-download">
+                            <i class="fas fa-download"></i> Descargar archivo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Chat historial -->
+        <article class="card" th:if="${comentarios != null and !comentarios.isEmpty()}" style="padding:28px;">
+            <div class="section-title">
+                <i class="fas fa-comments"></i>
+                Historial de conversación
+            </div>
+
+            <div id="chat-historial" class="chat-container">
+                <div th:each="comentario : ${comentarios}"
+                     th:attr="data-comment-id=${comentario.id}"
+                     th:class="${comentario.esAdmin} ? 'comment-row theirs animate-fade-in' : 'comment-row mine animate-fade-in'">
+
+                    <!-- Avatar (theirs) -->
+                    <div th:if="${comentario.esAdmin}" class="avatar neutral">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+
+                    <div class="comment-body">
+                        <div class="comment-meta">
+                            <span class="comment-sender" th:text="${comentario.remitente}"></span>
+                            <span>·</span>
+                            <span th:text="${#temporals.format(comentario.marcaTemporal, 'dd/MM/yyyy HH:mm')}"></span>
+                            <span th:if="${comentario.tieneImagenes}" class="comment-files-badge">
+                                <i class="fas fa-paperclip"></i> Archivos
+                            </span>
+                        </div>
+
+                        <div th:class="${comentario.esAdmin} ? 'bubble theirs' : 'bubble mine'">
+                            <p class="whitespace-pre-wrap" th:text="${comentario.mensaje}"></p>
+
+                            <!-- Medias del comentario -->
+                            <div th:if="${comentario.media != null and !comentario.media.isEmpty()}"
+                                 class="comment-media-grid">
+                                <div th:each="m : ${comentario.media}">
+                                    <img th:if="${m.mediaPath.toLowerCase().endsWith('.jpg')
+                                              or m.mediaPath.toLowerCase().endsWith('.jpeg')
+                                              or m.mediaPath.toLowerCase().endsWith('.png')
+                                              or m.mediaPath.toLowerCase().endsWith('.gif')
+                                              or m.mediaPath.toLowerCase().endsWith('.webp')}"
+                                         th:src="@{'/uploads/' + ${m.mediaPath}}"
+                                         onclick="abrirImagenGrande(this.src)"
+                                         style="cursor:pointer;">
+
+                                    <video th:if="${m.mediaPath.toLowerCase().endsWith('.mp4')
+                                               or m.mediaPath.toLowerCase().endsWith('.webm')
+                                               or m.mediaPath.toLowerCase().endsWith('.ogg')
+                                               or m.mediaPath.toLowerCase().endsWith('.mov')}"
+                                           controls>
+                                        <source th:src="@{'/uploads/' + ${m.mediaPath}}" type="video/mp4">
+                                    </video>
+
+                                    <a th:unless="${m.mediaPath.toLowerCase().endsWith('.jpg')
+                                               or m.mediaPath.toLowerCase().endsWith('.jpeg')
+                                               or m.mediaPath.toLowerCase().endsWith('.png')
+                                               or m.mediaPath.toLowerCase().endsWith('.gif')
+                                               or m.mediaPath.toLowerCase().endsWith('.webp')
+                                               or m.mediaPath.toLowerCase().endsWith('.mp4')
+                                               or m.mediaPath.toLowerCase().endsWith('.webm')
+                                               or m.mediaPath.toLowerCase().endsWith('.ogg')
+                                               or m.mediaPath.toLowerCase().endsWith('.mov')}"
+                                       th:href="@{'/uploads/' + ${m.mediaPath}}"
+                                       download class="comment-file-link">
+                                        <i class="fas fa-file-download" style="font-size:20px;"></i>
+                                        <p style="font-size:10px;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                                           th:text="${m.mediaPath}"></p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <span class="comment-role"
+                              th:text="${comentario.esAdmin} ? 'Soporte TI' : 'Solicitante'"></span>
+                    </div>
+
+                    <!-- Avatar (mine) -->
+                    <div th:unless="${comentario.esAdmin}" class="avatar accent">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Ticket cerrado -->
+        <article class="card" th:if="${ticket.estado == 'CERRADO'}" style="padding:28px;">
+            <div class="closed-banner">
+                <i class="fas fa-lock"></i>
+                <h3>Ticket Cerrado</h3>
+                <p>Este ticket ha sido cerrado y no se pueden agregar más respuestas.</p>
+                <p style="margin-top:8px;font-size:12px;">Si necesitas ayuda adicional, por favor crea un nuevo ticket.</p>
+            </div>
+        </article>
+
+        <!-- Botón volver bottom -->
+        <div style="display:flex;justify-content:center;margin-top:8px;">
+            <a href="/menu" class="btn-download" style="width:auto;padding:12px 32px;font-size:14px;">
+                <i class="fas fa-arrow-left"></i>
+                Volver al menú principal
+            </a>
+        </div>
+
+    </div><!-- end main-col -->
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+
+        <!-- Estado / Timeline -->
+        <section class="card" style="padding:24px;">
+            <h3 class="section-title"><i class="fas fa-list-check"></i> Estado de tu solicitud</h3>
+            <div class="timeline">
+                <div class="timeline-step">
+                    <div class="step-dot done"><i class="fas fa-check"></i></div>
+                    <div class="step-info">
+                        <p>Ticket recibido</p>
+                        <p>Tu solicitud fue registrada correctamente.</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="step-dot done"><i class="fas fa-check"></i></div>
+                    <div class="step-info">
+                        <p>En revisión</p>
+                        <p>Mesa de ayuda está validando la información.</p>
+                    </div>
+                </div>
+                <div class="timeline-step">
+                    <div class="step-dot pending"><i class="fas fa-circle-check"></i></div>
+                    <div class="step-info">
+                        <p>Solución</p>
+                        <p>Recibirás una respuesta cuando esté resuelto.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Formulario responder (solo si no está cerrado) -->
+        <section class="card" style="padding:24px;" th:if="${ticket.estado != 'CERRADO'}">
+            <h3 class="section-title"><i class="fas fa-comment-dots"></i> Agregar comentario</h3>
+
+            <form id="formResponder" enctype="multipart/form-data">
+                <input type="hidden" name="ticketId" th:value="${ticket.id}">
+
+                <div class="reply-box">
+                    <textarea id="txtMensaje" name="mensaje" required
+                              placeholder="Escribe una actualización o responde al equipo de soporte... (Enter para enviar, Shift+Enter salto de línea)"></textarea>
+                    <div class="reply-actions">
+                        <label class="reply-file-label" title="Adjuntar archivos">
+                            <i class="fas fa-paperclip"></i>
+                            <input class="reply-file-input" type="file" name="archivos" multiple
+                                   accept="image/*,video/*,.pdf,.doc,.docx">
+                        </label>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <button type="button" class="btn-cancel" onclick="this.closest('form').reset()">
+                                Cancelar
+                            </button>
+                            <button type="submit" id="btnEnviar" class="btn-send">
+                                Enviar <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <p class="file-hint"><i class="fas fa-info-circle"></i> Imágenes, videos o docs. Máx. 10 MB por archivo.</p>
+            </form>
+        </section>
+
+        <!-- Contacto -->
+        <section class="card" style="padding:24px;">
+            <h3 class="section-title" style="margin-bottom:12px;"><i class="fas fa-headset"></i> ¿Necesitas ayuda?</h3>
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">
+                <i class="fas fa-envelope" style="margin-right:6px;color:var(--accent-light);"></i>
+                soporte.sistemas@australlens.com
+            </p>
+            <p style="font-size:13px;color:var(--text-muted);">
+                <i class="fas fa-phone" style="margin-right:6px;color:var(--accent-light);"></i>
+                (+57) 601 514 5827
+            </p>
+        </section>
+
+    </aside>
+</main>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h3>Austral Lens</h3>
+            <p>Laboratorio óptico con más de 15 años de experiencia.</p>
+        </div>
+        <div class="footer-col">
+            <h3>Soporte</h3>
+            <p><i class="fas fa-envelope" style="margin-right:6px;"></i> soporte.sistemas@australlens.com</p>
+            <p><i class="fas fa-phone" style="margin-right:6px;"></i> (+57) 601 514 5827</p>
+        </div>
+        <div class="footer-col" style="display:flex;align-items:center;justify-content:flex-end;">
+            <i class="fas fa-headset" style="font-size:48px;color:rgba(14,165,233,0.25);"></i>
+        </div>
+    </div>
+    <div class="footer-copy">
+        © 2026 Austral Lens Colombia · Todos los derechos reservados
+    </div>
+</footer>
+
+<!-- Scripts (idénticos al original) -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+<script>
+    function abrirImagenGrande(src) {
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position:fixed;top:0;left:0;width:100%;height:100%;
+            background:rgba(0,0,0,0.92);display:flex;align-items:center;
+            justify-content:center;z-index:9999;cursor:pointer;
+            backdrop-filter:blur(8px);
+        `;
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.cssText = `max-width:90%;max-height:90%;border-radius:16px;box-shadow:0 24px 64px rgba(0,0,0,0.6);`;
+        modal.appendChild(img);
+        modal.onclick = () => modal.remove();
+        document.body.appendChild(modal);
+    }
+</script>
+
+<script th:inline="javascript">
+    /* ── Envío AJAX del formulario ── */
+    (function() {
+        const form = document.getElementById('formResponder');
+        const txt  = document.getElementById('txtMensaje');
+        const btn  = document.getElementById('btnEnviar');
+        if (!form) return;
+
+        txt.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (txt.value.trim()) form.dispatchEvent(new Event('submit', {cancelable:true}));
+            }
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!txt.value.trim()) return;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+            fetch('/tickets/responder', {method:'POST', body: new FormData(form)})
+                .then(function(r) {
+                    if (r.ok) {
+                        txt.value = '';
+                        form.querySelector('input[type="file"]').value = '';
+                    } else {
+                        alert('Error al enviar el mensaje.');
+                    }
+                })
+                .catch(function() { alert('Error de conexión.'); })
+                .finally(function() {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Enviar <i class="fas fa-paper-plane"></i>';
+                });
+        });
+    })();
+</script>
+
+<script th:inline="javascript">
+    /* ── WebSocket: Chat en tiempo real ── */
+    (function() {
+        const ticketId = /*[[${ticket.id}]]*/ 0;
+        if (!ticketId) return;
+
+        const socket = new SockJS('/ws-notificaciones');
+        const stomp  = Stomp.over(socket);
+        stomp.debug  = null;
+
+        stomp.connect({}, function() {
+            stomp.subscribe('/topic/ticket/' + ticketId, function(msg) {
+                const c = JSON.parse(msg.body);
+                agregarComentarioAlChat(c);
+            });
+        }, function() {
+            setTimeout(function() { location.reload(); }, 5000);
+        });
+
+        function agregarComentarioAlChat(c) {
+            // Buscar el contenedor del historial
+            let contenedor = document.getElementById('chat-historial');
+            if (!contenedor) {
+                // Si no existe aún (primer mensaje), crear la sección en la columna principal
+                const formSection = document.getElementById('formResponder');
+                if (!formSection) return;
+                // El form está en la sidebar; buscar la columna principal por el wrapper del grid
+                const mainCol = document.querySelector('.main-col');
+                if (!mainCol) return;
+                const section = document.createElement('article');
+                section.className = 'card animate-fade-in';
+                section.style.padding = '28px';
+                section.innerHTML = `
+                    <div class="section-title">
+                        <i class="fas fa-comments"></i> Historial de conversación
+                    </div>
+                    <div id="chat-historial" class="chat-container"></div>
+                `;
+                // Insertar antes del botón "Volver" (último div de main-col)
+                const btnVolver = mainCol.querySelector('div[style*="justify-content:center"]');
+                if (btnVolver) mainCol.insertBefore(section, btnVolver);
+                else mainCol.appendChild(section);
+                contenedor = document.getElementById('chat-historial');
+            }
+
+            // Verificar que no esté duplicado
+            if (document.querySelector('[data-comment-id="' + c.id + '"]')) return;
+
+            const esAdmin     = c.esAdmin;
+            const fecha       = new Date(c.marcaTemporal).toLocaleString();
+            const roleLabel   = esAdmin ? 'Soporte TI' : 'Solicitante';
+            const avatarClass = esAdmin ? 'neutral' : 'accent';
+            const avatarIcon  = esAdmin ? 'fa-user-shield' : 'fa-user';
+            const bubbleClass = esAdmin ? 'theirs' : 'mine';
+            const avatarHtml  = `<div class="avatar ${avatarClass}"><i class="fas ${avatarIcon}"></i></div>`;
+
+            let mediasHtml = '';
+            if (c.mediaPaths && c.mediaPaths.length > 0) {
+                mediasHtml = '<div class="comment-media-grid">';
+                c.mediaPaths.forEach(function(path) {
+                    const lower = path.toLowerCase();
+                    if (lower.endsWith('.jpg')||lower.endsWith('.jpeg')||lower.endsWith('.png')||lower.endsWith('.gif')||lower.endsWith('.webp')) {
+                        mediasHtml += '<img src="/uploads/'+path+'" style="cursor:pointer;" onclick="abrirImagenGrande(this.src)">';
+                    } else if (lower.endsWith('.mp4')||lower.endsWith('.webm')||lower.endsWith('.mov')) {
+                        mediasHtml += '<video controls><source src="/uploads/'+path+'" type="video/mp4"></video>';
+                    } else {
+                        mediasHtml += '<a href="/uploads/'+path+'" download class="comment-file-link"><i class="fas fa-file-download" style="font-size:20px;"></i><p style="font-size:10px;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+path+'</p></a>';
+                    }
+                });
+                mediasHtml += '</div>';
+            }
+
+            const div = document.createElement('div');
+            div.className = 'comment-row animate-fade-in ' + (esAdmin ? 'theirs' : 'mine');
+            div.dataset.commentId = c.id;
+            div.innerHTML = `
+                ${esAdmin ? avatarHtml : ''}
+                <div class="comment-body">
+                    <div class="comment-meta">
+                        <span class="comment-sender">${c.remitente}</span>
+                        <span>·</span>
+                        <span>${fecha}</span>
+                        ${c.tieneImagenes ? '<span class="comment-files-badge"><i class="fas fa-paperclip"></i> Archivos</span>' : ''}
+                    </div>
+                    <div class="bubble ${bubbleClass}">
+                        <p style="white-space:pre-wrap;">${c.mensaje}</p>
+                        ${mediasHtml}
+                    </div>
+                    <span class="comment-role">${roleLabel}</span>
+                </div>
+                ${!esAdmin ? avatarHtml : ''}
+            `;
+
+            contenedor.appendChild(div);
+            contenedor.scrollTop = contenedor.scrollHeight;
+        }
+    })();
+</script>
+
+</body>
+</html>

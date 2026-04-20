@@ -14,75 +14,149 @@
 
     <style>
         :root {
-            --al-blue:       #007DC8;
-            --al-blue-light: #0096C8;
-            --al-blue-dark:  #004B96;
-            --al-blue-mid:   #0064AF;
-            --al-blue-pale:  #d0eaf8;
-            --al-blue-xpale: #e8f4fd;
+            --al-white:        #ffffff;
+            --al-white-soft:   #f8fafc;
+            --al-white-muted:  #f1f5f9;
+            --al-border:       #e2e8f0;
+            --al-text:         #0f172a;
+            --al-text-soft:    #475569;
+            --al-accent:       #007DC8;
         }
 
+        /* Fondo general */
+        body {
+            background: linear-gradient(135deg, #ffffff 0%, var(--al-white-soft) 100%);
+            color: var(--al-text);
+        }
+
+        /* Sidebar elegante blanco */
         #admin-sidebar > div {
-            background: linear-gradient(180deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%) !important;
-            border-right: none !important;
+            background: var(--al-white) !important;
+            border-right: 1px solid var(--al-border) !important;
         }
-        .sidebar-active { background: rgba(255,255,255,.2) !important; color:#fff !important; font-weight:600; }
-        .sidebar-item   { color: rgba(255,255,255,.82); transition: background .15s, color .15s; }
-        .sidebar-item:hover { background: rgba(255,255,255,.15) !important; color:#fff !important; }
-        .sidebar-sep    { border-color: rgba(255,255,255,.2) !important; }
-        .sidebar-logo-title { color:#fff; }
-        .sidebar-logo-sub   { color: rgba(255,255,255,.6); }
 
+        .sidebar-item {
+            color: var(--al-text-soft);
+        }
+        .sidebar-item:hover {
+            background: var(--al-white-muted) !important;
+            color: var(--al-text);
+        }
+        .sidebar-active {
+            background: var(--al-white-muted) !important;
+            color: var(--al-accent) !important;
+            font-weight: 600;
+        }
+
+        .sidebar-logo-title {
+            color: var(--al-text);
+        }
+        .sidebar-logo-sub {
+            color: var(--al-text-soft);
+        }
+
+        .sidebar-sep {
+            border-color: var(--al-border) !important;
+        }
+
+        /* Topbar blanco elegante */
         .al-topbar {
-            background: linear-gradient(135deg, var(--al-blue-dark) 0%, var(--al-blue) 60%, var(--al-blue-light) 100%);
-            border: none !important;
+            background: var(--al-white);
+            border: 1px solid var(--al-border);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.04);
         }
-        .al-topbar h2, .al-topbar p, .al-topbar span { color:#fff !important; }
-        .al-topbar p { opacity:.82; }
-        .al-bell-btn  { color:#fff !important; }
-        .al-bell-btn:hover { background: rgba(255,255,255,.15) !important; }
+        .al-topbar h2,
+        .al-topbar p,
+        .al-topbar span {
+            color: var(--al-text) !important;
+        }
 
-        .al-hamburger { color: var(--al-blue-dark); }
+        .al-bell-btn {
+            color: var(--al-text);
+        }
+        .al-bell-btn:hover {
+            background: var(--al-white-muted);
+        }
 
-        body { background: linear-gradient(135deg, var(--al-blue-xpale) 0%, #f0f8ff 100%) !important; }
+        /* Cards */
+        .al-card {
+            background: var(--al-white);
+            border: 1px solid var(--al-border);
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        }
 
-        .al-card { background:#fff; border:1.5px solid #b3d9f0; border-radius:.75rem; }
-
+        /* Botón principal */
         .al-btn-primary {
-            background: linear-gradient(135deg, var(--al-blue-dark), var(--al-blue));
-            color:#fff; transition: opacity .2s;
+            background: var(--al-accent);
+            color: #fff;
         }
-        .al-btn-primary:hover { opacity:.88; }
+        .al-btn-primary:hover {
+            opacity: 0.9;
+        }
 
-        .al-section-title { color: var(--al-blue-dark); border-left:4px solid var(--al-blue); padding-left:.5rem; }
-
-        /* Info labels */
-        .al-label { color: var(--al-blue-mid); font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
-
-        /* Chat burbujas */
-        .chat-admin { background: var(--al-blue-xpale); border:1.5px solid var(--al-blue-pale); }
-        .chat-user  { background:#f9fafb; border:1.5px solid #e5e7eb; }
-        .chat-avatar-admin { background: rgba(0,125,200,.15); color: var(--al-blue); }
-        .chat-avatar-user  { background:#e5e7eb; color:#6b7280; }
-
-        /* Botón volver */
+        /* Botón secundario */
         .al-btn-back {
-            border:1.5px solid #b3d9f0; color: var(--al-blue-mid);
-            transition: background .15s, color .15s;
+            border: 1px solid var(--al-border);
+            color: var(--al-text-soft);
+            background: var(--al-white);
         }
-        .al-btn-back:hover { background: var(--al-blue-xpale); color: var(--al-blue-dark); }
+        .al-btn-back:hover {
+            background: var(--al-white-muted);
+            color: var(--al-text);
+        }
 
-        /* Select / input */
+        /* Inputs */
         .al-input {
-            border-color: #b3d9f0 !important;
+            border: 1px solid var(--al-border) !important;
+            background: var(--al-white);
         }
-        .al-input:focus { outline: none; ring: 2px solid var(--al-blue); }
+        .al-input:focus {
+            outline: none;
+            border-color: var(--al-accent);
+            box-shadow: 0 0 0 2px rgba(0,125,200,0.15);
+        }
 
-        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
-        .animate-fade-in { animation: fadeIn .35s ease-in; }
-        @keyframes slideInDown { from{opacity:0;transform:translateY(-12px);} to{opacity:1;transform:translateY(0);} }
-        .animate-slide-in { animation: slideInDown .4s ease-out; }
+        /* Labels */
+        .al-label {
+            color: var(--al-text-soft);
+        }
+
+        /* Secciones */
+        .al-section-title {
+            color: var(--al-text);
+            border-left: 4px solid var(--al-accent);
+        }
+
+        /* Chat */
+        .chat-admin {
+            background: #f1f8ff;
+            border: 1px solid #dbeafe;
+        }
+        .chat-user {
+            background: var(--al-white-soft);
+            border: 1px solid var(--al-border);
+        }
+
+        .chat-avatar-admin {
+            background: rgba(0,125,200,.1);
+            color: var(--al-accent);
+        }
+        .chat-avatar-user {
+            background: var(--al-border);
+            color: var(--al-text-soft);
+        }
+
+        /* Animaciones suaves */
+        @keyframes fadeIn {
+            from { opacity:0; transform:translateY(5px); }
+            to { opacity:1; transform:translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn .3s ease-in-out;
+        }
     </style>
+
 </head>
 
 <body class="min-h-screen">
@@ -109,52 +183,46 @@
     <div class="h-full flex flex-col px-3 py-4 overflow-y-auto">
 
         <div class="px-2 pb-4 mb-2 sidebar-sep border-b flex items-center gap-3">
-            <img src="/images/logo.png" alt="Logo" class="h-10 object-contain brightness-0 invert">
+            <div class="h-11 w-11 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center shadow-sm">
+                <img src="/images/logo.png" alt="Logo" class="h-8 object-contain">
+            </div>
             <div>
-                <span class="sidebar-logo-title font-bold text-base leading-tight block">Austral Lens</span>
+                <span class="sidebar-logo-title font-black text-base leading-tight block">Austral Lens</span>
                 <span class="sidebar-logo-sub text-xs">Administración</span>
             </div>
         </div>
 
         <ul class="space-y-1 font-medium flex-1">
             <li>
-                <a href="/admin/tickets" class="sidebar-item sidebar-active flex items-center px-3 py-2.5 rounded-lg">
+                <a href="/admin/tickets"
+                   class="sidebar-item sidebar-active flex items-center px-3 py-2.5 rounded-xl">
                     <i class="fas fa-ticket-alt w-5 text-center shrink-0"></i>
                     <span class="ms-3">Tickets</span>
                 </a>
             </li>
             <li>
-                <a href="/admin/dashboard" class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                <a href="/admin/dashboard"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-xl">
                     <i class="fas fa-chart-pie w-5 text-center shrink-0"></i>
                     <span class="ms-3">Dashboard</span>
                 </a>
             </li>
             <li>
-                <a href="/admin/usuarios" class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
+                <a href="/admin/usuarios"
+                   class="sidebar-item flex items-center px-3 py-2.5 rounded-xl">
                     <i class="fas fa-users w-5 text-center shrink-0"></i>
                     <span class="ms-3">Usuarios</span>
-                </a>
-            </li>
-            <li>
-                <a href="/admin/equipos"
-                   class="sidebar-item flex items-center px-3 py-2.5 rounded-lg">
-                    <i class="fas fa-desktop w-5 text-center shrink-0"></i>
-                    <span class="ms-3">Hoja de vida-Equipos</span>
                 </a>
             </li>
         </ul>
 
         <div class="pt-3 sidebar-sep border-t">
             <a href="/logout"
-               class="sidebar-item flex items-center px-3 py-2.5 rounded-lg"
-               style="color:rgba(255,180,180,.9);"
-               onmouseover="this.style.color='#fff';this.style.background='rgba(239,68,68,.25)'"
-               onmouseout="this.style.color='rgba(255,180,180,.9)';this.style.background=''">
+               class="sidebar-item flex items-center px-3 py-2.5 rounded-xl hover:!text-red-600">
                 <i class="fas fa-sign-out-alt w-5 text-center shrink-0"></i>
                 <span class="ms-3">Cerrar sesión</span>
             </a>
         </div>
-
     </div>
 </aside>
 

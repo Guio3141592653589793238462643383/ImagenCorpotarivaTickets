@@ -547,12 +547,19 @@
 
                     <div>
                         <label class="al-label block mb-1">Encargado</label>
-                        <select name="encargado" class="al-input w-full px-3 py-2 border rounded-lg text-sm focus:outline-none">
-                            <option value="German">German</option>
-                            <option value="Andres">Andres</option>
-                            <option value="Alejandro">Alejandro</option>
+                        <select name="encargado"
+                                class="al-input w-full px-3 py-2 border rounded-lg text-sm focus:outline-none"
+                                required>
+
+                            <option value="" disabled selected hidden>
+                                Seleccione un encargado
+                            </option>
+
+                            <option value="Natalia Robertson">Natalia Robertson</option>
+                            <option value="Sharon Salas">Sharon Salas</option>
                         </select>
                     </div>
+
 
                     <button type="submit" class="al-btn-primary w-full px-4 py-3 rounded-lg font-semibold text-sm shadow-md">
                         <i class="fas fa-save mr-2"></i>Guardar cambios

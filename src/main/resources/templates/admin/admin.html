@@ -417,6 +417,7 @@
                         <th class="px-4 py-3">Tema</th>
                         <th class="px-4 py-3">Estado</th>
                         <th class="px-4 py-3">Prioridad</th>
+                        <th class="px-4 py-3">Encargado</th>
                         <th class="px-4 py-3 text-center">Detalle</th>
                     </tr>
                     </thead>
@@ -451,7 +452,9 @@
                             <span th:if="${ticket.priority == 'Media'}" class="text-xs px-2 py-1 rounded-full font-black bg-orange-100 text-orange-700" th:text="${ticket.priority}"></span>
                             <span th:if="${ticket.priority != 'Alta' and ticket.priority != 'Media'}" class="text-xs px-2 py-1 rounded-full font-black bg-green-100 text-green-700" th:text="${ticket.priority}"></span>
                         </td>
-
+<td class px-4 py-3
+th:text="${ticket.atendidoPor != null} ? ${ticket.atendidoPor} : 'Sin asignar'"
+></td>
                         <td class="px-4 py-3 text-center">
                             <a th:href="@{/admin/ticket/{id}(id=${ticket.id})}"
                                class="inline-flex items-center gap-1.5 al-btn-primary px-4 py-1.5 rounded-full text-xs font-bold">

@@ -137,7 +137,7 @@ public class EmailService {
                     <div class="wrapper">
                       <div class="header">
                         <img src="https://www.australlens.com/images/logo-austral.png" alt="Austral Lens">
-                        <span class="header-label">Soporte técnico</span>
+                        <span class="header-label">Soporte Imagen Corporativa</span>
                       </div>
 
                       <div class="body">
@@ -284,7 +284,7 @@ public class EmailService {
                   <body>
                     <div class="wrapper">
                       <div class="header">
-                        <span class="header-brand">Centro de Soporte TI</span>
+                        <span class="header-brand">Centro de Soporte Imagen Corporativa</span>
                         <span class="header-label">Seguridad</span>
                       </div>
 
@@ -435,7 +435,7 @@ public class EmailService {
                     <div class="wrapper">
                       <div class="header">
                         <img src="https://www.australlens.com/images/logo-austral.png" alt="Austral Lens">
-                        <span class="header-label">Soporte técnico</span>
+                        <span class="header-label">Centro de Soporte Imagen Corporativa</span>
                       </div>
 
                       <div class="body">
@@ -458,7 +458,7 @@ public class EmailService {
                       </div>
 
                       <div class="footer">
-                        Austral Lens — Sistema de soporte técnico
+                        Austral Lens — Sistema de soporte Imagen Corporativa
                       </div>
                     </div>
                   </body>

@@ -221,10 +221,7 @@
             id:       [[${usuario.id}]],
             nombre:   [[${usuario.nombre}]],
             email:    [[${usuario.email}]],
-            cedula:   [[${usuario.cedula}]],
-            telefono: [[${usuario.telefono}]],
-            ciudad:   [[${usuario.ciudad}]]
-        };
+            telefono: [[${usuario.telefono}]],        };
     </script>
 
     <script defer>
@@ -383,14 +380,6 @@
                  border-radius:10px;padding:14px 16px;margin-bottom:22px;
                  display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                 <p style="font-size:.75rem;">
-                    <span style="color:var(--text-muted);">Ciudad</span><br>
-                    <span th:text="${usuario.ciudad}" style="color:var(--text-primary);font-weight:500;">-</span>
-                </p>
-                <p style="font-size:.75rem;">
-                    <span style="color:var(--text-muted);">Cédula</span><br>
-                    <span th:text="${usuario.cedula}" style="color:var(--text-primary);font-weight:500;">-</span>
-                </p>
-                <p style="font-size:.75rem;">
                     <span style="color:var(--text-muted);">Email</span><br>
                     <span th:text="${usuario.email}" style="color:var(--text-primary);font-weight:500;">-</span>
                 </p>
@@ -406,7 +395,6 @@
                 <input type="hidden" name="nombreCompleto"    th:value="${usuario.nombre}">
                 <input type="hidden" name="correoElectronico" th:value="${usuario.email}">
                 <input type="hidden" name="numeroTelefono"    th:value="${usuario.telefono}">
-                <input type="hidden" name="ciudad"            th:value="${usuario.ciudad}">
                 <input type="hidden" name="tipoDePregunta"    value="Soporte Imagen Corporativa">
 
                 <div>

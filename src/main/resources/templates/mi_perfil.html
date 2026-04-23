@@ -177,13 +177,6 @@
 
         <div class="p-4 md:p-6 rounded-lg al-card-soft w-full min-h-[100px]"
              style="background:var(--al-blue-xpale); border:1px solid #cfe7f7;">
-            <p class="text-xs md:text-sm text-gray-500">Cédula</p>
-            <p class="font-bold text-base md:text-lg" style="color:var(--al-blue-dark);"
-               th:text="${usuario != null ? usuario.cedula : '—'}"></p>
-        </div>
-
-        <div class="p-4 md:p-6 rounded-lg al-card-soft w-full min-h-[100px]"
-             style="background:var(--al-blue-xpale); border:1px solid #cfe7f7;">
             <p class="text-xs md:text-sm text-gray-500">Teléfono</p>
             <p class="font-bold text-base md:text-lg" style="color:var(--al-blue-dark);"
                th:text="${usuario != null ? usuario.telefono : '—'}"></p>
@@ -201,13 +194,6 @@
             <p class="text-xs md:text-sm text-gray-500">Cargo</p>
             <p class="font-bold text-base md:text-lg" style="color:var(--al-blue-dark);"
                th:text="${usuario != null ? usuario.cargo : '—'}"></p>
-        </div>
-
-        <div class="p-4 md:p-6 rounded-lg al-card-soft w-full min-h-[100px]"
-             style="background:var(--al-blue-xpale); border:1px solid #cfe7f7;">
-            <p class="text-xs md:text-sm text-gray-500">Ciudad</p>
-            <p class="font-bold text-base md:text-lg" style="color:var(--al-blue-dark);"
-               th:text="${usuario != null ? usuario.ciudad : '—'}"></p>
         </div>
 
         <div class="p-4 md:p-6 rounded-lg al-card-soft w-full min-h-[100px] sm:col-span-2 lg:col-span-3"

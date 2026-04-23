@@ -24,7 +24,6 @@ public class TicketControllerService {
             String nombreCompleto,
             String correoElectronico,
             String numeroTelefono,
-            String sede,
             MultipartFile[] archivos,
             RedirectAttributes redirectAttributes
     ) {
@@ -36,7 +35,6 @@ public class TicketControllerService {
                     nombreCompleto,
                     correoElectronico,
                     numeroTelefono,
-                    sede,
                     archivos
             );
             redirectAttributes.addFlashAttribute("mensaje", "Ticket creado con éxito");

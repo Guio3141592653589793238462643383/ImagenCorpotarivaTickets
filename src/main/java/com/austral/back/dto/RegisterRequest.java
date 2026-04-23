@@ -5,9 +5,7 @@ public class RegisterRequest {
     private String email;
     private String password;
     private String confirmPassword;
-    private String cedula;
     private String telefono;
-    private String ciudad;
     private String punto;
     private String cargo;
 
@@ -15,15 +13,13 @@ public class RegisterRequest {
     public RegisterRequest() {}
 
     public RegisterRequest(String nombre, String email, String password, String confirmPassword,
-                          String cedula, String telefono, String ciudad,
+             String telefono,
                           String punto, String cargo) {
         this.nombre = nombre;
         this.email = email;
         this.password = password;
         this.confirmPassword = confirmPassword;
-        this.cedula = cedula;
         this.telefono = telefono;
-        this.ciudad = ciudad;
         this.punto = punto;
         this.cargo = cargo;
     }
@@ -61,28 +57,12 @@ public class RegisterRequest {
         this.confirmPassword = confirmPassword;
     }
 
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
-    }
-
     public String getTelefono() {
         return telefono;
     }
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
-    }
-
-    public String getCiudad() {
-        return ciudad;
-    }
-
-    public void setCiudad(String ciudad) {
-        this.ciudad = ciudad;
     }
 
     public String getPunto() {

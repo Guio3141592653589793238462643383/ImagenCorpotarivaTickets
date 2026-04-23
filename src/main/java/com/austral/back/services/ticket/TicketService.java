@@ -59,7 +59,6 @@ public class TicketService {
                               String nombreCompleto,
                               String correoElectronico,
                               String numeroTelefono,
-                              String ciudad,
                               MultipartFile[] archivos) throws Exception {
 
         File directory = new File(uploadDir);
@@ -75,7 +74,6 @@ public class TicketService {
         ticket.setDescription(descripcion);
         ticket.setCorreoElectronico(correoElectronico);
         ticket.setNumeroTelefono(numeroTelefono);
-        ticket.setCiudad(ciudad);
         ticket.setEstado("ABIERTO");
         ticket.setPriority("BAJA");
 
@@ -143,12 +141,11 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
-    public List<Ticket> filtrarTickets(String estado, String prioridad, String ciudad, String busqueda) {
+    public List<Ticket> filtrarTickets(String estado, String prioridad, String busqueda) {
         return ticketRepository.findAllByOrderByMarcaTemporalDesc()
                 .stream()
                 .filter(t -> estado == null || estado.isEmpty() || t.getEstado().equalsIgnoreCase(estado))
                 .filter(t -> prioridad == null || prioridad.isEmpty() || t.getPriority().equalsIgnoreCase(prioridad))
-                .filter(t -> ciudad == null || ciudad.isEmpty() || t.getCiudad().equalsIgnoreCase(ciudad))
                 .filter(t -> busqueda == null || busqueda.isEmpty()
                         || t.getCorreoElectronico().toLowerCase().contains(busqueda.toLowerCase())
                         || t.getId().toString().contains(busqueda))

@@ -36,9 +36,6 @@ public class Ticket {
 
     @Column(name = "numero_telefono", nullable = false)
     private String numeroTelefono;
-
-    private String ciudad;
-
     /* ── Datos del ticket ── */
     @Column(name = "tipo_de_pregunta", nullable = false)
     private String tipoDePregunta;
@@ -83,11 +80,6 @@ public class Ticket {
     /** Teléfono actual del usuario (si existe), si no el que se guardó al crear */
     public String getTelefonoActual() {
         return usuario != null ? usuario.getTelefono() : numeroTelefono;
-    }
-
-    /** Ciudad actual del usuario (si existe), si no la que se guardó al crear */
-    public String getCiudadActual() {
-        return usuario != null ? usuario.getCiudad() : ciudad;
     }
 
     public String getCargoActual() {

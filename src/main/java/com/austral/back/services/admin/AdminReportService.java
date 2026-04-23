@@ -81,8 +81,6 @@ public class AdminReportService {
         // Hoja 2: Detalle de Tickets
         crearHojaDetalleTickets(workbook, filtrados, headerStyle);
 
-        // Hoja 3: Tickets por Sede
-        crearHojaTicketsPorSede(workbook, filtrados, headerStyle);
 
         // Configurar respuesta para descarga
         configurarRespuestaDescarga(response, year, month, workbook);
@@ -110,19 +108,12 @@ public class AdminReportService {
                 .filter(t -> "ABIERTO".equalsIgnoreCase(Optional.ofNullable(t.getEstado()).orElse("")))
                 .count();
         long enProceso = filtrados.stream()
-                .filter(t -> "EN_PROCESO".equalsIgnoreCase(Optional.ofNullable(t.getEstado()).orElse("")))
+                .filter(t -> "EN_PROCESO".equalsIgnoreCase(
+                        Optional.ofNullable(t.getEstado()).orElse("")
+                ))
                 .count();
 
-        Map<String, Long> porSede = filtrados.stream()
-                .collect(Collectors.groupingBy(
-                        t -> Optional.ofNullable(t.getCiudad()).orElse("SIN_SEDE"),
-                        Collectors.counting()
-                ));
 
-        String sedeTop = porSede.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse("N/A");
 
         // Datos del resumen
         String[][] resumenData = {
@@ -131,7 +122,6 @@ public class AdminReportService {
                 {"Abiertos", String.valueOf(abiertos)},
                 {"En Proceso", String.valueOf(enProceso)},
                 {"Total Usuarios", String.valueOf(usuarios.size())},
-                {"Ciudad con más tickets", sedeTop}
         };
 
         int rowNum = 2;
@@ -153,7 +143,7 @@ public class AdminReportService {
 
         String[] headers = {
                 "ID", "Fecha", "Nombre Completo", "Correo", "Cargo", "Punto", "Teléfono",
-                "Tema", "Descripción", "Ciudad", "Estado", "Prioridad", "Atendido por"
+                "Tema", "Descripción", "Estado", "Prioridad", "Atendido por"
         };
 
         for (int i = 0; i < headers.length; i++) {
@@ -176,10 +166,9 @@ public class AdminReportService {
             row.createCell(6).setCellValue(Optional.ofNullable(t.getTelefonoActual()).orElse(""));
             row.createCell(7).setCellValue(Optional.ofNullable(t.getTema()).orElse(""));
             row.createCell(8).setCellValue(Optional.ofNullable(t.getDescription()).orElse(""));
-            row.createCell(9).setCellValue(Optional.ofNullable(t.getCiudadActual()).orElse(""));
-            row.createCell(10).setCellValue(Optional.ofNullable(t.getEstado()).orElse(""));
-            row.createCell(11).setCellValue(Optional.ofNullable(t.getPriority()).orElse(""));
-            row.createCell(12).setCellValue(Optional.ofNullable(t.getAtendidoPor()).orElse(""));
+            row.createCell(9).setCellValue(Optional.ofNullable(t.getEstado()).orElse(""));
+            row.createCell(10).setCellValue(Optional.ofNullable(t.getPriority()).orElse(""));
+            row.createCell(11).setCellValue(Optional.ofNullable(t.getAtendidoPor()).orElse(""));
         }
 
         // 👉 Ajuste de ancho al final
@@ -192,31 +181,7 @@ public class AdminReportService {
     }
 
 
-    private void crearHojaTicketsPorSede(Workbook workbook, List<Ticket> filtrados, CellStyle headerStyle) {
-        Sheet sedeSheet = workbook.createSheet("Tickets_Por_Ciudad");
 
-        Row sedeHeader = sedeSheet.createRow(0);
-        sedeHeader.createCell(0).setCellValue("Ciudad");
-        sedeHeader.createCell(1).setCellValue("Cantidad");
-        sedeHeader.getCell(0).setCellStyle(headerStyle);
-        sedeHeader.getCell(1).setCellStyle(headerStyle);
-
-        Map<String, Long> porSede = filtrados.stream()
-                .collect(Collectors.groupingBy(
-                        t -> Optional.ofNullable(t.getCiudad()).orElse("SIN_SEDE"),
-                        Collectors.counting()
-                ));
-
-        int rowSede = 1;
-        for (Map.Entry<String, Long> entry : porSede.entrySet()) {
-            Row row = sedeSheet.createRow(rowSede++);
-            row.createCell(0).setCellValue(entry.getKey());
-            row.createCell(1).setCellValue(entry.getValue());
-        }
-
-        sedeSheet.autoSizeColumn(0);
-        sedeSheet.autoSizeColumn(1);
-    }
 
     private void configurarRespuestaDescarga(HttpServletResponse response, int year, int month, Workbook workbook) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");

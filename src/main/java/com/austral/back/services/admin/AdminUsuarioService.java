@@ -45,8 +45,8 @@ public class AdminUsuarioService {
      */
     public Page<Usuario> obtenerUsuariosConBusqueda(String buscar, Pageable pageable) {
         if (buscar != null && !buscar.isBlank()) {
-            return usuarioRepository.findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCaseOrCedulaContainingIgnoreCase(
-                    buscar, buscar, buscar, pageable);
+            return usuarioRepository.findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                    buscar, buscar, pageable);
         }
         return usuarioRepository.findAll(pageable);
     }

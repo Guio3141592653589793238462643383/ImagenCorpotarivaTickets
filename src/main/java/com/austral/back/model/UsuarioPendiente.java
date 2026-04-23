@@ -25,14 +25,8 @@ public class UsuarioPendiente {
     @Column(nullable = false)
     private String contrasena;
 
-    @Column(nullable = false, length = 10)
-    private String cedula;
-
     @Column(nullable = false)
     private String telefono;
-
-    @Column(nullable = false)
-    private String ciudad;
 
     @Column
     private String punto;

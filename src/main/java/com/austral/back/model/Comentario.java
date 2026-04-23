@@ -42,5 +42,8 @@ public class Comentario {
 
     @OneToMany(mappedBy = "comentario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Media> media;
-}
 
+    public boolean isEsAdmin() {
+        return autor != null && autor.getRol() == Rol.ADMIN;
+    }
+}

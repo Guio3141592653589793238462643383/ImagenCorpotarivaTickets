@@ -28,14 +28,9 @@ public class Usuario {
     @Column(nullable = false)
     private Rol rol = Rol.USER;
 
-    @Column(nullable = false, length = 10)
-    private String cedula;
-
     @Column(nullable = false)
     private String telefono;
 
-    @Column(nullable = false)
-    private String ciudad;
 
     @Column
     private String punto;

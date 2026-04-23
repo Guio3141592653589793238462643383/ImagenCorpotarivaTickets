@@ -751,7 +751,8 @@
         </article>
 
         <!-- Chat historial -->
-        <article class="card" th:if="${comentarios != null and !comentarios.isEmpty()}" style="padding:28px;">
+        <article class="card" id="chat-article" style="padding:28px;"
+                 th:if="${comentarios != null and !comentarios.isEmpty()}">
             <div class="section-title">
                 <i class="fas fa-comments"></i>
                 Historial de conversación
@@ -780,7 +781,7 @@
                         <div th:class="${comentario.esAdmin} ? 'bubble theirs' : 'bubble mine'">
                             <p class="whitespace-pre-wrap" th:text="${comentario.mensaje}"></p>
 
-                            <!-- Medias del comentario -->
+                            <!-- Medias del comentario (cargadas con JOIN FETCH, sin lazy) -->
                             <div th:if="${comentario.media != null and !comentario.media.isEmpty()}"
                                  class="comment-media-grid">
                                 <div th:each="m : ${comentario.media}">
@@ -1034,13 +1035,12 @@
             // Buscar el contenedor del historial
             let contenedor = document.getElementById('chat-historial');
             if (!contenedor) {
-                // Si no existe aún (primer mensaje), crear la sección en la columna principal
-                const formSection = document.getElementById('formResponder');
-                if (!formSection) return;
-                // El form está en la sidebar; buscar la columna principal por el wrapper del grid
+                // Si no existe aún (primer mensaje), crear el article en main-col
                 const mainCol = document.querySelector('.main-col');
                 if (!mainCol) return;
+                const btnVolver = mainCol.querySelector('div[style*="justify-content:center"]');
                 const section = document.createElement('article');
+                section.id = 'chat-article';
                 section.className = 'card animate-fade-in';
                 section.style.padding = '28px';
                 section.innerHTML = `
@@ -1049,8 +1049,6 @@
                     </div>
                     <div id="chat-historial" class="chat-container"></div>
                 `;
-                // Insertar antes del botón "Volver" (último div de main-col)
-                const btnVolver = mainCol.querySelector('div[style*="justify-content:center"]');
                 if (btnVolver) mainCol.insertBefore(section, btnVolver);
                 else mainCol.appendChild(section);
                 contenedor = document.getElementById('chat-historial');

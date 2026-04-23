@@ -376,11 +376,7 @@
                     </div>
 
                     <!-- Datos secundarios -->
-                    <div class="grid grid-cols-2 gap-1 text-xs text-gray-500 border-t border-sky-100 pt-2">
-                        <span><i class="fas fa-id-card mr-1"></i><span th:text="${usuario.cedula}"></span></span>
-                        <span><i class="fas fa-phone mr-1"></i><span th:text="${usuario.telefono}"></span></span>
-                        <span class="col-span-2"><i class="fas fa-map-marker-alt mr-1"></i><span th:text="${usuario.ciudad}"></span></span>
-                    </div>
+
 
                     <!-- Acciones -->
                     <div class="flex gap-2 border-t border-sky-100 pt-2">
@@ -409,12 +405,10 @@
                     <thead class="al-thead uppercase text-xs tracking-wider">
                     <tr>
                         <th class="px-4 py-3">ID</th>
-                        <th class="px-4 py-3">No. Identificación</th>
                         <th class="px-4 py-3">Teléfono</th>
                         <th class="px-4 py-3">Nombre</th>
                         <th class="px-4 py-3">Email</th>
                         <th class="px-4 py-3">Rol</th>
-                        <th class="px-4 py-3">Ciudad</th>
                         <th class="px-4 py-3">Área/Punto de Venta</th>
                         <th class="px-4 py-3">Cargo</th>
                         <th class="px-4 py-3 text-center">Acciones
@@ -431,7 +425,6 @@
 
                     <tr th:each="usuario : ${usuarios}" onmouseover="this.style.background='var(--al-blue-xpale)'" onmouseout="this.style.background=''">
                         <td class="px-4 py-3 font-mono text-gray-500 text-xs" th:text="${usuario.id}"></td>
-                        <td class="px-4 py-3 font-mono text-gray-600" th:text="${usuario.cedula}"></td>
                         <td class="px-4 py-3 text-gray-600" th:text="${usuario.telefono}"></td>
                         <td class="px-4 py-3 font-semibold text-gray-700" th:text="${usuario.nombre}"></td>
                         <td class="px-4 py-3 text-gray-600" th:text="${usuario.email}"></td>
@@ -440,7 +433,6 @@
                               th:classappend="${usuario.rol.name() == 'ADMIN'} ? 'bg-red-100 text-red-700' : 'bg-sky-100 text-sky-700'"
                               th:text="${usuario.rol}"></span>
                         </td>
-                        <td class="px-4 py-3 text-gray-600" th:text="${usuario.ciudad}"></td>
                         <td class="px-4 py-3 text-gray-600" th:text="${usuario.punto}"></td>
                         <td class="px-4 py-3 text-gray-600" th:text="${usuario.cargo}"></td>
                         <td class="px-4 py-3 text-center">
@@ -520,6 +512,7 @@
                 </nav>
             </div>
 
+        </div>
     </main>
 </div>
 

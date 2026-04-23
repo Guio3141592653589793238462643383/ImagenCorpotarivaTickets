@@ -128,11 +128,10 @@ public class AdminController {
     public String filtrarTickets(
             @RequestParam(required = false) String estado,
             @RequestParam(required = false) String prioridad,
-            @RequestParam(required = false) String sede,
             @RequestParam(required = false) String busqueda,
             Model model) {
 
-        List<Ticket> tickets = ticketService.filtrarTickets(estado, prioridad, sede, busqueda);
+        List<Ticket> tickets = ticketService.filtrarTickets(estado, prioridad, busqueda);
         model.addAttribute("tickets", tickets);
         return "admin/admin";
     }

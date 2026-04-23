@@ -13,16 +13,9 @@ public class ValidationService {
     private static final Pattern EMAIL_PATTERN =
         Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
-    private static final Pattern CEDULA_PATTERN =
-        Pattern.compile("^\\d{7,10}$");
-
     private static final Pattern TELEFONO_PATTERN =
         Pattern.compile("^\\d{10}$");
 
-    private static final Set<String> CIUDADES_VALIDAS = Set.of(
-        "BARRANQUILLA","BOGOTA","BUCARAMANGA","CALI","CHIA","CUCUTA",
-        "MANIZALES","MEDELLIN","NEIVA","PEREIRA","RIONEGRO","SOACHA","TUNJA"
-    );
 
     private static final Set<String> PUNTOS_VALIDOS = Set.of(
         "ADMINISTRATIVO", "ARCHIVO", "BARRANQUILLA", "BODEGA", "BUCARAMANGA",
@@ -82,8 +75,8 @@ public class ValidationService {
      * Valida los campos de registro
      */
     public List<String> validarRegistro(String nombre, String email, String password,
-                                        String confirmPassword, String cedula,
-                                        String telefono, String ciudad,
+                                        String confirmPassword,
+                                        String telefono,
                                         String punto, String cargo) {
         List<String> errores = new ArrayList<>();
 
@@ -110,22 +103,11 @@ public class ValidationService {
             errores.add("Las contraseñas no coinciden");
         }
 
-        if (cedula == null || cedula.trim().isEmpty()) {
-            errores.add("La cédula es obligatoria");
-        } else if (!CEDULA_PATTERN.matcher(cedula).matches()) {
-            errores.add("La cédula debe contener entre 7 y 10 dígitos");
-        }
 
         if (telefono == null || telefono.trim().isEmpty()) {
             errores.add("El teléfono es obligatorio");
         } else if (!TELEFONO_PATTERN.matcher(telefono).matches()) {
             errores.add("El teléfono debe contener 10 dígitos");
-        }
-
-        if (ciudad == null || ciudad.trim().isEmpty()) {
-            errores.add("La ciudad es obligatoria");
-        } else if (!CIUDADES_VALIDAS.contains(ciudad.trim())) {
-            errores.add("La ciudad seleccionada no es valida");
         }
 
         if (punto == null || punto.trim().isEmpty()) {
@@ -148,13 +130,6 @@ public class ValidationService {
      */
     public boolean esEmailValido(String email) {
         return email != null && EMAIL_PATTERN.matcher(email).matches();
-    }
-
-    /**
-     * Valida el formato de cédula
-     */
-    public boolean esCedulaValida(String cedula) {
-        return cedula != null && CEDULA_PATTERN.matcher(cedula).matches();
     }
 
     /**

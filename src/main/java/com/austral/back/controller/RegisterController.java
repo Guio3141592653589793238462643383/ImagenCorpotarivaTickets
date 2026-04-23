@@ -30,16 +30,14 @@ public class RegisterController {
             @RequestParam String email,
             @RequestParam String password,
             @RequestParam String confirmPassword,
-            @RequestParam String cedula,
             @RequestParam String telefono,
-            @RequestParam String ciudad,
             @RequestParam String punto,
             @RequestParam String cargo,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
         RegisterRequest request = new RegisterRequest(
-            nombre, email, password, confirmPassword, cedula, telefono, ciudad, punto, cargo
+            nombre, email, password, confirmPassword, telefono, punto, cargo
         );
 
         Optional<String> error = registerService.registerUser(request);

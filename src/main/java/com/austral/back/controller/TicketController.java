@@ -36,7 +36,7 @@ public class TicketController {
     ) {
         ticketControllerService.procesarCreacionTicket(
                 descripcion, tema, tipoDePregunta, nombreCompleto,
-                correoElectronico, numeroTelefono, sede, archivos, redirectAttributes
+                correoElectronico, numeroTelefono, archivos, redirectAttributes
         );
         return "redirect:/menu";
     }

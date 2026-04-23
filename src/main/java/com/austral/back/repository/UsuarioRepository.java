@@ -13,10 +13,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByEmail(String email);
 
     // Buscar usuarios paginados por coincidencia en nombre, email o cédula
-    Page<Usuario> findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCaseOrCedulaContainingIgnoreCase(
+    Page<Usuario> findByNombreContainingIgnoreCaseOrEmailContainingIgnoreCase(
             String nombre,
             String email,
-            String cedula,
             Pageable pageable
     );
 }

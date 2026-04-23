@@ -263,7 +263,7 @@
                     <i class="fas fa-ticket-alt text-sky-600 text-xl"></i>
                 </div>
                 <div>
-                    <p class="text-xs uppercase tracking-[0.18em]">Panel administrativo</p>
+                    <p class="text-xs uppercase tracking-[0.18em]">Panel </p>
                     <h2 class="text-2xl md:text-3xl font-black">Gestión de Tickets</h2>
                     <p class="text-xs md:text-sm">Administra todos los tickets registrados</p>
                 </div>
@@ -319,25 +319,6 @@
                         <option value="Alta" th:selected="${prioridad == 'Alta'}">Alta</option>
                         <option value="Media" th:selected="${prioridad == 'Media'}">Media</option>
                         <option value="Baja" th:selected="${prioridad == 'Baja'}">Baja</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="filtro-ciudad" class="block text-xs font-bold mb-1 text-slate-600">Ciudad</label>
-                    <select id="filtro-ciudad" name="ciudad"
-                            class="al-input w-full px-3 py-2 rounded-xl focus:outline-none text-sm">
-                        <option value="" th:selected="${ciudad == null or ciudad == ''}">Todas</option>
-                        <option value="BARRANQUILLA" th:selected="${ciudad == 'BARRANQUILLA'}">BARRANQUILLA</option>
-                        <option value="BOGOTA" th:selected="${ciudad == 'BOGOTA'}">BOGOTA</option>
-                        <option value="BUCARAMANGA" th:selected="${ciudad == 'BUCARAMANGA'}">BUCARAMANGA</option>
-                        <option value="CALI" th:selected="${ciudad == 'CALI'}">CALI</option>
-                        <option value="TUNJA" th:selected="${ciudad == 'TUNJA'}">TUNJA</option>
-                        <option value="CHIA" th:selected="${ciudad == 'CHIA'}">CHIA</option>
-                        <option value="CUCUTA" th:selected="${ciudad == 'CUCUTA'}">CUCUTA</option>
-                        <option value="RIONEGRO" th:selected="${ciudad == 'RIONEGRO'}">RIONEGRO</option>
-                        <option value="NEIVA" th:selected="${ciudad == 'NEIVA'}">NEIVA</option>
-                        <option value="PEREIRA" th:selected="${ciudad == 'PEREIRA'}">PEREIRA</option>
-                        <option value="MANIZALES" th:selected="${ciudad == 'MANIZALES'}">MANIZALES</option>
                     </select>
                 </div>
 
@@ -473,31 +454,9 @@ th:text="${ticket.atendidoPor != null} ? ${ticket.atendidoPor} : 'Sin asignar'"
                         th:with="start=${pagina.number > 2} ? ${pagina.number - 2} : 0,
                                  end=${pagina.number + 2} &lt; ${pagina.totalPages - 1} ? ${pagina.number + 2} : ${pagina.totalPages - 1}">
 
-                        <li>
-                            <a th:if="${pagina.hasPrevious()}"
-                               th:href="@{/admin/tickets(page=${pagina.number - 1}, busqueda=${busqueda}, estado=${estado}, prioridad=${prioridad}, ciudad=${ciudad})}"
-                               class="flex items-center justify-center w-9 h-9 leading-tight text-slate-500 bg-white border border-sky-100 rounded-s-xl hover:bg-sky-50 hover:text-sky-700 transition">
-                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/></svg>
-                            </a>
-                            <span th:unless="${pagina.hasPrevious()}"
-                                  class="flex items-center justify-center w-9 h-9 text-slate-300 bg-white border border-sky-100 rounded-s-xl cursor-not-allowed">
-                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/></svg>
-                            </span>
-                        </li>
 
                         <li th:if="${start > 0}">
                             <span class="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100">...</span>
-                        </li>
-
-                        <li th:each="i : ${#numbers.sequence(start, end)}">
-                            <a th:if="${i == pagina.number}"
-                               th:href="@{/admin/tickets(page=${i}, busqueda=${busqueda}, estado=${estado}, prioridad=${prioridad}, ciudad=${ciudad})}"
-                               th:text="${i + 1}" aria-current="page"
-                               class="flex items-center justify-center w-9 h-9 al-page-active border font-bold transition"></a>
-                            <a th:if="${i != pagina.number}"
-                               th:href="@{/admin/tickets(page=${i}, busqueda=${busqueda}, estado=${estado}, prioridad=${prioridad}, ciudad=${ciudad})}"
-                               th:text="${i + 1}"
-                               class="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100 hover:bg-sky-50 hover:text-sky-700 transition"></a>
                         </li>
 
                         <li th:if="${end < pagina.totalPages - 1}">
@@ -505,11 +464,6 @@ th:text="${ticket.atendidoPor != null} ? ${ticket.atendidoPor} : 'Sin asignar'"
                         </li>
 
                         <li>
-                            <a th:if="${pagina.hasNext()}"
-                               th:href="@{/admin/tickets(page=${pagina.number + 1}, busqueda=${busqueda}, estado=${estado}, prioridad=${prioridad}, ciudad=${ciudad})}"
-                               class="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100 rounded-e-xl hover:bg-sky-50 hover:text-sky-700 transition">
-                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/></svg>
-                            </a>
                             <span th:unless="${pagina.hasNext()}"
                                   class="flex items-center justify-center w-9 h-9 text-slate-300 bg-white border border-sky-100 rounded-e-xl cursor-not-allowed">
                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/></svg>

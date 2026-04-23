@@ -45,9 +45,7 @@ public class RegisterService {
             request.getEmail(),
             request.getPassword(),
             request.getConfirmPassword(),
-            request.getCedula(),
             request.getTelefono(),
-            request.getCiudad(),
             request.getPunto(),
             request.getCargo()
         );
@@ -61,24 +59,20 @@ public class RegisterService {
             String email,
             String password,
             String confirmPassword,
-            String cedula,
             String telefono,
-            String ciudad,
             String punto,
             String cargo
     ) {
         // Normalize inputs
         nombre = nombre == null ? null : nombre.trim();
         email = email == null ? null : email.trim().toLowerCase();
-        cedula = cedula == null ? null : cedula.trim();
         telefono = telefono == null ? null : telefono.trim();
-        ciudad = ciudad == null ? null : ciudad.trim().toUpperCase();
         punto = punto == null ? null : punto.trim().toUpperCase();
         cargo = cargo == null ? null : cargo.trim().toUpperCase();
 
         // Validar campos
         List<String> errores = validationService.validarRegistro(
-            nombre, email, password, confirmPassword, cedula, telefono, ciudad, punto, cargo
+            nombre, email, password, confirmPassword, telefono, punto, cargo
         );
 
         if (!errores.isEmpty()) {
@@ -100,9 +94,7 @@ public class RegisterService {
         pendiente.setNombre(nombre);
         pendiente.setEmail(email);
         pendiente.setContrasena(passwordEncoder.encode(password));
-        pendiente.setCedula(cedula);
         pendiente.setTelefono(telefono);
-        pendiente.setCiudad(ciudad);
         pendiente.setPunto(punto);
         pendiente.setCargo(cargo);
         pendiente.setToken(token);
@@ -145,9 +137,7 @@ public class RegisterService {
         usuario.setNombre(pendiente.getNombre());
         usuario.setEmail(pendiente.getEmail());
         usuario.setContrasena(pendiente.getContrasena());
-        usuario.setCedula(pendiente.getCedula());
         usuario.setTelefono(pendiente.getTelefono());
-        usuario.setCiudad(pendiente.getCiudad());
         usuario.setPunto(pendiente.getPunto());
         usuario.setCargo(pendiente.getCargo());
         usuario.setRol(Rol.USER);

@@ -4,121 +4,316 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro - Centro de Imagen Corporativa - Austral Lens</title>
-  <link th:href="@{/main.css}" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      --surface-1: #0d1117;
-      --surface-2: #161b22;
-      --surface-3: #21262d;
-      --surface-4: #30363d;
-      --border: #30363d;
-      --text-primary: #e6edf3;
-      --text-secondary: #c9d1d9;
-      --text-muted: #9aa4af;
+      --surface-1: #f4f6f9;
+      --surface-2: #ffffff;
+      --surface-3: #eef1f6;
+      --surface-4: #dde2ec;
+      --border: #d4dae6;
+      --border-focus: #0ea5e9;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --text-muted: #64748b;
       --accent: #0ea5e9;
+      --accent-dark: #0284c7;
       --accent-glow: rgba(14,165,233,0.12);
+      --danger: #ef4444;
     }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
+      font-family: 'DM Sans', sans-serif;
       background:
-              radial-gradient(720px at 15% 0%, rgba(14,165,233,0.14), transparent 58%),
-              radial-gradient(680px at 90% 18%, rgba(56,189,248,0.08), transparent 55%),
-              var(--surface-1) !important;
-      background-attachment: fixed;
+        radial-gradient(800px at 10% 0%, rgba(14,165,233,0.07), transparent 55%),
+        radial-gradient(600px at 90% 100%, rgba(56,189,248,0.06), transparent 50%),
+        var(--surface-1);
+      min-height: 100vh;
+      color: var(--text-primary);
     }
 
     @keyframes float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
+      50%       { transform: translateY(-10px); }
     }
     .animate-float { animation: float 3.5s ease-in-out infinite; }
 
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--surface-2); }
-    ::-webkit-scrollbar-thumb { background: var(--surface-4); border-radius: 999px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    .layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: row-reverse;
+    }
 
-    input, textarea, select {
-      color: #ffffff !important;
-      -webkit-text-fill-color: #ffffff !important;
-      caret-color: #ffffff !important;
-      background-color: #21262d !important;
+    /* ── FORM PANEL ── */
+    .form-panel {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow-y: auto;
     }
-    input::placeholder, textarea::placeholder {
-      color: #8b949e !important;
-      opacity: 1 !important;
+
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 32px rgba(15,23,42,0.07), 0 1px 4px rgba(15,23,42,0.04);
+      transition: border-color 0.3s;
     }
-    select option {
-      background-color: #21262d;
-      color: #ffffff;
+    .card:hover { border-color: rgba(14,165,233,0.35); }
+
+    .card-header { text-align: center; margin-bottom: 1.75rem; }
+
+    .logo-wrap {
+      width: 72px; height: 72px;
+      border-radius: 16px;
+      border: 1px solid rgba(14,165,233,0.25);
+      background: linear-gradient(135deg, rgba(14,165,233,0.08), rgba(56,189,248,0.04));
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+      box-shadow: 0 0 24px rgba(14,165,233,0.1);
+    }
+    .logo-wrap img { height: 48px; width: 48px; object-fit: contain; }
+    .logo-wrap i { font-size: 2rem; color: var(--accent); }
+
+    .badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .card-header h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-top: 0.4rem;
+    }
+
+    .card-header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .alert {
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .alert-success { background: #f0fdf4; border: 1px solid #86efac; color: #15803d; }
+    .alert-error   { background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; }
+
+    .field { margin-bottom: 1.1rem; }
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 0.45rem;
+    }
+    .field label span { color: var(--danger); }
+
+    .input-wrap { position: relative; }
+    .input-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+
+    input, select {
+      width: 100%;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.7rem 0.875rem 0.7rem 2.4rem;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      appearance: none;
+    }
+    input::placeholder { color: var(--text-muted); }
+    input:focus, select:focus {
+      border-color: var(--border-focus);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(14,165,233,0.1);
+    }
+    select option { background: #fff; color: var(--text-primary); }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+    .check-row input[type=checkbox] { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+    .habeas { align-items: flex-start; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 0.85rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: filter 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(14,165,233,0.25);
+      margin-bottom: 0.75rem;
+    }
+    .btn-primary:hover { filter: brightness(1.08); box-shadow: 0 6px 20px rgba(14,165,233,0.35); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-secondary {
+      width: 100%;
+      background: transparent;
+      color: var(--accent);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.1s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); background: rgba(14,165,233,0.06); }
+    .btn-secondary:active { transform: scale(0.98); }
+
+    /* ── DECORATIVE PANEL ── */
+    .deco-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      border-right: 1px solid var(--border);
+      background: linear-gradient(160deg, #fff 0%, #eef4fb 100%);
+      box-shadow: inset -4px 0 24px rgba(14,165,233,0.04);
+    }
+
+    .deco-logo-box {
+      position: relative;
+      width: 240px; height: 240px;
+      border-radius: 2rem;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, #fff, #f0f6fc);
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+      box-shadow: 0 8px 40px rgba(15,23,42,0.08), 0 2px 8px rgba(15,23,42,0.04);
+      margin-bottom: 2.5rem;
+    }
+    .deco-logo-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 2rem;
+      background: radial-gradient(circle at 50% 0%, rgba(14,165,233,0.1), transparent 60%);
+    }
+    .deco-logo-box img {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
+    }
+    .deco-logo-box i { font-size: 7rem; color: var(--accent); position: relative; z-index: 1; opacity: 0.9; }
+
+    .deco-icons { display: flex; gap: 2.5rem; margin-bottom: 2.5rem; }
+    .deco-icons i { font-size: 3rem; color: var(--accent); opacity: 0.85; }
+
+    .deco-text { max-width: 360px; text-align: center; }
+    .deco-text .badge { display: block; margin-bottom: 0.75rem; }
+    .deco-text h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-primary);   /* ← OSCURO */
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+    .deco-text p {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--text-secondary); /* ← OSCURO */
+    }
+
+    @media (max-width: 768px) {
+      .deco-panel { display: none; }
+      .layout { flex-direction: column; }
     }
   </style>
 </head>
+<body>
 
-<body class="min-h-screen text-white">
-
-<div class="min-h-screen flex flex-col md:flex-row-reverse">
+<div class="layout">
 
   <!-- PANEL FORMULARIO -->
-  <div class="flex-1 flex items-center justify-center p-6 md:p-10">
-    <form th:action="@{/register}" method="post"
-          class="w-full max-w-lg space-y-5 rounded-2xl border border-[#30363d] bg-[#161b22]/95 p-8 md:p-10 shadow-2xl shadow-black/40 backdrop-blur-xl transition hover:border-[#0ea5e9]/35">
+  <div class="form-panel">
+    <form th:action="@{/register}" method="post" class="card">
 
-      <div class="text-center space-y-4 mb-2">
-        <div class="flex justify-center">
-          <div class="flex h-20 w-20 items-center justify-center rounded-2xl border border-[#0ea5e9]/25 bg-[#0ea5e9]/10 shadow-[0_0_28px_rgba(14,165,233,0.12)]">
-            <img src="/images/logo.png" alt="Logo" class="h-14 w-14 object-contain brightness-0 invert opacity-95">
-          </div>
+      <div class="card-header">
+        <div class="logo-wrap">
+          <img src="/images/logo.png" alt="Logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\'fas fa-eye\'></i>'">
         </div>
-        <div>
-          <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#38bdf8]">Centro de Imagen Corporativa</p>
-          <h2 class="mt-2 text-3xl font-black text-white">Crear Cuenta</h2>
-          <p class="mt-1 text-sm text-[#9aa4af]">Registro en el portal de Austral Lens</p>
-        </div>
+        <p class="badge">Centro de Imagen Corporativa</p>
+        <h2>Crear Cuenta</h2>
+        <p>Registro en el portal de Austral Lens</p>
       </div>
 
-      <div th:if="${success}" class="rounded-xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-300">
-        <i class="fas fa-check-circle mr-1"></i><span th:text="${success}"></span>
+      <div th:if="${success}" class="alert alert-success">
+        <i class="fas fa-check-circle" style="margin-right:4px;"></i><span th:text="${success}"></span>
       </div>
-      <div th:if="${error}" class="rounded-xl border border-red-400/25 bg-red-400/10 px-4 py-3 text-sm font-semibold text-red-300">
-        <i class="fas fa-exclamation-circle mr-1"></i><span th:text="${error}"></span>
+      <div th:if="${error}" class="alert alert-error">
+        <i class="fas fa-exclamation-circle" style="margin-right:4px;"></i><span th:text="${error}"></span>
       </div>
 
       <!-- Nombre -->
-      <div>
-        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Nombre completo <span class="text-red-400">*</span></label>
-        <div class="relative">
-          <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
+      <div class="field">
+        <label>Nombre completo <span>*</span></label>
+        <div class="input-wrap">
+          <i class="fas fa-user"></i>
           <input type="text" name="nombre" placeholder="Ingrese su nombre completo"
-                 pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,110}" required
-                 class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"/>
+                 pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,110}" required>
         </div>
       </div>
-
-      <!-- Cédula no existe -->
-
 
       <!-- Teléfono -->
-      <div>
-        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Número de teléfono <span class="text-red-400">*</span></label>
-        <div class="relative">
-          <i class="fas fa-phone absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
+      <div class="field">
+        <label>Número de teléfono <span>*</span></label>
+        <div class="input-wrap">
+          <i class="fas fa-phone"></i>
           <input type="tel" name="telefono" placeholder="Ej: 313 12345678"
-                 pattern="[0-9 +\-()]{7,15}" required
-                 class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"/>
+                 pattern="[0-9 +\-()]{7,15}" required>
         </div>
       </div>
 
-      <!-- Ciudad no existe -->
       <!-- Punto de venta -->
-      <div>
-        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Área/Punto de venta <span class="text-red-400">*</span></label>
-        <div class="relative">
-          <i class="fas fa-store absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
-          <select required name="punto"
-                  class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10 appearance-none">
+      <div class="field">
+        <label>Área / Punto de venta <span>*</span></label>
+        <div class="input-wrap">
+          <i class="fas fa-store"></i>
+          <select required name="punto">
             <option value="">Seleccione un punto</option>
             <option>ADMINISTRATIVO</option><option>ARCHIVO</option><option>BARRANQUILLA</option>
             <option>BODEGA</option><option>BUCARAMANGA</option><option>CALI</option>
@@ -131,12 +326,11 @@
       </div>
 
       <!-- Cargo -->
-      <div>
-        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Cargo <span class="text-red-400">*</span></label>
-        <div class="relative">
-          <i class="fas fa-briefcase absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
-          <select required name="cargo"
-                  class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10 appearance-none">
+      <div class="field">
+        <label>Cargo <span>*</span></label>
+        <div class="input-wrap">
+          <i class="fas fa-briefcase"></i>
+          <select required name="cargo">
             <option value="">Seleccione un cargo</option>
             <option>ADMINISTRADOR/A</option><option>ANALISTA DE CARTERA</option><option>ASESOR JURIDICO</option>
             <option>ASISTENTE DE AUDITORIA</option><option>ASISTENTE DE CONTABILIDAD</option>
@@ -166,76 +360,71 @@
       </div>
 
       <!-- Email -->
-      <div>
-        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Email <span class="text-red-400">*</span></label>
-        <div class="relative">
-          <i class="fas fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
-          <input type="email" name="email" placeholder="ejemplo@correo.com" required
-                 class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"/>
+      <div class="field">
+        <label>Email <span>*</span></label>
+        <div class="input-wrap">
+          <i class="fas fa-envelope"></i>
+          <input type="email" name="email" placeholder="ejemplo@correo.com" required>
         </div>
       </div>
 
       <!-- Contraseña -->
-      <div>
-        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Contraseña <span class="text-red-400">*</span></label>
-        <div class="relative">
-          <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
-          <input id="password" type="password" name="password" placeholder="••••••••" required
-                 class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"/>
+      <div class="field">
+        <label>Contraseña <span>*</span></label>
+        <div class="input-wrap">
+          <i class="fas fa-lock"></i>
+          <input id="password" type="password" name="password" placeholder="••••••••" required>
         </div>
       </div>
 
       <!-- Confirmar contraseña -->
-      <div>
-        <label class="mb-2 block text-sm font-bold text-[#c9d1d9]">Confirmar contraseña <span class="text-red-400">*</span></label>
-        <div class="relative">
-          <i class="fas fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-[#38bdf8]"></i>
-          <input id="confirmPassword" type="password" name="confirmPassword" placeholder="••••••••" required
-                 class="w-full rounded-xl border border-[#30363d] bg-[#21262d] px-3 py-3 pl-10 text-white placeholder:text-[#8b949e] outline-none transition focus:border-[#0ea5e9] focus:ring-4 focus:ring-[#0ea5e9]/10"/>
+      <div class="field">
+        <label>Confirmar contraseña <span>*</span></label>
+        <div class="input-wrap">
+          <i class="fas fa-lock"></i>
+          <input id="confirmPassword" type="password" name="confirmPassword" placeholder="••••••••" required>
         </div>
       </div>
 
       <!-- Mostrar contraseña -->
-      <label class="flex items-center space-x-2 text-sm text-[#c9d1d9]">
-        <input type="checkbox" onclick="togglePasswordVisibility()" class="cursor-pointer accent-[#0ea5e9]">
+      <label class="check-row">
+        <input type="checkbox" onclick="togglePasswordVisibility()">
         <span>Mostrar contraseña</span>
       </label>
 
       <!-- Habeas Data -->
-      <label class="flex items-start space-x-2 text-sm text-[#9aa4af]">
-        <input type="checkbox" id="habeasdata" required class="cursor-pointer accent-[#0ea5e9] mt-0.5">
+      <label class="check-row habeas">
+        <input type="checkbox" id="habeasdata" required style="margin-top:3px; flex-shrink:0;">
         <span>Autorizo el tratamiento de mis datos personales de acuerdo con la política de privacidad y la legislación de Habeas Data vigente en Colombia.</span>
       </label>
 
       <!-- Botones -->
-      <button type="submit" id="LoginBt"
-              class="w-full rounded-xl bg-[#0ea5e9] py-3 font-bold text-white shadow-lg shadow-[#0ea5e9]/20 transition hover:brightness-110 active:scale-95">
-        <i class="fas fa-user-plus mr-2"></i>Registrarse
+      <button type="submit" id="LoginBt" disabled class="btn-primary">
+        <i class="fas fa-user-plus" style="margin-right:0.5rem;"></i>Registrarse
       </button>
 
-      <button type="button" onclick="window.location.href='/login'"
-              class="w-full rounded-xl border border-[#30363d] bg-transparent py-3 font-bold text-[#38bdf8] transition hover:border-[#0ea5e9] hover:bg-[#0ea5e9]/10 active:scale-95">
-        <i class="fas fa-arrow-left mr-2"></i>Ya tengo cuenta
+      <button type="button" onclick="window.location.href='/login'" class="btn-secondary">
+        <i class="fas fa-arrow-left" style="margin-right:0.5rem;"></i>Ya tengo cuenta
       </button>
 
     </form>
   </div>
 
   <!-- PANEL DECORATIVO -->
-  <div class="hidden md:flex flex-1 flex-col items-center justify-center border-r border-[#30363d] bg-[#161b22]/80 p-10 text-white shadow-2xl shadow-black/30 backdrop-blur-xl">
-    <div class="relative mb-8 flex h-72 w-72 items-center justify-center rounded-[2rem] border border-[#30363d] bg-[#21262d] p-6 shadow-2xl shadow-black/35">
-      <div class="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.18),transparent_58%)]"></div>
-      <img src="/images/logo.png" alt="Logo Laboratorio" class="relative z-10 h-full w-full object-contain brightness-0 invert opacity-95">
+  <div class="deco-panel">
+    <div class="deco-logo-box">
+      <img src="/images/logo.png" alt="Logo Laboratorio"
+           onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\'fas fa-glasses\'></i>'">
     </div>
-    <div class="mb-8 flex justify-center space-x-8">
-      <i class="fas fa-palette text-6xl text-[#38bdf8] opacity-90 animate-float"></i>
-      <i class="fas fa-image text-6xl text-[#38bdf8] opacity-90 animate-float" style="animation-delay: 0.3s;"></i>
-      <i class="fas fa-bullhorn text-6xl text-[#38bdf8] opacity-90 animate-float" style="animation-delay: 0.6s;"></i>
+    <div class="deco-icons">
+      <i class="fas fa-palette animate-float"></i>
+      <i class="fas fa-image animate-float" style="animation-delay:0.3s;"></i>
+      <i class="fas fa-bullhorn animate-float" style="animation-delay:0.6s;"></i>
     </div>
-    <div class="max-w-md text-center">
-      <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#38bdf8]">Austral Lens</p>
-      <h1 class="mt-3 text-3xl font-black tracking-tight text-white">Imagen Corporativa</h1>
-      <p class="mt-3 text-sm leading-6 text-[#9aa4af]">Regístrate para crear solicitudes, consultar el estado de tus tickets y comunicarte con el equipo de Imagen Corporativa.</p>
+    <div class="deco-text">
+      <span class="badge">Austral Lens</span>
+      <h1>Imagen Corporativa</h1>
+      <p>Regístrate para crear solicitudes, consultar el estado de tus tickets y comunicarte con el equipo de Imagen Corporativa.</p>
     </div>
   </div>
 
@@ -245,10 +434,10 @@
   document.addEventListener("DOMContentLoaded", function () {
     window.togglePasswordVisibility = function () {
       const password = document.getElementById("password");
-      const confirm = document.getElementById("confirmPassword");
+      const confirm  = document.getElementById("confirmPassword");
       const type = password.type === "password" ? "text" : "password";
       password.type = type;
-      confirm.type = type;
+      confirm.type  = type;
     };
 
     const habeasCheckbox = document.getElementById("habeasdata");

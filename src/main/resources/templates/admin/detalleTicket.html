@@ -167,6 +167,13 @@
                     <span class="ms-3">Usuarios</span>
                 </a>
             </li>
+            <li>
+                <button onclick="toggleAsanaPanel()"
+                        class="sidebar-item flex items-center px-3 py-2.5 rounded-xl w-full text-left">
+                    <i class="fas fa-tasks w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Asana</span>
+                </button>
+            </li>
         </ul>
 
         <!-- Logout -->
@@ -603,7 +610,31 @@
 
     </main>
 </div>
+<div id="asana-panel"
+     class="fixed top-0 right-0 w-96 h-full bg-white shadow-xl transform translate-x-full transition-transform duration-300 z-50">
 
+    <div class="p-4 border-b flex justify-between items-center">
+        <h2 class="font-bold">Asana</h2>
+        <button id="asana-close" class="text-gray-500">✕</button>
+    </div>
+
+    <div class="p-4">
+        <p class="text-sm text-gray-600 mb-4">
+            Accede rápidamente a tus tareas.
+        </p>
+
+        <button onclick="openAsanaWindow()"
+                class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg w-full">
+            Abrir Asana
+        </button>
+    </div>
+</div>
+
+</div>
+<button id="asana-toggle"
+        class="fixed right-5 bottom-24 bg-purple-600 hover:bg-purple-700 text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-xl z-50">
+    📋
+</button>
 <!-- Modal imagen grande -->
 <script>
     function abrirImagenGrande(src) {
@@ -626,6 +657,31 @@
 
 <!-- Notificaciones -->
 <script>
+    function toggleAsanaPanel() {
+    const panel = document.getElementById("asana-panel");
+    if (!panel) return;
+
+    panel.classList.toggle("translate-x-full");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const closeBtn = document.getElementById("asana-close");
+    const panel = document.getElementById("asana-panel");
+
+    if (closeBtn && panel) {
+        closeBtn.addEventListener("click", () => {
+            panel.classList.add("translate-x-full");
+        });
+    }
+});
+
+function openAsanaWindow() {
+    window.open(
+        "https://app.asana.com",
+        "asanaWindow",
+        "width=1200,height=800"
+    );
+}
     const btn            = document.getElementById("btnNotificaciones");
     const dropdown       = document.getElementById("dropdownNotificaciones");
     const lista          = document.getElementById("listaNotificaciones");
@@ -787,6 +843,7 @@
             contenedor.scrollTop = contenedor.scrollHeight;
         }
     })();
+
 </script>
 
 </body>

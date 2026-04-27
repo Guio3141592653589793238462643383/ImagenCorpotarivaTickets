@@ -10,24 +10,29 @@
 
     <style>
         :root {
-            --surface-1:      #0d1117;
-            --surface-2:      #161b22;
-            --surface-3:      #21262d;
-            --surface-4:      #30363d;
-            --border:         #30363d;
-            --border-subtle:  #21262d;
-            --text-primary:   #ffffff;
-            --text-secondary: #c9d1d9;
-            --text-muted:     #9aa4af;
+            --surface-1:      #f4f6f9;
+            --surface-2:      #ffffff;
+            --surface-3:      #eef1f6;
+            --surface-4:      #dde2ec;
+            --border:         #d4dae6;
+            --border-subtle:  #e8ecf3;
+            --text-primary:   #0f172a;
+            --text-secondary: #334155;
+            --text-muted:     #64748b;
             --accent:         #0ea5e9;
-            --accent-glow:    rgba(14,165,233,0.12);
+            --accent-glow:    rgba(14,165,233,0.10);
+            --danger:         #ef4444;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--surface-1);
+            background:
+                radial-gradient(800px at 10% 20%, rgba(14,165,233,0.06), transparent 60%),
+                radial-gradient(700px at 90% 80%, rgba(59,130,246,0.04), transparent 60%),
+                var(--surface-1);
+            background-attachment: fixed;
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
@@ -48,7 +53,7 @@
         .delay-2 { animation-delay: 0.16s; }
 
         ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--surface-2); }
+        ::-webkit-scrollbar-track { background: var(--surface-3); }
         ::-webkit-scrollbar-thumb { background: var(--surface-4); border-radius: 9999px; }
 
         .input-field {
@@ -68,9 +73,9 @@
         .input-field:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-glow);
+            background: #fff;
         }
-
-        select.input-field option { background: var(--surface-3); color: var(--text-primary); }
+        select.input-field option { background: #fff; color: var(--text-primary); }
 
         .card {
             background: var(--surface-2);
@@ -80,7 +85,7 @@
         }
         .card:hover {
             border-color: rgba(14,165,233,0.35);
-            box-shadow: 0 0 0 1px rgba(14,165,233,0.12), 0 12px 40px rgba(0,0,0,0.45);
+            box-shadow: 0 0 0 1px rgba(14,165,233,0.08), 0 8px 32px rgba(15,23,42,0.08);
         }
 
         .badge {
@@ -93,10 +98,10 @@
             letter-spacing: 0.05em;
             text-transform: uppercase;
         }
-        .badge-open     { background: rgba(56,189,248,0.1);  color: #38bdf8; border: 1px solid rgba(56,189,248,0.22); }
-        .badge-progress { background: rgba(251,191,36,0.1);  color: #fbbf24; border: 1px solid rgba(251,191,36,0.22); }
-        .badge-closed   { background: rgba(34,197,94,0.1);   color: #22c55e; border: 1px solid rgba(34,197,94,0.22); }
-        .badge-default  { background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.18); }
+        .badge-open     { background: rgba(14,165,233,0.08);  color: #0284c7; border: 1px solid rgba(14,165,233,0.22); }
+        .badge-progress { background: rgba(217,119,6,0.08);   color: #b45309; border: 1px solid rgba(217,119,6,0.22); }
+        .badge-closed   { background: rgba(22,163,74,0.08);   color: #15803d; border: 1px solid rgba(22,163,74,0.22); }
+        .badge-default  { background: rgba(100,116,139,0.08); color: #475569; border: 1px solid rgba(100,116,139,0.18); }
 
         .icon-pill {
             width: 36px; height: 36px;
@@ -126,8 +131,8 @@
             transition: border-color 0.2s, color 0.2s, background 0.2s;
             background: var(--surface-3);
         }
-        .nav-link:hover { color: var(--text-primary); border-color: var(--surface-4); }
-        .nav-link.danger:hover { color: #f87171; border-color: rgba(248,113,113,0.4); }
+        .nav-link:hover { color: var(--text-primary); border-color: var(--surface-4); background: var(--surface-4); }
+        .nav-link.danger:hover { color: #dc2626; border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.04); }
 
         .btn-primary {
             background: var(--accent);
@@ -142,10 +147,28 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: filter 0.15s, transform 0.1s;
+            transition: filter 0.15s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(14,165,233,0.2);
         }
-        .btn-primary:hover  { filter: brightness(1.12); }
+        .btn-primary:hover  { filter: brightness(1.08); }
         .btn-primary:active { transform: scale(0.97); }
+
+        .btn-secondary {
+            background: var(--surface-3);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--text-primary); }
 
         .page-btn {
             display: inline-flex;
@@ -154,16 +177,16 @@
             width: 36px; height: 36px;
             border-radius: 8px;
             border: 1px solid var(--border);
-            background: var(--surface-3);
+            background: var(--surface-2);
             color: var(--text-secondary);
             font-size: 0.8125rem;
             font-weight: 500;
             text-decoration: none;
             transition: border-color 0.2s, color 0.2s, background 0.2s;
         }
-        .page-btn:hover      { border-color: var(--accent); color: var(--accent); }
-        .page-btn.active     { background: var(--accent); color: #fff; border-color: transparent; }
-        .page-btn-text { padding: 0 14px; width: auto; }
+        .page-btn:hover  { border-color: var(--accent); color: var(--accent); }
+        .page-btn.active { background: var(--accent); color: #fff; border-color: transparent; }
+        .page-btn-text   { padding: 0 14px; width: auto; }
 
         #drop-zone {
             border: 2px dashed var(--border);
@@ -176,7 +199,7 @@
         }
         #drop-zone:hover {
             border-color: var(--accent);
-            background: rgba(14,165,233,0.05);
+            background: rgba(14,165,233,0.04);
         }
 
         .ticket-row {
@@ -195,19 +218,13 @@
         .ticket-title { font-weight: 600; font-size: 0.875rem; color: var(--text-primary); transition: color 0.2s; }
         .view-detail  { font-size: 0.75rem; color: var(--accent); opacity: 0; transition: opacity 0.2s; }
 
-        /* ── Formulario: pasos ── */
+        /* Pasos */
         .form-step { display: none; flex-direction: column; gap: 18px; }
         .form-step.active { display: flex; }
 
-        .step-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            margin-bottom: 24px;
-        }
+        .step-indicator { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
         .step-dot {
-            width: 28px; height: 28px;
-            border-radius: 50%;
+            width: 28px; height: 28px; border-radius: 50%;
             background: var(--surface-3);
             border: 2px solid var(--border);
             display: flex; align-items: center; justify-content: center;
@@ -218,26 +235,14 @@
         }
         .step-dot.done    { background: var(--accent); border-color: var(--accent); color: #fff; }
         .step-dot.current { border-color: var(--accent); color: var(--accent); }
-        .step-line {
-            flex: 1;
-            height: 2px;
-            background: var(--border);
-            transition: background 0.3s;
-        }
+        .step-line { flex: 1; height: 2px; background: var(--border); transition: background 0.3s; }
         .step-line.done { background: var(--accent); }
 
-        /* ── Checkboxes estilizados ── */
-        .checkbox-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        @media (min-width: 480px) { .checkbox-grid { grid-template-columns: 1fr 1fr; } }
+        /* Checkboxes */
+        .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
         .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: flex; align-items: center; gap: 10px;
             padding: 10px 12px;
             border-radius: 10px;
             border: 1px solid var(--border);
@@ -249,40 +254,29 @@
         .checkbox-item:hover { border-color: rgba(14,165,233,0.4); background: rgba(14,165,233,0.04); }
         .checkbox-item input[type="checkbox"] { display: none; }
         .checkbox-item .check-box {
-            width: 18px; height: 18px;
-            border-radius: 5px;
+            width: 18px; height: 18px; border-radius: 5px;
             border: 2px solid var(--border);
-            background: var(--surface-1);
+            background: var(--surface-2);
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
             transition: background 0.2s, border-color 0.2s;
         }
-        .checkbox-item input:checked ~ .check-box {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
+        .checkbox-item input:checked ~ .check-box { background: var(--accent); border-color: var(--accent); }
         .checkbox-item input:checked ~ .check-box::after {
             content: '';
             width: 5px; height: 9px;
             border: 2px solid #fff;
             border-top: none; border-left: none;
-            transform: rotate(45deg) translate(-1px, -1px);
+            transform: rotate(45deg) translate(-1px,-1px);
             display: block;
         }
-        .checkbox-item.checked {
-            border-color: rgba(14,165,233,0.5);
-            background: rgba(14,165,233,0.08);
-        }
+        .checkbox-item.checked { border-color: rgba(14,165,233,0.5); background: rgba(14,165,233,0.06); }
         .checkbox-label { font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); line-height: 1.3; }
 
         .field-label {
-            display: block;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: .1em;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 8px;
+            display: block; font-size: 11px; font-weight: 600;
+            letter-spacing: .1em; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 8px;
         }
         .field-label .req { color: var(--accent); }
 
@@ -290,45 +284,16 @@
         @media (max-width: 480px) { .form-row-2 { grid-template-columns: 1fr; } }
 
         .nav-btns {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 8px;
-            gap: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding-top: 8px; gap: 10px;
         }
-        .btn-secondary {
-            background: var(--surface-3);
-            color: var(--text-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            font-family: inherit;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: border-color 0.2s, color 0.2s;
-        }
-        .btn-secondary:hover { border-color: var(--accent); color: var(--text-primary); }
 
         .section-divider {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: .1em;
-            text-transform: uppercase;
+            font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
             color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: flex; align-items: center; gap: 10px;
         }
-        .section-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
+        .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
     </style>
 
     <script th:inline="javascript">
@@ -342,10 +307,8 @@
 
     <script defer>
         document.addEventListener("DOMContentLoaded", () => {
-            // Fecha
             document.getElementById('fechaActual').textContent = new Date().toLocaleString('es-CO');
 
-            // Drop zone archivos
             const dropZone = document.getElementById('drop-zone');
             const fileInput = document.getElementById('file-input');
             const fileNamePreview = document.getElementById('file-name-preview');
@@ -364,13 +327,13 @@
                     fileInput.value = '';
                     return;
                 }
-                let hasError = false, validFiles = 0;
+                let hasError = false;
                 for (const file of fileInput.files) {
                     if (file.size > MAX_FILE_SIZE) {
                         hasError = true;
                         fileError.textContent = `"${file.name}" excede 10 MB`;
                         fileError.classList.remove('hidden');
-                    } else { validFiles++; }
+                    }
                 }
                 if (!hasError && fileInput.files.length > 0)
                     fileNamePreview.textContent = `${fileInput.files.length} archivo(s) seleccionado(s)`;
@@ -378,7 +341,7 @@
             ['dragover','dragenter'].forEach(ev => dropZone.addEventListener(ev, e => {
                 e.preventDefault();
                 dropZone.style.borderColor = 'var(--accent)';
-                dropZone.style.background  = 'rgba(14,165,233,0.07)';
+                dropZone.style.background  = 'rgba(14,165,233,0.05)';
             }));
             ['dragleave','drop'].forEach(ev => dropZone.addEventListener(ev, e => {
                 e.preventDefault();
@@ -387,27 +350,24 @@
                 if (ev === 'drop') { fileInput.files = e.dataTransfer.files; fileInput.dispatchEvent(new Event('change')); }
             }));
 
-            // Checkboxes estilizados
             document.querySelectorAll('.checkbox-item').forEach(item => {
                 const cb = item.querySelector('input[type="checkbox"]');
                 cb.addEventListener('change', () => item.classList.toggle('checked', cb.checked));
             });
 
-            // Pasos del formulario
             let currentStep = 1;
             const totalSteps = 3;
 
             function goTo(step) {
                 document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
                 document.getElementById(`step-${step}`).classList.add('active');
-                // Actualizar indicador
                 for (let i = 1; i <= totalSteps; i++) {
                     const dot  = document.getElementById(`dot-${i}`);
                     const line = document.getElementById(`line-${i}`);
                     dot.classList.remove('done','current');
-                    if (i < step)       { dot.classList.add('done'); if (line) line.classList.add('done'); }
+                    if (i < step)        { dot.classList.add('done');    if (line) line.classList.add('done'); }
                     else if (i === step) { dot.classList.add('current'); if (line) line.classList.remove('done'); }
-                    else                { if (line) line.classList.remove('done'); }
+                    else                 { if (line) line.classList.remove('done'); }
                 }
                 currentStep = step;
             }
@@ -416,8 +376,8 @@
                 const tema = document.querySelector('[name="tema"]');
                 const desc = document.querySelector('[name="descripcion"]');
                 if (!tema.value.trim() || !desc.value.trim()) {
-                    tema.style.borderColor = '#f87171';
-                    desc.style.borderColor = '#f87171';
+                    tema.style.borderColor = '#ef4444';
+                    desc.style.borderColor = '#ef4444';
                     setTimeout(() => { tema.style.borderColor = ''; desc.style.borderColor = ''; }, 2000);
                     return;
                 }
@@ -432,25 +392,23 @@
     </script>
 </head>
 
-<body style="background: radial-gradient(800px at 10% 20%, rgba(14,165,233,0.10), transparent 60%),
-             radial-gradient(700px at 90% 80%, rgba(59,130,246,0.08), transparent 60%),
-             linear-gradient(180deg, #020617 0%, #020617 100%);">
+<body>
 
 <!-- NAV -->
-<nav style="background: var(--surface-2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 40;">
+<nav style="background: var(--surface-2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 40; box-shadow: 0 2px 12px rgba(15,23,42,0.06);">
     <div style="max-width: 1100px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;">
-        <img src="/images/logo.png" alt="Logo" style="height: 44px; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.9;">
+        <img src="/images/logo.png" alt="Logo" style="height: 44px; object-fit: contain; opacity: 0.9;">
         <div style="display: flex; align-items: center; gap: 8px;">
             <a href="/perfil" class="nav-link">Mi perfil</a>
             <a href="/logout" class="nav-link danger">Cerrar sesión</a>
             <div style="position: relative;">
-                <button id="btnNotificaciones" class="nav-link" aria-label="Notificaciones" style="padding: 8px 10px; display: flex; align-items: center;">
+                <button id="btnNotificaciones" class="nav-link" aria-label="Notificaciones" style="padding: 8px 10px; display: flex; align-items: center; cursor:pointer; border:none;">
                     <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                     </svg>
                     <span id="contadorNotificaciones" style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:9999px;width:16px;height:16px;display:none;align-items:center;justify-content:center;">0</span>
                 </button>
-                <div id="dropdownNotificaciones" style="display:none;position:absolute;right:0;top:calc(100% + 8px);width:320px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.55);overflow:hidden;z-index:50;">
+                <div id="dropdownNotificaciones" style="display:none;position:absolute;right:0;top:calc(100% + 8px);width:320px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;box-shadow:0 12px 40px rgba(15,23,42,0.12);overflow:hidden;z-index:50;">
                     <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
                         <span style="font-size:.8125rem;font-weight:600;color:var(--text-primary);">Notificaciones</span>
                         <button id="btnMarcarTodas" style="font-size:.75rem;color:var(--accent);background:none;border:none;cursor:pointer;font-family:inherit;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Marcar todas como leídas</button>
@@ -484,7 +442,6 @@
 
         <div class="card animate-fade-in delay-1" style="max-width:680px;margin:0 auto;padding:28px 32px;">
 
-            <!-- Header tarjeta -->
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border-subtle);">
                 <div class="icon-pill" style="width:42px;height:42px;border-radius:12px;">
                     <i class="fas fa-headset" style="color:var(--accent);font-size:15px;"></i>
@@ -516,14 +473,13 @@
                 <div class="step-dot" id="dot-3">3</div>
             </div>
 
-            <!-- FORMULARIO -->
             <form action="/tickets/guardar" method="POST" enctype="multipart/form-data" id="ticket-form">
                 <input type="hidden" name="nombreCompleto"    th:value="${usuario.nombre}">
                 <input type="hidden" name="correoElectronico" th:value="${usuario.email}">
                 <input type="hidden" name="numeroTelefono"    th:value="${usuario.telefono}">
                 <input type="hidden" name="tipoDePregunta"    value="Solicitud Material Publicitario">
 
-                <!-- ── PASO 1: Info básica ── -->
+                <!-- PASO 1 -->
                 <div class="form-step active" id="step-1">
                     <div>
                         <label class="field-label">Asunto <span class="req">*</span></label>
@@ -543,90 +499,39 @@
                             <p style="font-size:.75rem;color:var(--text-muted);margin-top:4px;">Imágenes o videos · Máx. 10 MB · Máx. 5 archivos</p>
                             <input type="file" name="archivos" id="file-input" multiple class="hidden" accept="image/*,video/*">
                             <div id="file-name-preview" style="margin-top:10px;font-size:.75rem;font-weight:600;color:var(--accent);"></div>
-                            <div id="file-error"        style="margin-top:8px;font-size:.75rem;font-weight:600;color:#f87171;" class="hidden"></div>
+                            <div id="file-error"        style="margin-top:8px;font-size:.75rem;font-weight:600;color:#ef4444;" class="hidden"></div>
                         </div>
                     </div>
                     <div class="nav-btns" style="justify-content:flex-end;">
-                        <button type="button" class="btn-primary" id="btn-next-1">
-                            Siguiente <i class="fas fa-arrow-right"></i>
-                        </button>
+                        <button type="button" class="btn-primary" id="btn-next-1">Siguiente <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
 
-                <!-- ── PASO 2: ¿Qué necesitan? ── -->
+                <!-- PASO 2 -->
                 <div class="form-step" id="step-2">
-                    <div>
-                        <span class="section-divider">¿Qué necesitan?</span>
-                    </div>
+                    <div><span class="section-divider">¿Qué necesitan?</span></div>
                     <div class="checkbox-grid">
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="ayudaventasImpresos">
-                            <span class="check-box"></span>
-                            <span class="checkbox-label">Ayudaventas impresos</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="listasDePrecios">
-                            <span class="check-box"></span>
-                            <span class="checkbox-label">Listas de precios</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="muestrasLentes">
-                            <span class="check-box"></span>
-                            <span class="checkbox-label">Muestras de lentes</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="regaloCorporativo">
-                            <span class="check-box"></span>
-                            <span class="checkbox-label">Regalos corporativos</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="materialCapacitaciones">
-                            <span class="check-box"></span>
-                            <span class="checkbox-label">Material para capacitaciones</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="paniosMarcados">
-                            <span class="check-box"></span>
-                            <span class="checkbox-label">Paños marcados</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="libretaNotas">
-                            <span class="check-box"></span>
-                            <span class="checkbox-label">Libreta de notas</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="reglillas">
-                            <span class="check-box"></span>
-                            <span class="checkbox-label">Reglillas</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="videosUsb">
-                            <span class="check-box"></span>
-                            <span class="checkbox-label">Videos - USB</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="esferos">
-                            <span class="check-box"></span>
-                            <span class="checkbox-label">Esferos</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="habladores">
-                            <span class="check-box"></span>
-                            <span class="checkbox-label">Habladores</span>
-                        </label>
+                        <label class="checkbox-item"><input type="checkbox" name="ayudaventasImpresos"><span class="check-box"></span><span class="checkbox-label">Ayudaventas impresos</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="listasDePrecios"><span class="check-box"></span><span class="checkbox-label">Listas de precios</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="muestrasLentes"><span class="check-box"></span><span class="checkbox-label">Muestras de lentes</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="regaloCorporativo"><span class="check-box"></span><span class="checkbox-label">Regalos corporativos</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="materialCapacitaciones"><span class="check-box"></span><span class="checkbox-label">Material para capacitaciones</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="paniosMarcados"><span class="check-box"></span><span class="checkbox-label">Paños marcados</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="libretaNotas"><span class="check-box"></span><span class="checkbox-label">Libreta de notas</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="reglillas"><span class="check-box"></span><span class="checkbox-label">Reglillas</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="videosUsb"><span class="check-box"></span><span class="checkbox-label">Videos - USB</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="esferos"><span class="check-box"></span><span class="checkbox-label">Esferos</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="habladores"><span class="check-box"></span><span class="checkbox-label">Habladores</span></label>
                     </div>
                     <div class="nav-btns">
                         <button type="button" class="btn-secondary" id="btn-back-2"><i class="fas fa-arrow-left"></i> Atrás</button>
-                        <button type="button" class="btn-primary" id="btn-next-2">Siguiente <i class="fas fa-arrow-right"></i></button>
+                        <button type="button" class="btn-primary"   id="btn-next-2">Siguiente <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
 
-                <!-- ── PASO 3: Detalles del material ── -->
+                <!-- PASO 3 -->
                 <div class="form-step" id="step-3">
-                    <div>
-                        <span class="section-divider">Detalles del material</span>
-                    </div>
-
+                    <div><span class="section-divider">Detalles del material</span></div>
                     <div>
                         <label class="field-label">Decoración</label>
                         <select name="decoracion" class="input-field">
@@ -636,65 +541,38 @@
                             <option value="Educativo - Informativo">Educativo - Informativo</option>
                         </select>
                     </div>
-
                     <div>
                         <label class="field-label">Producto</label>
                         <select name="producto" class="input-field">
                             <option value="">— Seleccionar —</option>
-                            <option value="Hev Tech">Hev Tech</option>
-                            <option value="Blue Balance">Blue Balance</option>
-                            <option value="Sunbalance">Sunbalance</option>
-                            <option value="Next">Next</option>
-                            <option value="ColorMatic 3 BIG">ColorMatic 3 BIG</option>
-                            <option value="Norm - Rodenstock">Norm - Rodenstock</option>
-                            <option value="VIVIT">VIVIT</option>
-                            <option value="Neochromes">Neochromes</option>
-                            <option value="Nupolar">Nupolar</option>
-                            <option value="Transitions">Transitions</option>
-                            <option value="Fila 10">Fila 10</option>
-                            <option value="Mycon (Rodenstock)">Mycon (Rodenstock)</option>
-                            <option value="Polarmax">Polarmax</option>
-                            <option value="Antirreflejos">Antirreflejos</option>
-                            <option value="Soluciones Digitales">Soluciones Digitales</option>
-                            <option value="Familia Steady">Familia Steady</option>
+                            <option>Hev Tech</option><option>Blue Balance</option><option>Sunbalance</option>
+                            <option>Next</option><option>ColorMatic 3 BIG</option><option>Norm - Rodenstock</option>
+                            <option>VIVIT</option><option>Neochromes</option><option>Nupolar</option>
+                            <option>Transitions</option><option>Fila 10</option><option>Mycon (Rodenstock)</option>
+                            <option>Polarmax</option><option>Antirreflejos</option>
+                            <option>Soluciones Digitales</option><option>Familia Steady</option>
                         </select>
                     </div>
-
                     <div>
                         <label class="field-label">Cantidad</label>
                         <select name="cantidad" class="input-field">
                             <option value="">— Seleccionar —</option>
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                            <option value="20">20</option>
-                            <option value="25">25</option>
-                            <option value="30">30</option>
-                            <option value="40">40</option>
-                            <option value="50">50</option>
+                            <option>5</option><option>10</option><option>15</option><option>20</option>
+                            <option>25</option><option>30</option><option>40</option><option>50</option>
                         </select>
                     </div>
-
                     <div>
                         <label class="field-label">Dimensiones <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted);font-size:.75rem;">(opcional)</span></label>
                         <div class="form-row-2">
-                            <div>
-                                <input type="number" name="largo" step="0.1" min="0" class="input-field" placeholder="Largo (cm)">
-                            </div>
-                            <div>
-                                <input type="number" name="ancho" step="0.1" min="0" class="input-field" placeholder="Ancho (cm)">
-                            </div>
+                            <input type="number" name="largo" step="0.1" min="0" class="input-field" placeholder="Largo (cm)">
+                            <input type="number" name="ancho" step="0.1" min="0" class="input-field" placeholder="Ancho (cm)">
                         </div>
                     </div>
-
                     <div class="nav-btns">
                         <button type="button" class="btn-secondary" id="btn-back-3"><i class="fas fa-arrow-left"></i> Atrás</button>
-                        <button type="submit" class="btn-primary">
-                            <i class="fas fa-paper-plane"></i> Enviar solicitud
-                        </button>
+                        <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Enviar solicitud</button>
                     </div>
                 </div>
-
             </form>
         </div>
     </section>
@@ -724,23 +602,21 @@
                             <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:5px;">
                                 <span class="ticket-title" th:text="${ticket.tema}">Asunto</span>
                                 <span class="badge"
-                                      th:classappend="${ticket.estado == 'Abierto'}     ? 'badge-open'     :
-                                                      (ticket.estado == 'En progreso'  ? 'badge-progress' :
-                                                      (ticket.estado == 'Cerrado'      ? 'badge-closed'   : 'badge-default'))"
+                                      th:classappend="${ticket.estado == 'Abierto'}    ? 'badge-open'     :
+                                                      (ticket.estado == 'En progreso' ? 'badge-progress'  :
+                                                      (ticket.estado == 'Cerrado'     ? 'badge-closed'    : 'badge-default'))"
                                       th:text="${ticket.estado}">Estado</span>
                             </div>
                             <p style="font-size:.75rem;color:var(--text-muted);">
                                 <i class="fas fa-tag" style="margin-right:5px;"></i>
                                 <span th:text="${ticket.tipoDePregunta}">Categoría</span>
                             </p>
-                            <!-- Chips de material si existe -->
-                            <div th:if="${ticket.solicitudMaterial != null}"
-                                 style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">
+                            <div th:if="${ticket.solicitudMaterial != null}" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">
                                 <span th:if="${ticket.solicitudMaterial.producto != null and !ticket.solicitudMaterial.producto.isEmpty()}"
-                                      style="font-size:10px;padding:2px 8px;border-radius:9999px;background:rgba(14,165,233,0.1);color:#38bdf8;border:1px solid rgba(56,189,248,0.2);"
+                                      style="font-size:10px;padding:2px 8px;border-radius:9999px;background:rgba(14,165,233,0.08);color:#0284c7;border:1px solid rgba(14,165,233,0.2);"
                                       th:text="${ticket.solicitudMaterial.producto}"></span>
                                 <span th:if="${ticket.solicitudMaterial.cantidad != null}"
-                                      style="font-size:10px;padding:2px 8px;border-radius:9999px;background:rgba(148,163,184,0.1);color:#94a3b8;border:1px solid rgba(148,163,184,0.2);"
+                                      style="font-size:10px;padding:2px 8px;border-radius:9999px;background:rgba(100,116,139,0.08);color:#475569;border:1px solid rgba(100,116,139,0.2);"
                                       th:text="'Cant: ' + ${ticket.solicitudMaterial.cantidad}"></span>
                             </div>
                         </div>
@@ -820,7 +696,7 @@
     function renderNotificacion(n) {
         const item = document.createElement("div");
         item.style.cssText = "border-bottom:1px solid var(--border-subtle);cursor:pointer;transition:background 0.2s;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;";
-        item.onmouseover = () => item.style.background = 'rgba(255,255,255,0.03)';
+        item.onmouseover = () => item.style.background = 'var(--surface-3)';
         item.onmouseout  = () => item.style.background = '';
         item.dataset.id = n.id;
         if (!n.leida) {

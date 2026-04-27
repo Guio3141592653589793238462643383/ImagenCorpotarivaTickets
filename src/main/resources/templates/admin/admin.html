@@ -242,6 +242,14 @@
                     <span class="ms-3">Usuarios</span>
                 </a>
             </li>
+
+            <li>
+                <button onclick="toggleAsanaPanel()"
+                        class="sidebar-item flex items-center px-3 py-2.5 rounded-xl w-full text-left">
+                    <i class="fas fa-tasks w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Asana</span>
+                </button>
+            </li>
         </ul>
 
         <div class="pt-3 sidebar-sep border-t">
@@ -496,7 +504,34 @@ th:text="${ticket.atendidoPor != null} ? ${ticket.atendidoPor} : 'Sin asignar'"
         <div class="p-3 text-gray-500">Sin notificaciones</div>
     </div>
 </div>
+<div id="asana-panel"
+     class="fixed top-0 right-0 w-80 h-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50 flex flex-col overflow-hidden">
 
+    <!-- Header -->
+    <div class="bg-purple-600 text-white p-4 flex justify-between items-center">
+        <span class="font-bold">Asana</span>
+        <button id="asana-close" class="text-white text-lg">✖</button>
+    </div>
+
+    <!-- Contenido -->
+    <div class="flex-1 p-4 flex flex-col justify-center items-center text-center gap-4">
+
+        <div class="text-gray-600 text-sm">
+            Accede rápidamente a tus tareas y proyectos en Asana.
+        </div>
+
+        <button onclick="openAsanaWindow()"
+                class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg shadow w-full">
+            Abrir Asana
+        </button>
+
+    </div>
+
+</div>
+<button id="asana-toggle"
+        class="fixed right-5 bottom-24 bg-purple-600 hover:bg-purple-700 text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-xl z-50">
+    📋
+</button>
 <script>
     const btn            = document.getElementById("btnNotificaciones");
     const dropdown       = document.getElementById("dropdownNotificaciones");
@@ -663,8 +698,29 @@ th:text="${ticket.atendidoPor != null} ? ${ticket.atendidoPor} : 'Sin asignar'"
         });
     }
 
+
+
     cargarNotificaciones();
     conectarWebSocket();
+        const asanaPanel = document.getElementById("asana-panel");
+const asanaClose = document.getElementById("asana-close");
+
+function toggleAsanaPanel() {
+    asanaPanel.classList.toggle("translate-x-full");
+}
+
+asanaClose.addEventListener("click", () => {
+    asanaPanel.classList.add("translate-x-full");
+});
+
+function openAsanaWindow() {
+    window.open(
+        "https://app.asana.com",
+        "asanaWindow",
+        "width=1200,height=800"
+    );
+}
 </script>
+
 </body>
 </html>

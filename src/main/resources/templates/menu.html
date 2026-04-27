@@ -10,24 +10,29 @@
 
     <style>
         :root {
-            --surface-1:      #0d1117;
-            --surface-2:      #161b22;
-            --surface-3:      #21262d;
-            --surface-4:      #30363d;
-            --border:         #30363d;
-            --border-subtle:  #21262d;
-            --text-primary:   #ffffff;      /* MÁS brillante */
-            --text-secondary: #c9d1d9;      /* MÁS claro */
-            --text-muted:     #9aa4af;      /* menos apagado */
+            --surface-1:      #f4f6f9;
+            --surface-2:      #ffffff;
+            --surface-3:      #eef1f6;
+            --surface-4:      #dde2ec;
+            --border:         #d4dae6;
+            --border-subtle:  #e8ecf3;
+            --text-primary:   #0f172a;
+            --text-secondary: #334155;
+            --text-muted:     #64748b;
             --accent:         #0ea5e9;
-            --accent-glow:    rgba(14,165,233,0.12);
+            --accent-glow:    rgba(14,165,233,0.10);
+            --danger:         #ef4444;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--surface-1);
+            background:
+                radial-gradient(800px at 10% 20%, rgba(14,165,233,0.06), transparent 60%),
+                radial-gradient(700px at 90% 80%, rgba(59,130,246,0.04), transparent 60%),
+                var(--surface-1);
+            background-attachment: fixed;
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
@@ -48,7 +53,7 @@
         .delay-2 { animation-delay: 0.16s; }
 
         ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--surface-2); }
+        ::-webkit-scrollbar-track { background: var(--surface-3); }
         ::-webkit-scrollbar-thumb { background: var(--surface-4); border-radius: 9999px; }
 
         .input-field {
@@ -68,7 +73,9 @@
         .input-field:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-glow);
+            background: #fff;
         }
+        select.input-field option { background: #fff; color: var(--text-primary); }
 
         .card {
             background: var(--surface-2);
@@ -78,7 +85,7 @@
         }
         .card:hover {
             border-color: rgba(14,165,233,0.35);
-            box-shadow: 0 0 0 1px rgba(14,165,233,0.12), 0 12px 40px rgba(0,0,0,0.45);
+            box-shadow: 0 0 0 1px rgba(14,165,233,0.08), 0 8px 32px rgba(15,23,42,0.08);
         }
 
         .badge {
@@ -91,10 +98,10 @@
             letter-spacing: 0.05em;
             text-transform: uppercase;
         }
-        .badge-open     { background: rgba(56,189,248,0.1);  color: #38bdf8; border: 1px solid rgba(56,189,248,0.22); }
-        .badge-progress { background: rgba(251,191,36,0.1);  color: #fbbf24; border: 1px solid rgba(251,191,36,0.22); }
-        .badge-closed   { background: rgba(34,197,94,0.1);   color: #22c55e; border: 1px solid rgba(34,197,94,0.22); }
-        .badge-default  { background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.18); }
+        .badge-open     { background: rgba(14,165,233,0.08);  color: #0284c7; border: 1px solid rgba(14,165,233,0.22); }
+        .badge-progress { background: rgba(217,119,6,0.08);   color: #b45309; border: 1px solid rgba(217,119,6,0.22); }
+        .badge-closed   { background: rgba(22,163,74,0.08);   color: #15803d; border: 1px solid rgba(22,163,74,0.22); }
+        .badge-default  { background: rgba(100,116,139,0.08); color: #475569; border: 1px solid rgba(100,116,139,0.18); }
 
         .icon-pill {
             width: 36px; height: 36px;
@@ -124,8 +131,8 @@
             transition: border-color 0.2s, color 0.2s, background 0.2s;
             background: var(--surface-3);
         }
-        .nav-link:hover { color: var(--text-primary); border-color: var(--surface-4); }
-        .nav-link.danger:hover { color: #f87171; border-color: rgba(248,113,113,0.4); }
+        .nav-link:hover { color: var(--text-primary); border-color: var(--surface-4); background: var(--surface-4); }
+        .nav-link.danger:hover { color: #dc2626; border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.04); }
 
         .btn-primary {
             background: var(--accent);
@@ -140,10 +147,28 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: filter 0.15s, transform 0.1s;
+            transition: filter 0.15s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(14,165,233,0.2);
         }
-        .btn-primary:hover  { filter: brightness(1.12); }
+        .btn-primary:hover  { filter: brightness(1.08); }
         .btn-primary:active { transform: scale(0.97); }
+
+        .btn-secondary {
+            background: var(--surface-3);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--text-primary); }
 
         .page-btn {
             display: inline-flex;
@@ -152,19 +177,16 @@
             width: 36px; height: 36px;
             border-radius: 8px;
             border: 1px solid var(--border);
-            background: var(--surface-3);
+            background: var(--surface-2);
             color: var(--text-secondary);
             font-size: 0.8125rem;
             font-weight: 500;
             text-decoration: none;
             transition: border-color 0.2s, color 0.2s, background 0.2s;
         }
-        .page-btn:hover      { border-color: var(--accent); color: var(--accent); }
-        .page-btn.active     { background: var(--accent); color: #fff; border-color: transparent; }
-        .page-btn-text {
-            padding: 0 14px;
-            width: auto;
-        }
+        .page-btn:hover  { border-color: var(--accent); color: var(--accent); }
+        .page-btn.active { background: var(--accent); color: #fff; border-color: transparent; }
+        .page-btn-text   { padding: 0 14px; width: auto; }
 
         #drop-zone {
             border: 2px dashed var(--border);
@@ -177,7 +199,7 @@
         }
         #drop-zone:hover {
             border-color: var(--accent);
-            background: rgba(14,165,233,0.05);
+            background: rgba(14,165,233,0.04);
         }
 
         .ticket-row {
@@ -188,32 +210,90 @@
             padding: 16px;
         }
         @media (min-width: 768px) {
-            .ticket-row {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-            }
+            .ticket-row { flex-direction: row; align-items: center; justify-content: space-between; }
         }
-        .ticket-row .ticket-link {
-            position: absolute;
-            inset: 0;
-            border-radius: 16px;
-            z-index: 10;
-        }
+        .ticket-row .ticket-link { position: absolute; inset: 0; border-radius: 16px; z-index: 10; }
         .ticket-row:hover .ticket-title { color: var(--accent); }
         .ticket-row:hover .view-detail  { opacity: 1; }
-        .ticket-title {
-            font-weight: 600;
-            font-size: 0.875rem;
-            color: var(--text-primary);
-            transition: color 0.2s;
+        .ticket-title { font-weight: 600; font-size: 0.875rem; color: var(--text-primary); transition: color 0.2s; }
+        .view-detail  { font-size: 0.75rem; color: var(--accent); opacity: 0; transition: opacity 0.2s; }
+
+        /* Pasos */
+        .form-step { display: none; flex-direction: column; gap: 18px; }
+        .form-step.active { display: flex; }
+
+        .step-indicator { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
+        .step-dot {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--surface-3);
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700;
+            color: var(--text-muted);
+            transition: background 0.3s, border-color 0.3s, color 0.3s;
+            flex-shrink: 0;
         }
-        .view-detail {
-            font-size: 0.75rem;
-            color: var(--accent);
-            opacity: 0;
-            transition: opacity 0.2s;
+        .step-dot.done    { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .step-dot.current { border-color: var(--accent); color: var(--accent); }
+        .step-line { flex: 1; height: 2px; background: var(--border); transition: background 0.3s; }
+        .step-line.done { background: var(--accent); }
+
+        /* Checkboxes */
+        .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+        .checkbox-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface-3);
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            user-select: none;
         }
+        .checkbox-item:hover { border-color: rgba(14,165,233,0.4); background: rgba(14,165,233,0.04); }
+        .checkbox-item input[type="checkbox"] { display: none; }
+        .checkbox-item .check-box {
+            width: 18px; height: 18px; border-radius: 5px;
+            border: 2px solid var(--border);
+            background: var(--surface-2);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .checkbox-item input:checked ~ .check-box { background: var(--accent); border-color: var(--accent); }
+        .checkbox-item input:checked ~ .check-box::after {
+            content: '';
+            width: 5px; height: 9px;
+            border: 2px solid #fff;
+            border-top: none; border-left: none;
+            transform: rotate(45deg) translate(-1px,-1px);
+            display: block;
+        }
+        .checkbox-item.checked { border-color: rgba(14,165,233,0.5); background: rgba(14,165,233,0.06); }
+        .checkbox-label { font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); line-height: 1.3; }
+
+        .field-label {
+            display: block; font-size: 11px; font-weight: 600;
+            letter-spacing: .1em; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 8px;
+        }
+        .field-label .req { color: var(--accent); }
+
+        .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 480px) { .form-row-2 { grid-template-columns: 1fr; } }
+
+        .nav-btns {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-top: 8px; gap: 10px;
+        }
+
+        .section-divider {
+            font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+            color: var(--text-muted);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
     </style>
 
     <script th:inline="javascript">
@@ -221,13 +301,13 @@
             id:       [[${usuario.id}]],
             nombre:   [[${usuario.nombre}]],
             email:    [[${usuario.email}]],
-            telefono: [[${usuario.telefono}]],        };
+            telefono: [[${usuario.telefono}]],
+        };
     </script>
 
     <script defer>
         document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('fechaActual').textContent =
-                new Date().toLocaleString('es-CO');
+            document.getElementById('fechaActual').textContent = new Date().toLocaleString('es-CO');
 
             const dropZone = document.getElementById('drop-zone');
             const fileInput = document.getElementById('file-input');
@@ -237,105 +317,102 @@
             const MAX_FILES = 5;
 
             dropZone.onclick = () => fileInput.click();
-
             fileInput.onchange = () => {
                 fileNamePreview.textContent = '';
                 fileError.textContent = '';
                 fileError.classList.add('hidden');
-
                 if (fileInput.files.length > MAX_FILES) {
-                    fileError.textContent = `Máximo ${MAX_FILES} archivos. Seleccionaste ${fileInput.files.length}.`;
+                    fileError.textContent = `Máximo ${MAX_FILES} archivos.`;
                     fileError.classList.remove('hidden');
                     fileInput.value = '';
                     return;
                 }
-
-                let hasError = false, validFiles = 0;
+                let hasError = false;
                 for (const file of fileInput.files) {
                     if (file.size > MAX_FILE_SIZE) {
                         hasError = true;
-                        fileError.textContent = `"${file.name}" excede 10 MB (${(file.size/1024/1024).toFixed(2)} MB)`;
+                        fileError.textContent = `"${file.name}" excede 10 MB`;
                         fileError.classList.remove('hidden');
-                    } else { validFiles++; }
+                    }
                 }
-
-                if (!hasError && fileInput.files.length > 0) {
+                if (!hasError && fileInput.files.length > 0)
                     fileNamePreview.textContent = `${fileInput.files.length} archivo(s) seleccionado(s)`;
-                } else if (hasError && validFiles > 0) {
-                    fileNamePreview.textContent = `${validFiles} archivo(s) válido(s)`;
-                }
             };
-
             ['dragover','dragenter'].forEach(ev => dropZone.addEventListener(ev, e => {
                 e.preventDefault();
                 dropZone.style.borderColor = 'var(--accent)';
-                dropZone.style.background  = 'rgba(14,165,233,0.07)';
+                dropZone.style.background  = 'rgba(14,165,233,0.05)';
             }));
             ['dragleave','drop'].forEach(ev => dropZone.addEventListener(ev, e => {
                 e.preventDefault();
                 dropZone.style.borderColor = '';
                 dropZone.style.background  = '';
-                if (ev === 'drop') {
-                    fileInput.files = e.dataTransfer.files;
-                    fileInput.dispatchEvent(new Event('change'));
-                }
+                if (ev === 'drop') { fileInput.files = e.dataTransfer.files; fileInput.dispatchEvent(new Event('change')); }
             }));
+
+            document.querySelectorAll('.checkbox-item').forEach(item => {
+                const cb = item.querySelector('input[type="checkbox"]');
+                cb.addEventListener('change', () => item.classList.toggle('checked', cb.checked));
+            });
+
+            let currentStep = 1;
+            const totalSteps = 3;
+
+            function goTo(step) {
+                document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+                document.getElementById(`step-${step}`).classList.add('active');
+                for (let i = 1; i <= totalSteps; i++) {
+                    const dot  = document.getElementById(`dot-${i}`);
+                    const line = document.getElementById(`line-${i}`);
+                    dot.classList.remove('done','current');
+                    if (i < step)        { dot.classList.add('done');    if (line) line.classList.add('done'); }
+                    else if (i === step) { dot.classList.add('current'); if (line) line.classList.remove('done'); }
+                    else                 { if (line) line.classList.remove('done'); }
+                }
+                currentStep = step;
+            }
+
+            document.getElementById('btn-next-1').addEventListener('click', () => {
+                const tema = document.querySelector('[name="tema"]');
+                const desc = document.querySelector('[name="descripcion"]');
+                if (!tema.value.trim() || !desc.value.trim()) {
+                    tema.style.borderColor = '#ef4444';
+                    desc.style.borderColor = '#ef4444';
+                    setTimeout(() => { tema.style.borderColor = ''; desc.style.borderColor = ''; }, 2000);
+                    return;
+                }
+                goTo(2);
+            });
+            document.getElementById('btn-back-2').addEventListener('click', () => goTo(1));
+            document.getElementById('btn-next-2').addEventListener('click', () => goTo(3));
+            document.getElementById('btn-back-3').addEventListener('click', () => goTo(2));
+
+            goTo(1);
         });
     </script>
 </head>
 
-<body class="min-h-screen flex flex-col"
-      style="
-      background:
-        radial-gradient(800px at 10% 20%, rgba(14,165,233,0.10), transparent 60%),
-        radial-gradient(700px at 90% 80%, rgba(59,130,246,0.08), transparent 60%),
-        linear-gradient(180deg, #020617 0%, #020617 100%);
-">
-<nav style="background: var(--surface-2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 40;">
+<body>
+
+<!-- NAV -->
+<nav style="background: var(--surface-2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 40; box-shadow: 0 2px 12px rgba(15,23,42,0.06);">
     <div style="max-width: 1100px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;">
-
-        <img src="/images/logo.png" alt="Logo"
-             style="height: 44px; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.9;">
-
+        <img src="/images/logo.png" alt="Logo" style="height: 44px; object-fit: contain; opacity: 0.9;">
         <div style="display: flex; align-items: center; gap: 8px;">
             <a href="/perfil" class="nav-link">Mi perfil</a>
             <a href="/logout" class="nav-link danger">Cerrar sesión</a>
-
             <div style="position: relative;">
-                <button id="btnNotificaciones"
-                        class="nav-link"
-                        aria-label="Notificaciones"
-                        style="padding: 8px 10px; display: flex; align-items: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;"
-                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                <button id="btnNotificaciones" class="nav-link" aria-label="Notificaciones" style="padding: 8px 10px; display: flex; align-items: center; cursor:pointer; border:none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                     </svg>
-                    <span id="contadorNotificaciones"
-                          style="position:absolute;top:-4px;right:-4px;background:#ef4444;
-                          color:#fff;font-size:10px;font-weight:700;border-radius:9999px;
-                          width:16px;height:16px;display:none;align-items:center;justify-content:center;">
-                        0
-                    </span>
+                    <span id="contadorNotificaciones" style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:9999px;width:16px;height:16px;display:none;align-items:center;justify-content:center;">0</span>
                 </button>
-
-                <div id="dropdownNotificaciones"
-                     style="display:none;position:absolute;right:0;top:calc(100% + 8px);
-                     width:320px;background:var(--surface-2);border:1px solid var(--border);
-                     border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.55);overflow:hidden;z-index:50;">
-
-                    <div style="padding:12px 14px;border-bottom:1px solid var(--border);
-                         display:flex;justify-content:space-between;align-items:center;">
+                <div id="dropdownNotificaciones" style="display:none;position:absolute;right:0;top:calc(100% + 8px);width:320px;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;box-shadow:0 12px 40px rgba(15,23,42,0.12);overflow:hidden;z-index:50;">
+                    <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
                         <span style="font-size:.8125rem;font-weight:600;color:var(--text-primary);">Notificaciones</span>
-                        <button id="btnMarcarTodas"
-                                style="font-size:.75rem;color:var(--accent);background:none;border:none;
-                                cursor:pointer;font-family:inherit;"
-                                onmouseover="this.style.textDecoration='underline'"
-                                onmouseout="this.style.textDecoration='none'">
-                            Marcar todas como leídas
-                        </button>
+                        <button id="btnMarcarTodas" style="font-size:.75rem;color:var(--accent);background:none;border:none;cursor:pointer;font-family:inherit;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Marcar todas como leídas</button>
                     </div>
-
                     <div id="listaNotificaciones" style="max-height:300px;overflow-y:auto;font-size:.8125rem;">
                         <div style="padding:16px 14px;color:var(--text-muted);">Sin notificaciones</div>
                     </div>
@@ -345,9 +422,9 @@
     </div>
 </nav>
 
+<!-- HEADER -->
 <header class="animate-slide-in" style="text-align:center;padding:52px 24px 36px;">
-    <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-       color:var(--accent);margin-bottom:10px;">Centro de Soporte</p>
+    <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">Centro de Soporte</p>
     <h1 style="font-size:2rem;font-weight:700;letter-spacing:-.025em;color:var(--text-primary);">
         Hola, <span th:text="${usuario.nombre}" style="color:var(--accent);">Usuario</span>
     </h1>
@@ -356,29 +433,27 @@
 
 <main style="max-width:900px;margin:0 auto;width:100%;padding:0 24px 64px;display:flex;flex-direction:column;gap:52px;">
 
+    <!-- FORMULARIO -->
     <section class="animate-slide-in delay-1">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-            <div class="icon-pill">
-                <i class="fas fa-ticket-alt" style="color:var(--accent);font-size:13px;"></i>
-            </div>
-            <span class="section-title">Tu soporte</span>
+            <div class="icon-pill"><i class="fas fa-ticket-alt" style="color:var(--accent);font-size:13px;"></i></div>
+            <span class="section-title">Nueva solicitud</span>
         </div>
 
-        <div class="card animate-fade-in delay-1" style="max-width:640px;margin:0 auto;padding:28px 32px;">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;
-                 padding-bottom:20px;border-bottom:1px solid var(--border-subtle);">
+        <div class="card animate-fade-in delay-1" style="max-width:680px;margin:0 auto;padding:28px 32px;">
+
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border-subtle);">
                 <div class="icon-pill" style="width:42px;height:42px;border-radius:12px;">
                     <i class="fas fa-headset" style="color:var(--accent);font-size:15px;"></i>
                 </div>
                 <div>
-                    <div style="font-size:.9375rem;font-weight:600;color:var(--text-primary);">Soporte</div>
+                    <div style="font-size:.9375rem;font-weight:600;color:var(--text-primary);">Solicitud de material</div>
                     <div style="font-size:.75rem;color:var(--text-muted);margin-top:2px;">Imagen corporativa</div>
                 </div>
             </div>
 
-            <div style="background:var(--surface-3);border:1px solid var(--border-subtle);
-                 border-radius:10px;padding:14px 16px;margin-bottom:22px;
-                 display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <!-- Info usuario -->
+            <div style="background:var(--surface-3);border:1px solid var(--border-subtle);border-radius:10px;padding:14px 16px;margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                 <p style="font-size:.75rem;">
                     <span style="color:var(--text-muted);">Email</span><br>
                     <span th:text="${usuario.email}" style="color:var(--text-primary);font-weight:500;">-</span>
@@ -389,78 +464,129 @@
                 </p>
             </div>
 
-            <form action="/tickets/guardar" method="POST" enctype="multipart/form-data"
-                  id="ticket-form" style="display:flex;flex-direction:column;gap:18px;">
+            <!-- Indicador de pasos -->
+            <div class="step-indicator">
+                <div class="step-dot" id="dot-1">1</div>
+                <div class="step-line" id="line-1"></div>
+                <div class="step-dot" id="dot-2">2</div>
+                <div class="step-line" id="line-2"></div>
+                <div class="step-dot" id="dot-3">3</div>
+            </div>
 
+            <form action="/tickets/guardar" method="POST" enctype="multipart/form-data" id="ticket-form">
                 <input type="hidden" name="nombreCompleto"    th:value="${usuario.nombre}">
                 <input type="hidden" name="correoElectronico" th:value="${usuario.email}">
                 <input type="hidden" name="numeroTelefono"    th:value="${usuario.telefono}">
-                <input type="hidden" name="tipoDePregunta"    value="Soporte Imagen Corporativa">
+                <input type="hidden" name="tipoDePregunta"    value="Solicitud Material Publicitario">
 
-                <div>
-                    <label style="display:block;font-size:11px;font-weight:600;letter-spacing:.1em;
-                           text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">
-                        Asunto <span style="color:var(--accent);">*</span>
-                    </label>
-                    <input type="text" name="tema" required
-                           class="input-field" placeholder="Describe brevemente el problema…">
-                </div>
-
-                <div>
-                    <label style="display:block;font-size:11px;font-weight:600;letter-spacing:.1em;
-                           text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">
-                        Descripción detallada <span style="color:var(--accent);">*</span>
-                    </label>
-                    <textarea name="descripcion" required class="input-field"
-                              style="height:112px;resize:none;"
-                              placeholder="Explica qué ocurre, desde cuándo y qué has intentado…"></textarea>
-                </div>
-
-                <div>
-                    <label style="display:block;font-size:11px;font-weight:600;letter-spacing:.1em;
-                           text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">
-                        Evidencias
-                    </label>
-                    <div id="drop-zone">
-                        <div class="icon-pill" style="margin:0 auto 12px;">
-                            <i class="fas fa-cloud-upload-alt" style="color:var(--accent);font-size:14px;"></i>
+                <!-- PASO 1 -->
+                <div class="form-step active" id="step-1">
+                    <div>
+                        <label class="field-label">Asunto <span class="req">*</span></label>
+                        <input type="text" name="tema" class="input-field" placeholder="Describe brevemente la solicitud…">
+                    </div>
+                    <div>
+                        <label class="field-label">Descripción detallada <span class="req">*</span></label>
+                        <textarea name="descripcion" class="input-field" style="height:100px;resize:none;" placeholder="Explica el contexto, para qué evento, punto de venta, etc."></textarea>
+                    </div>
+                    <div>
+                        <label class="field-label">Evidencias / Referencia visual</label>
+                        <div id="drop-zone">
+                            <div class="icon-pill" style="margin:0 auto 12px;">
+                                <i class="fas fa-cloud-upload-alt" style="color:var(--accent);font-size:14px;"></i>
+                            </div>
+                            <p style="font-size:.8125rem;font-weight:500;color:var(--text-secondary);">Arrastra archivos aquí o haz clic</p>
+                            <p style="font-size:.75rem;color:var(--text-muted);margin-top:4px;">Imágenes o videos · Máx. 10 MB · Máx. 5 archivos</p>
+                            <input type="file" name="archivos" id="file-input" multiple class="hidden" accept="image/*,video/*">
+                            <div id="file-name-preview" style="margin-top:10px;font-size:.75rem;font-weight:600;color:var(--accent);"></div>
+                            <div id="file-error"        style="margin-top:8px;font-size:.75rem;font-weight:600;color:#ef4444;" class="hidden"></div>
                         </div>
-                        <p style="font-size:.8125rem;font-weight:500;color:var(--text-secondary);">
-                            Arrastra archivos aquí o haz clic para seleccionar
-                        </p>
-                        <p style="font-size:.75rem;color:var(--text-muted);margin-top:4px;">
-                            Imágenes o videos · Máx. 10 MB por archivo · Máx. 5 archivos
-                        </p>
-                        <input type="file" name="archivos" id="file-input" multiple class="hidden" accept="image/*,video/*">
-                        <div id="file-name-preview"
-                             style="margin-top:10px;font-size:.75rem;font-weight:600;color:var(--accent);"></div>
-                        <div id="file-error"
-                             class="hidden"
-                             style="margin-top:8px;font-size:.75rem;font-weight:600;color:#f87171;"></div>
+                    </div>
+                    <div class="nav-btns" style="justify-content:flex-end;">
+                        <button type="button" class="btn-primary" id="btn-next-1">Siguiente <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
 
-                <div style="display:flex;justify-content:flex-end;padding-top:4px;">
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-paper-plane"></i> Crear Ticket
-                    </button>
+                <!-- PASO 2 -->
+                <div class="form-step" id="step-2">
+                    <div><span class="section-divider">¿Qué necesitan?</span></div>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-item"><input type="checkbox" name="ayudaventasImpresos"><span class="check-box"></span><span class="checkbox-label">Ayudaventas impresos</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="listasDePrecios"><span class="check-box"></span><span class="checkbox-label">Listas de precios</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="muestrasLentes"><span class="check-box"></span><span class="checkbox-label">Muestras de lentes</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="regaloCorporativo"><span class="check-box"></span><span class="checkbox-label">Regalos corporativos</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="materialCapacitaciones"><span class="check-box"></span><span class="checkbox-label">Material para capacitaciones</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="paniosMarcados"><span class="check-box"></span><span class="checkbox-label">Paños marcados</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="libretaNotas"><span class="check-box"></span><span class="checkbox-label">Libreta de notas</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="reglillas"><span class="check-box"></span><span class="checkbox-label">Reglillas</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="videosUsb"><span class="check-box"></span><span class="checkbox-label">Videos - USB</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="esferos"><span class="check-box"></span><span class="checkbox-label">Esferos</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="habladores"><span class="check-box"></span><span class="checkbox-label">Habladores</span></label>
+                    </div>
+                    <div class="nav-btns">
+                        <button type="button" class="btn-secondary" id="btn-back-2"><i class="fas fa-arrow-left"></i> Atrás</button>
+                        <button type="button" class="btn-primary"   id="btn-next-2">Siguiente <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- PASO 3 -->
+                <div class="form-step" id="step-3">
+                    <div><span class="section-divider">Detalles del material</span></div>
+                    <div>
+                        <label class="field-label">Decoración</label>
+                        <select name="decoracion" class="input-field">
+                            <option value="">— Seleccionar —</option>
+                            <option value="Decoracion local">Decoración local</option>
+                            <option value="Mostrar producto">Mostrar producto</option>
+                            <option value="Educativo - Informativo">Educativo - Informativo</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="field-label">Producto</label>
+                        <select name="producto" class="input-field">
+                            <option value="">— Seleccionar —</option>
+                            <option>Hev Tech</option><option>Blue Balance</option><option>Sunbalance</option>
+                            <option>Next</option><option>ColorMatic 3 BIG</option><option>Norm - Rodenstock</option>
+                            <option>VIVIT</option><option>Neochromes</option><option>Nupolar</option>
+                            <option>Transitions</option><option>Fila 10</option><option>Mycon (Rodenstock)</option>
+                            <option>Polarmax</option><option>Antirreflejos</option>
+                            <option>Soluciones Digitales</option><option>Familia Steady</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="field-label">Cantidad</label>
+                        <select name="cantidad" class="input-field">
+                            <option value="">— Seleccionar —</option>
+                            <option>5</option><option>10</option><option>15</option><option>20</option>
+                            <option>25</option><option>30</option><option>40</option><option>50</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="field-label">Dimensiones <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted);font-size:.75rem;">(opcional)</span></label>
+                        <div class="form-row-2">
+                            <input type="number" name="largo" step="0.1" min="0" class="input-field" placeholder="Largo (cm)">
+                            <input type="number" name="ancho" step="0.1" min="0" class="input-field" placeholder="Ancho (cm)">
+                        </div>
+                    </div>
+                    <div class="nav-btns">
+                        <button type="button" class="btn-secondary" id="btn-back-3"><i class="fas fa-arrow-left"></i> Atrás</button>
+                        <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Enviar solicitud</button>
+                    </div>
                 </div>
             </form>
         </div>
     </section>
 
+    <!-- MIS TICKETS -->
     <section class="animate-slide-in delay-2">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-            <div class="icon-pill">
-                <i class="fas fa-list-ul" style="color:var(--accent);font-size:13px;"></i>
-            </div>
+            <div class="icon-pill"><i class="fas fa-list-ul" style="color:var(--accent);font-size:13px;"></i></div>
             <span class="section-title">Mis solicitudes recientes</span>
         </div>
 
         <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
             <li th:if="${#lists.isEmpty(pagina.content)}"
-                style="background:var(--surface-2);border:1px dashed var(--border);
-                border-radius:16px;padding:48px 24px;text-align:center;">
+                style="background:var(--surface-2);border:1px dashed var(--border);border-radius:16px;padding:48px 24px;text-align:center;">
                 <i class="fas fa-inbox" style="font-size:2rem;color:var(--surface-4);margin-bottom:12px;display:block;"></i>
                 <p style="font-size:.875rem;color:var(--text-muted);">Aún no tienes solicitudes registradas.</p>
             </li>
@@ -468,34 +594,35 @@
             <li th:each="ticket : ${pagina.content}" class="card">
                 <div class="ticket-row">
                     <a th:href="@{/ticket/{id}(id=${ticket.id})}" class="ticket-link"></a>
-
                     <div style="display:flex;align-items:flex-start;gap:14px;">
-                        <div style="width:38px;height:38px;border-radius:10px;background:var(--surface-3);
-                             display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+                        <div style="width:38px;height:38px;border-radius:10px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
                             <i class="fas fa-ticket-alt" style="color:var(--text-muted);font-size:13px;"></i>
                         </div>
                         <div>
                             <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:5px;">
                                 <span class="ticket-title" th:text="${ticket.tema}">Asunto</span>
                                 <span class="badge"
-                                      th:classappend="${ticket.estado == 'Abierto'     ? 'badge-open'     :
-                                                       ticket.estado == 'En progreso' ? 'badge-progress' :
-                                                       ticket.estado == 'Cerrado'     ? 'badge-closed'   :
-                                                       'badge-default'}"
+                                      th:classappend="${ticket.estado == 'Abierto'}    ? 'badge-open'     :
+                                                      (ticket.estado == 'En progreso' ? 'badge-progress'  :
+                                                      (ticket.estado == 'Cerrado'     ? 'badge-closed'    : 'badge-default'))"
                                       th:text="${ticket.estado}">Estado</span>
                             </div>
                             <p style="font-size:.75rem;color:var(--text-muted);">
                                 <i class="fas fa-tag" style="margin-right:5px;"></i>
                                 <span th:text="${ticket.tipoDePregunta}">Categoría</span>
                             </p>
+                            <div th:if="${ticket.solicitudMaterial != null}" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">
+                                <span th:if="${ticket.solicitudMaterial.producto != null and !ticket.solicitudMaterial.producto.isEmpty()}"
+                                      style="font-size:10px;padding:2px 8px;border-radius:9999px;background:rgba(14,165,233,0.08);color:#0284c7;border:1px solid rgba(14,165,233,0.2);"
+                                      th:text="${ticket.solicitudMaterial.producto}"></span>
+                                <span th:if="${ticket.solicitudMaterial.cantidad != null}"
+                                      style="font-size:10px;padding:2px 8px;border-radius:9999px;background:rgba(100,116,139,0.08);color:#475569;border:1px solid rgba(100,116,139,0.2);"
+                                      th:text="'Cant: ' + ${ticket.solicitudMaterial.cantidad}"></span>
+                            </div>
                         </div>
                     </div>
-
-                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;
-                         border-top:1px solid var(--border-subtle);padding-top:10px;">
-                        <p style="font-size:.75rem;font-family:monospace;color:var(--text-muted);">
-                            #<span th:text="${ticket.id}">0</span>
-                        </p>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;border-top:1px solid var(--border-subtle);padding-top:10px;">
+                        <p style="font-size:.75rem;font-family:monospace;color:var(--text-muted);">#<span th:text="${ticket.id}">0</span></p>
                         <p style="font-size:.75rem;color:var(--text-muted);">
                             <i class="far fa-calendar-alt" style="margin-right:4px;"></i>
                             <span th:text="${#temporals.format(ticket.marcaTemporal,'dd/MM/yyyy')}">01/01/2024</span>
@@ -506,69 +633,38 @@
             </li>
         </ul>
 
-        <div th:if="${pagina.totalPages > 1}"
-             style="display:flex;justify-content:center;align-items:center;gap:6px;margin-top:28px;flex-wrap:wrap;">
-            <a th:if="${pagina.hasPrevious()}"
-               th:href="@{/menu(page=${pagina.number - 1})}"
-               class="page-btn page-btn-text">Anterior</a>
-
+        <div th:if="${pagina.totalPages > 1}" style="display:flex;justify-content:center;align-items:center;gap:6px;margin-top:28px;flex-wrap:wrap;">
+            <a th:if="${pagina.hasPrevious()}" th:href="@{/menu(page=${pagina.number - 1})}" class="page-btn page-btn-text">Anterior</a>
             <span th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}">
-                <a th:href="@{/menu(page=${i})}"
-                   th:text="${i + 1}"
-                   th:class="${i == pagina.number ? 'page-btn active' : 'page-btn'}">
-                </a>
+                <a th:href="@{/menu(page=${i})}" th:text="${i + 1}" th:class="${i == pagina.number ? 'page-btn active' : 'page-btn'}"></a>
             </span>
-
-            <a th:if="${pagina.hasNext()}"
-               th:href="@{/menu(page=${pagina.number + 1})}"
-               class="page-btn page-btn-text">Siguiente</a>
+            <a th:if="${pagina.hasNext()}" th:href="@{/menu(page=${pagina.number + 1})}" class="page-btn page-btn-text">Siguiente</a>
         </div>
 
         <p style="text-align:center;font-size:.75rem;color:var(--text-muted);margin-top:14px;">
-            Mostrando
-            <span th:text="${pagina.number + 1}"></span>–<span th:text="${pagina.number * pagina.size + pagina.numberOfElements}"></span>
+            Mostrando <span th:text="${pagina.number + 1}"></span>–<span th:text="${pagina.number * pagina.size + pagina.numberOfElements}"></span>
             de <span th:text="${pagina.totalElements}"></span> tickets
         </p>
     </section>
-
 </main>
 
-<div id="modal"
-     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);
-     backdrop-filter:blur(8px);z-index:50;align-items:center;justify-content:center;padding:16px;">
-    <div id="modal-content" style="width:100%;display:flex;justify-content:center;"></div>
-</div>
-
+<!-- FOOTER -->
 <footer style="background:var(--surface-2);border-top:1px solid var(--border);margin-top:auto;">
-    <div style="max-width:900px;margin:0 auto;padding:40px 24px;
-         display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;">
-
+    <div style="max-width:900px;margin:0 auto;padding:40px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;">
         <div>
-            <p style="font-size:.875rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;">
-                Soporte Imagen Corporativa
-            </p>
-            <p style="font-size:.8125rem;color:var(--text-muted);line-height:1.6;">
-                Plataforma interna para la gestión de tickets.
-            </p>
+            <p style="font-size:.875rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;">Soporte Imagen Corporativa</p>
+            <p style="font-size:.8125rem;color:var(--text-muted);line-height:1.6;">Plataforma interna para la gestión de tickets.</p>
         </div>
-
         <div>
             <p style="font-size:.875rem;font-weight:600;color:var(--text-primary);margin-bottom:10px;">Contacto</p>
-            <p style="font-size:.8125rem;color:var(--text-muted);margin-bottom:6px;">
-                <i class="fas fa-envelope" style="color:var(--accent);margin-right:8px;width:14px;"></i>IMAGENCORPORATIVA@australlens.com
-            </p>
-            <p style="font-size:.8125rem;color:var(--text-muted);">
-                <i class="fas fa-phone" style="color:var(--accent);margin-right:8px;width:14px;"></i>(+57) 601 514 5827
-            </p>
+            <p style="font-size:.8125rem;color:var(--text-muted);margin-bottom:6px;"><i class="fas fa-envelope" style="color:var(--accent);margin-right:8px;width:14px;"></i>IMAGENCORPORATIVA@australlens.com</p>
+            <p style="font-size:.8125rem;color:var(--text-muted);"><i class="fas fa-phone" style="color:var(--accent);margin-right:8px;width:14px;"></i>(+57) 601 514 5827</p>
         </div>
-
         <div style="display:flex;align-items:center;justify-content:flex-end;">
             <i class="fas fa-headset" style="font-size:3rem;color:var(--surface-4);"></i>
         </div>
     </div>
-
-    <div style="background:var(--surface-1);border-top:1px solid var(--border-subtle);
-         text-align:center;padding:14px 24px;font-size:.75rem;color:var(--text-muted);">
+    <div style="background:var(--surface-1);border-top:1px solid var(--border-subtle);text-align:center;padding:14px 24px;font-size:.75rem;color:var(--text-muted);">
         2026 Austral Lens · Todos los derechos reservados
     </div>
 </footer>
@@ -587,74 +683,56 @@
         dropdown.style.display = visible ? 'none' : 'block';
     });
     document.addEventListener("click", (e) => {
-        if (!btn.contains(e.target) && !dropdown.contains(e.target))
-            dropdown.style.display = 'none';
+        if (!btn.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none';
     });
 
     function actualizarContador() {
-        fetch('/api/notificaciones/' + rolUsuario + '/no-leidas')
-            .then(r => r.json())
-            .then(count => {
-                if (count > 0) {
-                    contador.textContent = count;
-                    contador.style.display = 'flex';
-                } else {
-                    contador.style.display = 'none';
-                }
-            });
+        fetch('/api/notificaciones/' + rolUsuario + '/no-leidas').then(r => r.json()).then(count => {
+            if (count > 0) { contador.textContent = count; contador.style.display = 'flex'; }
+            else { contador.style.display = 'none'; }
+        });
     }
 
     function renderNotificacion(n) {
         const item = document.createElement("div");
-        item.style.cssText = "border-bottom: 1px solid var(--border-subtle); cursor: pointer; transition: background 0.2s; padding: 12px 14px; display: flex; align-items: flex-start; gap: 10px;";
-        item.onmouseover = () => item.style.background = 'rgba(255,255,255,0.03)';
-        item.onmouseout = () => item.style.background = '';
+        item.style.cssText = "border-bottom:1px solid var(--border-subtle);cursor:pointer;transition:background 0.2s;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;";
+        item.onmouseover = () => item.style.background = 'var(--surface-3)';
+        item.onmouseout  = () => item.style.background = '';
         item.dataset.id = n.id;
-
         if (!n.leida) {
             const dot = document.createElement("span");
-            dot.style.cssText = "width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 5px;";
+            dot.style.cssText = "width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px;";
             item.appendChild(dot);
         }
-
         const body = document.createElement("div");
         body.style.flex = "1";
-        body.innerHTML =
-            '<div style="font-weight:600;color:var(--text-primary);margin-bottom:2px;font-size:.8125rem;">' + n.tipo + '</div>' +
-            '<div style="color:var(--text-secondary);font-size:.75rem;">' + n.mensaje + '</div>' +
-            '<div style="color:var(--text-muted);font-size:.7rem;margin-top:4px;">' + new Date(n.fecha).toLocaleString() + '</div>';
+        body.innerHTML = '<div style="font-weight:600;color:var(--text-primary);margin-bottom:2px;font-size:.8125rem;">' + n.tipo + '</div>' +
+                         '<div style="color:var(--text-secondary);font-size:.75rem;">' + n.mensaje + '</div>' +
+                         '<div style="color:var(--text-muted);font-size:.7rem;margin-top:4px;">' + new Date(n.fecha).toLocaleString() + '</div>';
         item.appendChild(body);
-
         item.addEventListener("click", function () {
-            fetch("/api/notificaciones/marcar-leida/" + n.id, { method: "POST" })
-                .then(function () {
-                    actualizarContador();
-                    item.style.opacity = "0";
-                    setTimeout(function () {
-                        item.remove();
-                        if (!lista.querySelector('[style*="flex"]'))
-                            lista.innerHTML = '<div style="padding:16px 14px;color:var(--text-muted);font-size:.8125rem;">Sin notificaciones</div>';
-                    }, 300);
-                });
+            fetch("/api/notificaciones/marcar-leida/" + n.id, { method: "POST" }).then(function () {
+                actualizarContador();
+                item.style.opacity = "0";
+                setTimeout(function () {
+                    item.remove();
+                    if (!lista.querySelector('[style*="flex"]'))
+                        lista.innerHTML = '<div style="padding:16px 14px;color:var(--text-muted);font-size:.8125rem;">Sin notificaciones</div>';
+                }, 300);
+            });
             if (n.ticketId) setTimeout(() => window.location.href = "/ticket/" + n.ticketId, 200);
         });
         return item;
     }
 
     function cargarNotificaciones() {
-        fetch('/api/notificaciones/' + rolUsuario)
-            .then(r => r.json())
-            .then(data => {
-                lista.innerHTML = "";
-                const noLeidas = data.filter(n => !n.leida);
-                if (noLeidas.length === 0) {
-                    lista.innerHTML = '<div style="padding:16px 14px;color:var(--text-muted);font-size:.8125rem;">Sin notificaciones</div>';
-                } else {
-                    noLeidas.forEach(n => lista.appendChild(renderNotificacion(n)));
-                }
-                actualizarContador();
-            })
-            .catch(err => console.error("Error cargando notificaciones", err));
+        fetch('/api/notificaciones/' + rolUsuario).then(r => r.json()).then(data => {
+            lista.innerHTML = "";
+            const noLeidas = data.filter(n => !n.leida);
+            if (noLeidas.length === 0) lista.innerHTML = '<div style="padding:16px 14px;color:var(--text-muted);font-size:.8125rem;">Sin notificaciones</div>';
+            else noLeidas.forEach(n => lista.appendChild(renderNotificacion(n)));
+            actualizarContador();
+        }).catch(err => console.error("Error cargando notificaciones", err));
     }
 
     function conectarWebSocket() {
@@ -664,8 +742,7 @@
         stomp.connect({}, function () {
             stomp.subscribe('/topic/notificaciones/user/' + usuarioSesion.id, function (msg) {
                 const n = JSON.parse(msg.body);
-                if (lista.children.length === 1 && lista.textContent.includes('Sin notificaciones'))
-                    lista.innerHTML = "";
+                if (lista.children.length === 1 && lista.textContent.includes('Sin notificaciones')) lista.innerHTML = "";
                 lista.insertBefore(renderNotificacion(n), lista.firstChild);
                 if (lista.children.length > 15) lista.removeChild(lista.lastChild);
                 actualizarContador();
@@ -674,22 +751,17 @@
     }
 
     document.getElementById("btnMarcarTodas").addEventListener("click", function () {
-        fetch('/api/notificaciones/' + rolUsuario + '/marcar-todas-leidas', { method: "POST" })
-            .then(function () {
-                [...lista.children].forEach(item => {
-                    item.style.transition = "opacity 0.3s";
-                    item.style.opacity = "0";
-                });
-                setTimeout(function () {
-                    lista.innerHTML = '<div style="padding:16px 14px;color:var(--text-muted);font-size:.8125rem;">Sin notificaciones</div>';
-                    actualizarContador();
-                }, 350);
-            });
+        fetch('/api/notificaciones/' + rolUsuario + '/marcar-todas-leidas', { method: "POST" }).then(function () {
+            [...lista.children].forEach(item => { item.style.transition = "opacity 0.3s"; item.style.opacity = "0"; });
+            setTimeout(function () {
+                lista.innerHTML = '<div style="padding:16px 14px;color:var(--text-muted);font-size:.8125rem;">Sin notificaciones</div>';
+                actualizarContador();
+            }, 350);
+        });
     });
 
     cargarNotificaciones();
     conectarWebSocket();
 </script>
-
 </body>
 </html>

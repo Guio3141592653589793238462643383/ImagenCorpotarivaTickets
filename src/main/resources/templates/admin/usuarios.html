@@ -251,6 +251,13 @@
                     <span class="ms-3">Usuarios</span>
                 </a>
             </li>
+            <li>
+                <button onclick="toggleAsanaPanel()"
+                        class="sidebar-item flex items-center px-3 py-2.5 rounded-xl w-full text-left">
+                    <i class="fas fa-tasks w-5 text-center shrink-0"></i>
+                    <span class="ms-3">Asana</span>
+                </button>
+            </li>
         </ul>
 
         <div class="pt-3 sidebar-sep border-t">
@@ -534,175 +541,238 @@
         <div class="p-3 text-gray-500">Sin notificaciones</div>
     </div>
 </div>
+<div id="asana-panel"
+     class="fixed top-0 right-0 w-96 h-full bg-white shadow-xl transform translate-x-full transition-transform duration-300 z-50">
 
+    <div class="p-4 border-b flex justify-between items-center">
+        <h2 class="font-bold">Asana</h2>
+        <button id="asana-close" class="text-gray-500">✕</button>
+    </div>
+
+    <div class="p-4">
+        <p class="text-sm text-gray-600 mb-4">
+            Accede rápidamente a tus tareas.
+        </p>
+
+        <button onclick="openAsanaWindow()"
+                class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg w-full">
+            Abrir Asana
+        </button>
+    </div>
+</div>
+
+</div>
 <script>
-    const btn            = document.getElementById("btnNotificaciones");
-    const dropdown       = document.getElementById("dropdownNotificaciones");
-    const lista          = document.getElementById("listaNotificaciones");
-    const contador       = document.getElementById("contadorNotificaciones");
-    const btnMarcarTodas = document.getElementById("btnMarcarTodas");
-    const rolUsuario     = "ADMIN";
+    function toggleAsanaPanel() {
+const panel = document.getElementById("asana-panel");
+if (!panel) return;
 
-    /* posicionar dropdown justo bajo el botón */
-    function posicionarDropdown() {
-        const rect = btn.getBoundingClientRect();
-        dropdown.style.top  = (rect.bottom + window.scrollY + 8) + 'px';
-        dropdown.style.left = Math.max(8, rect.right + window.scrollX - 320) + 'px';
-    }
+panel.classList.toggle("translate-x-full");
+}
 
-    /* FIX 1: evitar cierre inmediato */
-    btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (dropdown.classList.contains("hidden")) {
-            posicionarDropdown();
-            dropdown.classList.remove("hidden");
-        } else {
-            dropdown.classList.add("hidden");
-        }
-    });
+document.addEventListener("DOMContentLoaded", () => {
+const closeBtn = document.getElementById("asana-close");
+const panel = document.getElementById("asana-panel");
 
-    /* FIX 2: permitir interacción dentro del dropdown */
-    dropdown.addEventListener("click", (e) => {
-        e.stopPropagation();
-    });
+if (closeBtn && panel) {
+   closeBtn.addEventListener("click", () => {
+       panel.classList.add("translate-x-full");
+   });
+}
+});
 
-    /* FIX 3: cerrar solo cuando haces click afuera */
-    document.addEventListener("click", () => {
-        dropdown.classList.add("hidden");
-    });
+function openAsanaWindow() {
+window.open(
+   "https://app.asana.com",
+   "asanaWindow",
+   "width=1200,height=800"
+);
+}
+   const btn            = document.getElementById("btnNotificaciones");
+   const dropdown       = document.getElementById("dropdownNotificaciones");
+   const lista          = document.getElementById("listaNotificaciones");
+   const contador       = document.getElementById("contadorNotificaciones");
+   const btnMarcarTodas = document.getElementById("btnMarcarTodas");
+   const rolUsuario     = "ADMIN";
 
-    window.addEventListener("scroll", posicionarDropdown);
-    window.addEventListener("resize", posicionarDropdown);
+   /* posicionar dropdown justo bajo el botón */
+   function posicionarDropdown() {
+       const rect = btn.getBoundingClientRect();
+       dropdown.style.top  = (rect.bottom + window.scrollY + 8) + 'px';
+       dropdown.style.left = Math.max(8, rect.right + window.scrollX - 320) + 'px';
+   }
 
-    function actualizarContador() {
-        fetch(`/api/notificaciones/${rolUsuario}/no-leidas`)
-            .then(r => r.json())
-            .then(count => {
-                if (count > 0) {
-                    contador.textContent = count;
-                    contador.classList.remove("hidden");
-                } else {
-                    contador.classList.add("hidden");
-                }
-            });
-    }
+   /* FIX 1: evitar cierre inmediato */
+   btn.addEventListener("click", (e) => {
+       e.stopPropagation();
+       if (dropdown.classList.contains("hidden")) {
+           posicionarDropdown();
+           dropdown.classList.remove("hidden");
+       } else {
+           dropdown.classList.add("hidden");
+       }
+   });
 
-    function renderNotificacion(n) {
-        const item = document.createElement("div");
+   /* FIX 2: permitir interacción dentro del dropdown */
+   dropdown.addEventListener("click", (e) => {
+       e.stopPropagation();
+   });
 
-        item.className = "p-3 border-b hover:bg-gray-50 cursor-pointer flex items-start gap-2 transition-all duration-300";
-        item.dataset.id = n.id;
+   /* FIX 3: cerrar solo cuando haces click afuera */
+   document.addEventListener("click", () => {
+       dropdown.classList.add("hidden");
+   });
 
-        const punto = n.leida
-            ? ""
-            : `<span class="mt-1.5 min-w-2 min-h-2 w-2 h-2 bg-red-500 rounded-full inline-block"></span>`;
+   window.addEventListener("scroll", posicionarDropdown);
+   window.addEventListener("resize", posicionarDropdown);
 
-        item.innerHTML = `
-        ${punto}
-        <div class="flex-1">
-            <div class='font-semibold text-gray-800'>${n.tipo}</div>
-            <div class='text-gray-600 text-xs'>${n.mensaje}</div>
-            <div class='text-gray-400 text-xs'>${new Date(n.fecha).toLocaleString()}</div>
-        </div>
-    `;
+   function actualizarContador() {
+       fetch(`/api/notificaciones/${rolUsuario}/no-leidas`)
+           .then(r => r.json())
+           .then(count => {
+               if (count > 0) {
+                   contador.textContent = count;
+                   contador.classList.remove("hidden");
+               } else {
+                   contador.classList.add("hidden");
+               }
+           });
+   }
 
-        item.addEventListener("click", () => {
-            fetch("/api/notificaciones/marcar-leida/" + n.id, { method: "POST" })
-                .then(() => {
-                    actualizarContador();
+   function renderNotificacion(n) {
+       const item = document.createElement("div");
 
-                    item.style.opacity = "0";
-                    item.style.maxHeight = item.scrollHeight + "px";
+       item.className = "p-3 border-b hover:bg-gray-50 cursor-pointer flex items-start gap-2 transition-all duration-300";
+       item.dataset.id = n.id;
 
-                    setTimeout(() => {
-                        item.style.maxHeight = "0";
-                        item.style.padding = "0";
-                        item.style.borderWidth = "0";
-                        item.style.overflow = "hidden";
-                    }, 150);
+       const punto = n.leida
+           ? ""
+           : `<span class="mt-1.5 min-w-2 min-h-2 w-2 h-2 bg-red-500 rounded-full inline-block"></span>`;
 
-                    setTimeout(() => {
-                        item.remove();
-                        if (lista.children.length === 0) {
-                            lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
-                        }
-                    }, 400);
-                });
+       item.innerHTML = `
+       ${punto}
+       <div class="flex-1">
+           <div class='font-semibold text-gray-800'>${n.tipo}</div>
+           <div class='text-gray-600 text-xs'>${n.mensaje}</div>
+           <div class='text-gray-400 text-xs'>${new Date(n.fecha).toLocaleString()}</div>
+       </div>
+   `;
 
-            /* 🔥 navegación al ticket */
-            if (n.ticketId) {
-                setTimeout(() => {
-                    window.location.href = "/admin/ticket/" + n.ticketId;
-                }, 200);
-            }
-        });
+       item.addEventListener("click", () => {
+           fetch("/api/notificaciones/marcar-leida/" + n.id, { method: "POST" })
+               .then(() => {
+                   actualizarContador();
 
-        return item;
-    }
+                   item.style.opacity = "0";
+                   item.style.maxHeight = item.scrollHeight + "px";
 
-    function cargarNotificaciones() {
-        fetch(`/api/notificaciones/${rolUsuario}`)
-            .then(r => r.json())
-            .then(data => {
-                lista.innerHTML = "";
+                   setTimeout(() => {
+                       item.style.maxHeight = "0";
+                       item.style.padding = "0";
+                       item.style.borderWidth = "0";
+                       item.style.overflow = "hidden";
+                   }, 150);
 
-                const noLeidas = data.filter(n => !n.leida);
+                   setTimeout(() => {
+                       item.remove();
+                       if (lista.children.length === 0) {
+                           lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
+                       }
+                   }, 400);
+               });
 
-                if (noLeidas.length === 0) {
-                    lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
-                } else {
-                    noLeidas.forEach(n => lista.appendChild(renderNotificacion(n)));
-                }
+           /* 🔥 navegación al ticket */
+           if (n.ticketId) {
+               setTimeout(() => {
+                   window.location.href = "/admin/ticket/" + n.ticketId;
+               }, 200);
+           }
+       });
 
-                actualizarContador();
-            })
-            .catch(err => console.error("Error cargando notificaciones", err));
-    }
+       return item;
+   }
 
-    btnMarcarTodas.addEventListener("click", () => {
-        fetch(`/api/notificaciones/${rolUsuario}/marcar-todas-leidas`, { method: "POST" })
-            .then(() => {
-                [...lista.children].forEach(item => {
-                    item.style.opacity = "0";
-                    item.style.transition = "opacity 0.3s";
-                });
+   function cargarNotificaciones() {
+       fetch(`/api/notificaciones/${rolUsuario}`)
+           .then(r => r.json())
+           .then(data => {
+               lista.innerHTML = "";
 
-                setTimeout(() => {
-                    lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
-                    actualizarContador();
-                }, 350);
-            });
-    });
+               const noLeidas = data.filter(n => !n.leida);
 
-    function conectarWebSocket() {
-        const socket = new SockJS('/ws-notificaciones');
-        const stomp = Stomp.over(socket);
-        stomp.debug = null;
+               if (noLeidas.length === 0) {
+                   lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
+               } else {
+                   noLeidas.forEach(n => lista.appendChild(renderNotificacion(n)));
+               }
 
-        stomp.connect({}, function () {
-            stomp.subscribe('/topic/notificaciones/ADMIN', function (msg) {
-                const n = JSON.parse(msg.body);
+               actualizarContador();
+           })
+           .catch(err => console.error("Error cargando notificaciones", err));
+   }
 
-                if (lista.querySelector('.text-gray-500')) {
-                    lista.innerHTML = "";
-                }
+   btnMarcarTodas.addEventListener("click", () => {
+       fetch(`/api/notificaciones/${rolUsuario}/marcar-todas-leidas`, { method: "POST" })
+           .then(() => {
+               [...lista.children].forEach(item => {
+                   item.style.opacity = "0";
+                   item.style.transition = "opacity 0.3s";
+               });
 
-                lista.insertBefore(renderNotificacion(n), lista.firstChild);
+               setTimeout(() => {
+                   lista.innerHTML = '<div class="p-3 text-gray-500">Sin notificaciones</div>';
+                   actualizarContador();
+               }, 350);
+           });
+   });
 
-                if (lista.children.length > 15) {
-                    lista.removeChild(lista.lastChild);
-                }
+   function conectarWebSocket() {
+       const socket = new SockJS('/ws-notificaciones');
+       const stomp = Stomp.over(socket);
+       stomp.debug = null;
 
-                actualizarContador();
-            });
-        }, function () {
-            console.warn("WebSocket desconectado, reintentando...");
-            setTimeout(conectarWebSocket, 5000);
-        });
-    }
+       stomp.connect({}, function () {
+           stomp.subscribe('/topic/notificaciones/ADMIN', function (msg) {
+               const n = JSON.parse(msg.body);
 
-    cargarNotificaciones();
-    conectarWebSocket();
+               if (lista.querySelector('.text-gray-500')) {
+                   lista.innerHTML = "";
+               }
+
+               lista.insertBefore(renderNotificacion(n), lista.firstChild);
+
+               if (lista.children.length > 15) {
+                   lista.removeChild(lista.lastChild);
+               }
+
+               actualizarContador();
+           });
+       }, function () {
+           console.warn("WebSocket desconectado, reintentando...");
+           setTimeout(conectarWebSocket, 5000);
+       });
+   }
+
+   cargarNotificaciones();
+   conectarWebSocket();
+       const asanaPanel = document.getElementById("asana-panel");
+const asanaClose = document.getElementById("asana-close");
+
+function toggleAsanaPanel() {
+   asanaPanel.classList.toggle("translate-x-full");
+}
+
+asanaClose.addEventListener("click", () => {
+   asanaPanel.classList.add("translate-x-full");
+});
+
+function openAsanaWindow() {
+   window.open(
+       "https://app.asana.com",
+       "asanaWindow",
+       "width=1200,height=800"
+   );
+}
 </script>
 
 </body>

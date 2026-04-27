@@ -32,11 +32,35 @@ public class TicketController {
             @RequestParam String numeroTelefono,
             @RequestParam(required = false) String sede,
             @RequestParam(value = "archivos", required = false) MultipartFile[] archivos,
+            // ── Solicitud de material ──
+            @RequestParam(required = false) String decoracion,
+            @RequestParam(required = false) String producto,
+            @RequestParam(required = false) Integer cantidad,
+            @RequestParam(required = false) Double largo,
+            @RequestParam(required = false) Double ancho,
+            @RequestParam(defaultValue = "false") boolean ayudaventasImpresos,
+            @RequestParam(defaultValue = "false") boolean listasDePrecios,
+            @RequestParam(defaultValue = "false") boolean muestrasLentes,
+            @RequestParam(defaultValue = "false") boolean regaloCorporativo,
+            @RequestParam(defaultValue = "false") boolean materialCapacitaciones,
+            @RequestParam(defaultValue = "false") boolean opcion6,
+            @RequestParam(defaultValue = "false") boolean paniosMarcados,
+            @RequestParam(defaultValue = "false") boolean libretaNotas,
+            @RequestParam(defaultValue = "false") boolean reglillas,
+            @RequestParam(defaultValue = "false") boolean videosUsb,
+            @RequestParam(defaultValue = "false") boolean esferos,
+            @RequestParam(defaultValue = "false") boolean habladores,
             RedirectAttributes redirectAttributes
     ) {
         ticketControllerService.procesarCreacionTicket(
                 descripcion, tema, tipoDePregunta, nombreCompleto,
-                correoElectronico, numeroTelefono, archivos, redirectAttributes
+                correoElectronico, numeroTelefono, archivos,
+                decoracion, producto, cantidad, largo, ancho,
+                ayudaventasImpresos, listasDePrecios, muestrasLentes,
+                regaloCorporativo, materialCapacitaciones, opcion6,
+                paniosMarcados, libretaNotas, reglillas, videosUsb,
+                esferos, habladores,
+                redirectAttributes
         );
         return "redirect:/menu";
     }
@@ -55,7 +79,6 @@ public class TicketController {
             @RequestParam(value = "archivos", required = false) MultipartFile[] archivos,
             Authentication authentication
     ) {
-        // Verificar que el usuario es dueño del ticket
         Ticket ticket = ticketControllerService.obtenerTicketPorId(ticketId);
         String emailLogueado = authentication.getName();
 

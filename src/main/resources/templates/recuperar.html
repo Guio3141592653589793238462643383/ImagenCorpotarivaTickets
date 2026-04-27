@@ -9,93 +9,305 @@
 
     <style>
         :root {
-            --surface-1: #0d1117;
-            --surface-2: #161b22;
-            --surface-3: #21262d;
-            --surface-4: #30363d;
-            --border: #30363d;
-            --text-primary: #e6edf3;
-            --text-secondary: #c9d1d9;
-            --text-muted: #9aa4af;
+            --surface-1: #f4f6f9;
+            --surface-2: #ffffff;
+            --surface-3: #eef1f6;
+            --surface-4: #dde2ec;
+            --border: #d4dae6;
+            --border-focus: #0ea5e9;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
             --accent: #0ea5e9;
-            --accent-glow: rgba(14,165,233,0.12);
+            --accent-dark: #0284c7;
+            --danger: #ef4444;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background:
-                    radial-gradient(720px at 15% 0%, rgba(14,165,233,0.14), transparent 58%),
-                    radial-gradient(680px at 90% 18%, rgba(56,189,248,0.08), transparent 55%),
-                    var(--surface-1) !important;
+                radial-gradient(800px at 10% 0%, rgba(14,165,233,0.07), transparent 55%),
+                radial-gradient(600px at 90% 100%, rgba(56,189,248,0.05), transparent 50%),
+                var(--surface-1);
             background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-primary);
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
+            50%       { transform: translateY(-12px); }
         }
         .animate-float { animation: float 3.5s ease-in-out infinite; }
 
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--surface-2); }
+        ::-webkit-scrollbar-track { background: var(--surface-3); }
         ::-webkit-scrollbar-thumb { background: var(--surface-4); border-radius: 999px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-        input, textarea, select {
-            color: #ffffff !important;
-            -webkit-text-fill-color: #ffffff !important;
-            caret-color: #ffffff !important;
-            background-color: #21262d !important;
+        input {
+            color: var(--text-primary);
+            background-color: var(--surface-3);
+            caret-color: var(--text-primary);
         }
-        input::placeholder, textarea::placeholder {
-            color: #8b949e !important;
-            opacity: 1 !important;
+        input::placeholder { color: var(--text-muted); opacity: 1; }
+
+        /* ── LAYOUT ── */
+        .layout {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: row;
         }
-        select option {
-            background-color: #21262d;
-            color: #ffffff;
+
+        /* ── FORM PANEL ── */
+        .form-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 32px rgba(15,23,42,0.07), 0 1px 4px rgba(15,23,42,0.04);
+            transition: border-color 0.3s;
+        }
+        .card:hover { border-color: rgba(14,165,233,0.35); }
+
+        /* Header */
+        .card-header { text-align: center; margin-bottom: 1.75rem; }
+
+        .icon-wrap {
+            width: 72px; height: 72px;
+            border-radius: 20px;
+            border: 1px solid rgba(14,165,233,0.25);
+            background: linear-gradient(135deg, rgba(14,165,233,0.08), rgba(56,189,248,0.04));
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 0 24px rgba(14,165,233,0.1);
+        }
+        .icon-wrap i { font-size: 2rem; color: var(--accent); }
+
+        .card-header h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.35rem;
+        }
+        .card-header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Field */
+        .field { margin-bottom: 1.25rem; }
+        .field label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 0.45rem;
+        }
+        .field label span { color: var(--danger); }
+
+        .input-wrap { position: relative; }
+        .input-wrap i {
+            position: absolute;
+            left: 12px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent); font-size: 0.85rem;
+            pointer-events: none;
+        }
+        .input-wrap input {
+            width: 100%;
+            background: var(--surface-3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.7rem 0.875rem 0.7rem 2.4rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        .input-wrap input:focus {
+            border-color: var(--border-focus);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(14,165,233,0.1);
+        }
+
+        /* Alerts */
+        .alert {
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .alert-success { background: #f0fdf4; border: 1px solid #86efac; color: #15803d; }
+        .alert-error   { background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; }
+
+        /* Button */
+        .btn-primary {
+            width: 100%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 0.85rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: filter 0.2s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(14,165,233,0.25);
+            margin-bottom: 1.25rem;
+        }
+        .btn-primary:hover { filter: brightness(1.08); box-shadow: 0 6px 20px rgba(14,165,233,0.35); }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--accent); }
+
+        /* ── DECORATIVE PANEL ── */
+        .deco-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            border-left: 1px solid var(--border);
+            background: linear-gradient(160deg, #fff 0%, #eef4fb 100%);
+            box-shadow: inset 4px 0 24px rgba(14,165,233,0.04);
+        }
+
+        .deco-logo-box {
+            position: relative;
+            width: 240px; height: 240px;
+            border-radius: 2rem;
+            border: 1px solid var(--border);
+            background: linear-gradient(135deg, #fff, #f0f6fc);
+            display: flex; align-items: center; justify-content: center;
+            padding: 2rem;
+            box-shadow: 0 8px 40px rgba(15,23,42,0.08), 0 2px 8px rgba(15,23,42,0.04);
+            margin-bottom: 2.5rem;
+        }
+        .deco-logo-box::before {
+            content: '';
+            position: absolute; inset: 0;
+            border-radius: 2rem;
+            background: radial-gradient(circle at 50% 0%, rgba(14,165,233,0.1), transparent 60%);
+        }
+        .deco-logo-box img {
+            position: relative; z-index: 1;
+            height: 100%; width: 100%; object-fit: contain;
+        }
+        .deco-logo-box i { font-size: 7rem; color: var(--accent); position: relative; z-index: 1; opacity: 0.9; }
+
+        .deco-icons { display: flex; gap: 2.5rem; margin-bottom: 2.5rem; }
+        .deco-icons i { font-size: 3rem; color: var(--accent); opacity: 0.85; }
+
+        .deco-text { max-width: 360px; text-align: center; }
+        .badge {
+            display: block;
+            font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 0.75rem;
+        }
+        .deco-text h1 {
+            font-size: 2rem; font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em; margin-bottom: 0.75rem;
+        }
+        .deco-text p {
+            font-size: 0.9rem; line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .deco-panel { display: none; }
+            .layout { flex-direction: column; }
         }
     </style>
 </head>
 
-<body class="bg-sky-100">
+<body>
 
-<div class="min-h-screen flex flex-col lg:flex-row">
+<div class="layout">
 
     <!-- PANEL FORMULARIO -->
+    <div class="form-panel">
+        <form th:action="@{/recover}" method="post" class="card">
 
-
-    <div class="flex flex-1 items-center justify-center px-6 py-10 lg:px-12"> <form th:action="@{/recover}" method="post" class="w-full max-w-md bg-[#161b22] border border-[#30363d] rounded-2xl shadow-2xl shadow-black/40 p-8 space-y-6" > <!-- Header --> <div class="text-center"> <i class="fas fa-key text-4xl text-[#38bdf8] mb-3"></i> <h2 class="text-2xl font-bold text-white">Recuperar contraseña</h2> <p class="text-sm text-gray-300 mt-1"> Ingresa tu correo para restablecer acceso al sistema </p> </div> <!-- Email --> <div> <label class="block text-gray-300 font-semibold mb-1"> Email <span class="text-red-400">*</span> </label> <input type="email" name="email" required placeholder="ejemplo@correo.com" class="w-full px-4 py-2 border border-[#30363d] bg-[#21262d] text-white placeholder:text-[#8b949e] rounded-lg focus:ring-2 focus:ring-[#0ea5e9] focus:outline-none" /> </div> <!-- Botón --> <button type="submit" class="w-full bg-[#0ea5e9] hover:brightness-110 text-white font-semibold py-2.5 rounded-lg transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-[#0ea5e9]/20" > Enviar enlace de recuperación </button> <div th:if="${message}" class="bg-emerald-400/10 border border-emerald-400/25 text-emerald-300 p-3 rounded-lg text-sm text-center"> <span th:text="${message}"></span> </div> <div th:if="${error}" class="bg-red-400/10 border border-red-400/25 text-red-300 p-3 rounded-lg text-sm text-center"> <span th:text="${error}"></span> </div> <!-- Volver login --> <p class="text-center text-sm text-[#9aa4af]"> <a href="/" class="text-[#38bdf8] text-white"> Regresar al inicio de sesión </a> </p> </form> </div>
-
-
-    <!-- PANEL DERECHO DECORATIVO -->
-    <div class="hidden md:flex flex-1 flex-col items-center justify-center border-[#30363d] bg-[#161b22]/80 p-10 text-white shadow-2xl shadow-black/30 backdrop-blur-xl">
-
-            <div class="relative mb-8 flex h-72 w-72 items-center justify-center rounded-[2rem] border border-[#30363d] bg-[#21262d] p-6 shadow-2xl shadow-black/35">
-                <div class="absolute inset-0 rounded-[2rem] bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.18),transparent_58%)]"></div>
-                <img src="/images/logo.png"
-                     alt="Logo Laboratorio"
-                     class="relative z-10 h-full w-full object-contain brightness-0 invert opacity-95">
+            <div class="card-header">
+                <div class="icon-wrap">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h2>Recuperar contraseña</h2>
+                <p>Ingresa tu correo para restablecer acceso al sistema</p>
             </div>
 
-            <div class="mb-8 flex justify-center space-x-8">
-                <i class="fas fa-palette text-6xl text-[#38bdf8] opacity-90 animate-float"></i>
-                <i class="fas fa-image text-6xl text-[#38bdf8] opacity-90 animate-float" style="animation-delay: 0.3s;"></i>
-                <i class="fas fa-bullhorn text-6xl text-[#38bdf8] opacity-90 animate-float" style="animation-delay: 0.6s;"></i>
+            <!-- Alerts -->
+            <div th:if="${message}" class="alert alert-success">
+                <span th:text="${message}"></span>
+            </div>
+            <div th:if="${error}" class="alert alert-error">
+                <span th:text="${error}"></span>
             </div>
 
-            <div class="max-w-md text-center">
-                <p class="text-xs font-bold uppercase tracking-[0.22em] text-[#38bdf8]">
-                    Austral Lens
-                </p>
-                <h1 class="mt-3 text-3xl font-black tracking-tight text-white">
-                    Imagen Corporativa
-                </h1>
-                <p class="mt-3 text-sm leading-6 text-[#9aa4af]">
-                    Ingresa para crear solicitudes, consultar el estado de tus tickets y comunicarte con el equipo de Imagen Corporativa.
-                </p>
+            <!-- Email -->
+            <div class="field">
+                <label>Email <span>*</span></label>
+                <div class="input-wrap">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" required placeholder="ejemplo@correo.com">
+                </div>
             </div>
+
+            <!-- Botón -->
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-paper-plane" style="margin-right:0.5rem;"></i>Enviar enlace de recuperación
+            </button>
+
+            <a href="/" class="back-link">
+                <i class="fas fa-arrow-left" style="margin-right:4px;"></i>Regresar al inicio de sesión
+            </a>
+
+        </form>
+    </div>
+
+    <!-- PANEL DECORATIVO -->
+    <div class="deco-panel">
+        <div class="deco-logo-box">
+            <img src="/images/logo.png" alt="Logo Laboratorio"
+                 onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\'fas fa-glasses\'></i>'">
         </div>
-
+        <div class="deco-icons">
+            <i class="fas fa-palette animate-float"></i>
+            <i class="fas fa-image animate-float" style="animation-delay:0.3s;"></i>
+            <i class="fas fa-bullhorn animate-float" style="animation-delay:0.6s;"></i>
+        </div>
+        <div class="deco-text">
+            <span class="badge">Austral Lens</span>
+            <h1>Imagen Corporativa</h1>
+            <p>Ingresa para crear solicitudes, consultar el estado de tus tickets y comunicarte con el equipo de Imagen Corporativa.</p>
+        </div>
     </div>
 
 </div>

@@ -4,6 +4,7 @@ import com.austral.back.model.Comentario;
 import com.austral.back.model.Media;
 import com.austral.back.model.Ticket;
 import com.austral.back.model.TicketMedia;
+import com.austral.back.model.SolicitudMaterial;
 import com.austral.back.model.Rol;
 import com.austral.back.dto.ComentarioDTO;
 import com.austral.back.repository.ComentarioRepository;
@@ -51,7 +52,7 @@ public class TicketService {
     }
 
     /**
-     * Crea un nuevo ticket con archivos adjuntos
+     * Crea un nuevo ticket con archivos adjuntos y solicitud de material
      */
     public Ticket crearTicket(String descripcion,
                               String tema,
@@ -59,7 +60,25 @@ public class TicketService {
                               String nombreCompleto,
                               String correoElectronico,
                               String numeroTelefono,
-                              MultipartFile[] archivos) throws Exception {
+                              MultipartFile[] archivos,
+                              // ── Solicitud de material ──
+                              String decoracion,
+                              String producto,
+                              Integer cantidad,
+                              Double largo,
+                              Double ancho,
+                              boolean ayudaventasImpresos,
+                              boolean listasDePrecios,
+                              boolean muestrasLentes,
+                              boolean regaloCorporativo,
+                              boolean materialCapacitaciones,
+                              boolean opcion6,
+                              boolean paniosMarcados,
+                              boolean libretaNotas,
+                              boolean reglillas,
+                              boolean videosUsb,
+                              boolean esferos,
+                              boolean habladores) throws Exception {
 
         File directory = new File(uploadDir);
         if (!directory.exists()) {
@@ -81,6 +100,7 @@ public class TicketService {
         usuarioRepository.findByEmail(correoElectronico)
                 .ifPresent(ticket::setUsuario);
 
+        // ── Archivos adjuntos ──
         List<TicketMedia> mediaList = new ArrayList<>();
         if (archivos != null && archivos.length > 0) {
             for (MultipartFile file : archivos) {
@@ -96,8 +116,31 @@ public class TicketService {
                 }
             }
         }
-
         ticket.setMediaList(mediaList);
+
+        // ── Solicitud de material ──
+        SolicitudMaterial solicitud = new SolicitudMaterial();
+        solicitud.setTicket(ticket);
+        solicitud.setDecoracion(decoracion);
+        solicitud.setProducto(producto);
+        solicitud.setCantidad(cantidad);
+        solicitud.setLargo(largo);
+        solicitud.setAncho(ancho);
+        solicitud.setAyudaventasImpresos(ayudaventasImpresos);
+        solicitud.setListasDePrecios(listasDePrecios);
+        solicitud.setMuestrasLentes(muestrasLentes);
+        solicitud.setRegaloCorporativo(regaloCorporativo);
+        solicitud.setMaterialCapacitaciones(materialCapacitaciones);
+        solicitud.setOpcion6(opcion6);
+        solicitud.setPaniosMarcados(paniosMarcados);
+        solicitud.setLibretaNotas(libretaNotas);
+        solicitud.setReglillas(reglillas);
+        solicitud.setVideosUsb(videosUsb);
+        solicitud.setEsferos(esferos);
+        solicitud.setHabladores(habladores);
+
+        ticket.setSolicitudMaterial(solicitud);
+
         Ticket ticketGuardado = ticketRepository.save(ticket);
 
         // 🔔 Notificación SOLO para ADMIN
@@ -118,6 +161,7 @@ public class TicketService {
     public List<Ticket> obtenerTicketsUsuario(String email) {
         return ticketRepository.findByCorreoElectronicoOrderByMarcaTemporalDesc(email);
     }
+
     public Page<Ticket> obtenerTicketsUsuario(String email, Pageable pageable) {
         return ticketRepository.findByCorreoElectronicoOrderByMarcaTemporalDesc(email, pageable);
     }

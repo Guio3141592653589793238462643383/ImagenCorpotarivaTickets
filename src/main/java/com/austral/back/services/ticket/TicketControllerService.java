@@ -25,6 +25,24 @@ public class TicketControllerService {
             String correoElectronico,
             String numeroTelefono,
             MultipartFile[] archivos,
+            // ── Solicitud de material ──
+            String decoracion,
+            String producto,
+            Integer cantidad,
+            Double largo,
+            Double ancho,
+            boolean ayudaventasImpresos,
+            boolean listasDePrecios,
+            boolean muestrasLentes,
+            boolean regaloCorporativo,
+            boolean materialCapacitaciones,
+            boolean opcion6,
+            boolean paniosMarcados,
+            boolean libretaNotas,
+            boolean reglillas,
+            boolean videosUsb,
+            boolean esferos,
+            boolean habladores,
             RedirectAttributes redirectAttributes
     ) {
         try {
@@ -35,7 +53,24 @@ public class TicketControllerService {
                     nombreCompleto,
                     correoElectronico,
                     numeroTelefono,
-                    archivos
+                    archivos,
+                    decoracion,
+                    producto,
+                    cantidad,
+                    largo,
+                    ancho,
+                    ayudaventasImpresos,
+                    listasDePrecios,
+                    muestrasLentes,
+                    regaloCorporativo,
+                    materialCapacitaciones,
+                    opcion6,
+                    paniosMarcados,
+                    libretaNotas,
+                    reglillas,
+                    videosUsb,
+                    esferos,
+                    habladores
             );
             redirectAttributes.addFlashAttribute("mensaje", "Ticket creado con éxito");
             return true;
@@ -54,7 +89,6 @@ public class TicketControllerService {
         ticketService.agregarRespuestaUsuario(ticketId, mensaje, archivos);
     }
 
-    // ✅ Adecuación: ahora sí retornan valores
     public Ticket obtenerTicketPorId(Integer id) {
         return ticketService.obtenerPorId(id);
     }

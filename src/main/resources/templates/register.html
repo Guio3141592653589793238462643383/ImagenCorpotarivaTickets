@@ -155,17 +155,78 @@
     }
     select option { background: #fff; color: var(--text-primary); }
 
+    /* ── CUSTOM CHECKBOXES ── */
     .check-row {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.83rem;
-      color: var(--text-secondary);
+      gap: 0.75rem;
       margin-bottom: 1rem;
       cursor: pointer;
+      user-select: none;
     }
-    .check-row input[type=checkbox] { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
-    .habeas { align-items: flex-start; color: var(--text-muted); margin-bottom: 1.25rem; }
+    .check-row.habeas { align-items: flex-start; margin-bottom: 1.25rem; }
+
+    /* Ocultar el checkbox nativo */
+    .check-row input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    /* Caja visual custom */
+    .check-box {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .check-box::after {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 9px;
+      border: 2px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg) scale(0) translateY(-1px);
+      transition: transform 0.15s ease;
+    }
+
+    /* Estado hover */
+    .check-row:hover .check-box {
+      border-color: var(--accent);
+      background: rgba(14,165,233,0.06);
+    }
+
+    /* Estado checked — activado por JS */
+    .check-row.is-checked .check-box {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
+    }
+    .check-row.is-checked .check-box::after {
+      transform: rotate(45deg) scale(1) translateY(-1px);
+    }
+
+    /* Texto del label */
+    .check-label {
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .habeas .check-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
 
     .btn-primary {
       width: 100%;
@@ -183,7 +244,7 @@
     }
     .btn-primary:hover { filter: brightness(1.08); box-shadow: 0 6px 20px rgba(14,165,233,0.35); }
     .btn-primary:active { transform: scale(0.98); }
-    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; filter: none; }
 
     .btn-secondary {
       width: 100%;
@@ -248,14 +309,14 @@
     .deco-text h1 {
       font-size: 2rem;
       font-weight: 800;
-      color: var(--text-primary);   /* ← OSCURO */
+      color: var(--text-primary);
       letter-spacing: -0.02em;
       margin-bottom: 0.75rem;
     }
     .deco-text p {
       font-size: 0.9rem;
       line-height: 1.7;
-      color: var(--text-secondary); /* ← OSCURO */
+      color: var(--text-secondary);
     }
 
     @media (max-width: 768px) {
@@ -387,15 +448,17 @@
       </div>
 
       <!-- Mostrar contraseña -->
-      <label class="check-row">
-        <input type="checkbox" onclick="togglePasswordVisibility()">
-        <span>Mostrar contraseña</span>
+      <label class="check-row" id="togglePassRow">
+        <input type="checkbox" id="togglePassCb">
+        <span class="check-box"></span>
+        <span class="check-label">Mostrar contraseña</span>
       </label>
 
       <!-- Habeas Data -->
-      <label class="check-row habeas">
-        <input type="checkbox" id="habeasdata" required style="margin-top:3px; flex-shrink:0;">
-        <span>Autorizo el tratamiento de mis datos personales de acuerdo con la política de privacidad y la legislación de Habeas Data vigente en Colombia.</span>
+      <label class="check-row habeas" id="habeasRow">
+        <input type="checkbox" id="habeasdata" required>
+        <span class="check-box"></span>
+        <span class="check-label">Autorizo el tratamiento de mis datos personales de acuerdo con la política de privacidad y la legislación de Habeas Data vigente en Colombia.</span>
       </label>
 
       <!-- Botones -->
@@ -432,20 +495,37 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    window.togglePasswordVisibility = function () {
-      const password = document.getElementById("password");
-      const confirm  = document.getElementById("confirmPassword");
-      const type = password.type === "password" ? "text" : "password";
-      password.type = type;
-      confirm.type  = type;
-    };
 
-    const habeasCheckbox = document.getElementById("habeasdata");
-    const loginBtn = document.getElementById("LoginBt");
-    loginBtn.disabled = true;
-    habeasCheckbox.addEventListener("change", function () {
-      loginBtn.disabled = !this.checked;
+    /* ── Helper: sincronizar clase visual con estado real del checkbox ── */
+    function syncCheckbox(row, cb) {
+      cb.checked ? row.classList.add("is-checked") : row.classList.remove("is-checked");
+    }
+
+    /* ── Mostrar contraseña ── */
+    const togglePassRow = document.getElementById("togglePassRow");
+    const togglePassCb  = document.getElementById("togglePassCb");
+
+    togglePassRow.addEventListener("click", function () {
+      togglePassCb.checked = !togglePassCb.checked;
+      syncCheckbox(togglePassRow, togglePassCb);
+
+      const type = togglePassCb.checked ? "text" : "password";
+      document.getElementById("password").type = type;
+      document.getElementById("confirmPassword").type = type;
     });
+
+    /* ── Habeas Data ── */
+    const habeasRow = document.getElementById("habeasRow");
+    const habeasCb  = document.getElementById("habeasdata");
+    const loginBtn  = document.getElementById("LoginBt");
+    loginBtn.disabled = true;
+
+    habeasRow.addEventListener("click", function () {
+      habeasCb.checked = !habeasCb.checked;
+      syncCheckbox(habeasRow, habeasCb);
+      loginBtn.disabled = !habeasCb.checked;
+    });
+
   });
 </script>
 

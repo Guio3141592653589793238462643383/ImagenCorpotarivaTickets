@@ -33,82 +33,90 @@ public class EmailService {
                       * { margin: 0; padding: 0; box-sizing: border-box; }
                       body {
                         font-family: 'DM Sans', Helvetica, sans-serif;
-                        background-color: #F0EFEB;
+                        background-color: #F1F5F9;
                         padding: 40px 16px;
                         -webkit-font-smoothing: antialiased;
                       }
                       .wrapper { max-width: 620px; margin: 0 auto; }
                       .header {
-                        background-color: #1C1C1A;
+                        background-color: #3B82F6;
                         padding: 28px 40px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
                         border-radius: 8px 8px 0 0;
                       }
-                      .header img { max-height: 32px; width: auto; }
+                      .header-brand {
+                        font-family: 'DM Sans', sans-serif;
+                        font-size: 17px;
+                        font-weight: 600;
+                        color: #FFFFFF;
+                        letter-spacing: 0.02em;
+                        display: block;
+                        margin-bottom: 4px;
+                      }
                       .header-label {
                         font-family: 'DM Sans', sans-serif;
                         font-size: 11px;
                         font-weight: 500;
                         letter-spacing: 0.12em;
                         text-transform: uppercase;
-                        color: #8A8A82;
+                        color: #DBEAFE;
+                        display: block;
                       }
                       .body {
                         background-color: #FFFFFF;
-                        padding: 48px 40px;
-                        border-left: 1px solid #E5E4DF;
-                        border-right: 1px solid #E5E4DF;
+                        padding: 52px 40px;
+                        border-left: 1px solid #DBEAFE;
+                        border-right: 1px solid #DBEAFE;
                       }
                       .eyebrow {
                         font-size: 11px;
                         font-weight: 500;
                         letter-spacing: 0.12em;
                         text-transform: uppercase;
-                        color: #9A9A92;
-                        margin-bottom: 12px;
+                        color: #60A5FA;
+                        margin-bottom: 10px;
                       }
                       h1 {
                         font-family: 'Lora', Georgia, serif;
                         font-size: 26px;
                         font-weight: 600;
-                        color: #1C1C1A;
-                        line-height: 1.3;
-                        margin-bottom: 28px;
+                        color: #1E293B;
+                        line-height: 1.35;
+                        margin-bottom: 32px;
+                        padding-bottom: 24px;
+                        border-bottom: 1px solid #EFF6FF;
                       }
                       p {
                         font-size: 15px;
-                        line-height: 1.7;
-                        color: #4A4A45;
+                        line-height: 1.75;
+                        color: #475569;
                         margin-bottom: 16px;
                       }
                       .divider {
                         border: none;
-                        border-top: 1px solid #E5E4DF;
-                        margin: 28px 0;
+                        border-top: 1px solid #DBEAFE;
+                        margin: 32px 0;
                       }
                       .message-block {
-                        background-color: #F7F7F5;
-                        border-left: 3px solid #1C1C1A;
+                        background-color: #EFF6FF;
+                        border-left: 3px solid #60A5FA;
                         border-radius: 0 6px 6px 0;
                         padding: 20px 24px;
                         margin: 24px 0;
                         font-size: 15px;
-                        line-height: 1.7;
-                        color: #3A3A35;
+                        line-height: 1.75;
+                        color: #1D4ED8;
                       }
                       .signature {
                         font-size: 14px;
-                        color: #6A6A62;
+                        color: #64748B;
                         margin-top: 32px;
-                        line-height: 1.6;
+                        line-height: 1.7;
                       }
-                      .signature strong { color: #1C1C1A; font-weight: 500; }
+                      .signature strong { color: #1E293B; font-weight: 500; }
                       .footer {
-                        background-color: #F0EFEB;
+                        background-color: #EFF6FF;
                         padding: 24px 40px;
-                        border: 1px solid #E5E4DF;
+                        border: 1px solid #DBEAFE;
                         border-top: none;
                         border-radius: 0 0 8px 8px;
                         display: flex;
@@ -118,13 +126,13 @@ public class EmailService {
                       .footer-brand {
                         font-size: 12px;
                         font-weight: 500;
-                        color: #9A9A92;
+                        color: #60A5FA;
                         letter-spacing: 0.06em;
                         text-transform: uppercase;
                       }
                       .footer-meta {
                         font-size: 11px;
-                        color: #AEADA6;
+                        color: #93C5FD;
                       }
                       @media (max-width: 600px) {
                         .header, .body, .footer { padding: 24px 20px; }
@@ -136,7 +144,7 @@ public class EmailService {
                   <body>
                     <div class="wrapper">
                       <div class="header">
-                        <img src="https://www.australlens.com/images/logo-austral.png" alt="Austral Lens">
+                        <span class="header-brand">Austral Lens</span>
                         <span class="header-label">Soporte Imagen Corporativa</span>
                       </div>
 
@@ -144,7 +152,7 @@ public class EmailService {
                         <p class="eyebrow">Ticket #%3$d</p>
                         <h1>Respuesta a tu solicitud</h1>
 
-                        <p>Hola <strong style="color:#1C1C1A; font-weight:500;">%1$s</strong>,</p>
+                        <p>Hola <strong style="color:#1E293B; font-weight:500;">%1$s</strong>,</p>
                         <p>Nuestro equipo ha respondido tu ticket. A continuación encontrarás el mensaje:</p>
 
                         <div class="message-block">%2$s</div>
@@ -184,65 +192,67 @@ public class EmailService {
                       * { margin: 0; padding: 0; box-sizing: border-box; }
                       body {
                         font-family: 'DM Sans', Helvetica, sans-serif;
-                        background-color: #F0EFEB;
+                        background-color: #F1F5F9;
                         padding: 40px 16px;
                         -webkit-font-smoothing: antialiased;
                       }
                       .wrapper { max-width: 620px; margin: 0 auto; }
                       .header {
-                        background-color: #1C1C1A;
+                        background-color: #3B82F6;
                         padding: 28px 40px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
                         border-radius: 8px 8px 0 0;
                       }
                       .header-brand {
                         font-family: 'DM Sans', sans-serif;
-                        font-size: 14px;
-                        font-weight: 500;
+                        font-size: 17px;
+                        font-weight: 600;
                         color: #FFFFFF;
                         letter-spacing: 0.02em;
+                        display: block;
+                        margin-bottom: 4px;
                       }
                       .header-label {
                         font-size: 11px;
                         font-weight: 500;
                         letter-spacing: 0.12em;
                         text-transform: uppercase;
-                        color: #6A6A62;
+                        color: #DBEAFE;
+                        display: block;
                       }
                       .body {
                         background-color: #FFFFFF;
-                        padding: 48px 40px;
-                        border-left: 1px solid #E5E4DF;
-                        border-right: 1px solid #E5E4DF;
+                        padding: 52px 40px;
+                        border-left: 1px solid #DBEAFE;
+                        border-right: 1px solid #DBEAFE;
                       }
                       .eyebrow {
                         font-size: 11px;
                         font-weight: 500;
                         letter-spacing: 0.12em;
                         text-transform: uppercase;
-                        color: #9A9A92;
-                        margin-bottom: 12px;
+                        color: #60A5FA;
+                        margin-bottom: 10px;
                       }
                       h1 {
                         font-family: 'Lora', Georgia, serif;
                         font-size: 26px;
                         font-weight: 600;
-                        color: #1C1C1A;
-                        line-height: 1.3;
-                        margin-bottom: 28px;
+                        color: #1E293B;
+                        line-height: 1.35;
+                        margin-bottom: 32px;
+                        padding-bottom: 24px;
+                        border-bottom: 1px solid #EFF6FF;
                       }
                       p {
                         font-size: 15px;
-                        line-height: 1.7;
-                        color: #4A4A45;
+                        line-height: 1.75;
+                        color: #475569;
                         margin-bottom: 16px;
                       }
                       .btn-container { text-align: center; margin: 36px 0; }
                       .btn {
                         display: inline-block;
-                        background-color: #1C1C1A;
+                        background-color: #3B82F6;
                         color: #FFFFFF !important;
                         text-decoration: none;
                         padding: 14px 36px;
@@ -254,24 +264,24 @@ public class EmailService {
                       }
                       .note {
                         font-size: 13px;
-                        color: #AEADA6;
-                        line-height: 1.6;
+                        color: #94A3B8;
+                        line-height: 1.7;
                         text-align: center;
                       }
                       .divider {
                         border: none;
-                        border-top: 1px solid #E5E4DF;
-                        margin: 28px 0;
+                        border-top: 1px solid #DBEAFE;
+                        margin: 32px 0;
                       }
                       .footer {
-                        background-color: #F0EFEB;
+                        background-color: #EFF6FF;
                         padding: 20px 40px;
-                        border: 1px solid #E5E4DF;
+                        border: 1px solid #DBEAFE;
                         border-top: none;
                         border-radius: 0 0 8px 8px;
                         text-align: center;
                         font-size: 11px;
-                        color: #AEADA6;
+                        color: #93C5FD;
                         letter-spacing: 0.04em;
                       }
                       @media (max-width: 600px) {
@@ -292,7 +302,7 @@ public class EmailService {
                         <p class="eyebrow">Solicitud de acceso</p>
                         <h1>Recuperación de contraseña</h1>
 
-                        <p>Hola <strong style="color:#1C1C1A; font-weight:500;">%s</strong>,</p>
+                        <p>Hola <strong style="color:#1E293B; font-weight:500;">%s</strong>,</p>
                         <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta. Haz clic en el botón para continuar:</p>
 
                         <div class="btn-container">
@@ -332,50 +342,56 @@ public class EmailService {
                       * { margin: 0; padding: 0; box-sizing: border-box; }
                       body {
                         font-family: 'DM Sans', Helvetica, sans-serif;
-                        background-color: #F0EFEB;
+                        background-color: #F1F5F9;
                         padding: 40px 16px;
                         -webkit-font-smoothing: antialiased;
                       }
                       .wrapper { max-width: 620px; margin: 0 auto; }
                       .header {
-                        background-color: #1C1C1A;
+                        background-color: #3B82F6;
                         padding: 28px 40px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
                         border-radius: 8px 8px 0 0;
                       }
-                      .header img { max-height: 32px; width: auto; }
+                      .header-brand {
+                        font-family: 'DM Sans', sans-serif;
+                        font-size: 17px;
+                        font-weight: 600;
+                        color: #FFFFFF;
+                        letter-spacing: 0.02em;
+                        display: block;
+                        margin-bottom: 4px;
+                      }
                       .header-label {
                         font-size: 11px;
                         font-weight: 500;
                         letter-spacing: 0.12em;
                         text-transform: uppercase;
-                        color: #8A8A82;
+                        color: #DBEAFE;
+                        display: block;
                       }
                       .body {
                         background-color: #FFFFFF;
-                        padding: 48px 40px;
-                        border-left: 1px solid #E5E4DF;
-                        border-right: 1px solid #E5E4DF;
+                        padding: 52px 40px;
+                        border-left: 1px solid #DBEAFE;
+                        border-right: 1px solid #DBEAFE;
                         text-align: center;
                       }
                       .status-badge {
                         display: inline-block;
-                        background-color: #F0EFEB;
-                        border: 1px solid #D5D4CF;
+                        background-color: #EFF6FF;
+                        border: 1px solid #BFDBFE;
                         border-radius: 100px;
                         padding: 6px 16px;
                         font-size: 11px;
                         font-weight: 500;
                         letter-spacing: 0.1em;
                         text-transform: uppercase;
-                        color: #6A6A62;
+                        color: #3B82F6;
                         margin-bottom: 20px;
                       }
                       .status-badge::before {
                         content: "●";
-                        color: #5A8A5A;
+                        color: #22C55E;
                         margin-right: 6px;
                         font-size: 9px;
                       }
@@ -383,46 +399,48 @@ public class EmailService {
                         font-family: 'Lora', Georgia, serif;
                         font-size: 26px;
                         font-weight: 600;
-                        color: #1C1C1A;
-                        line-height: 1.3;
-                        margin-bottom: 24px;
+                        color: #1E293B;
+                        line-height: 1.35;
+                        margin-bottom: 32px;
+                        padding-bottom: 24px;
+                        border-bottom: 1px solid #EFF6FF;
                       }
                       p {
                         font-size: 15px;
-                        line-height: 1.7;
-                        color: #4A4A45;
+                        line-height: 1.75;
+                        color: #475569;
                         margin-bottom: 16px;
                       }
                       .ticket-ref {
                         display: inline-block;
                         font-size: 13px;
                         font-weight: 500;
-                        color: #1C1C1A;
-                        background-color: #F7F7F5;
-                        border: 1px solid #E5E4DF;
+                        color: #3B82F6;
+                        background-color: #EFF6FF;
+                        border: 1px solid #BFDBFE;
                         border-radius: 4px;
                         padding: 4px 10px;
                       }
                       .divider {
                         border: none;
-                        border-top: 1px solid #E5E4DF;
-                        margin: 28px 0;
+                        border-top: 1px solid #DBEAFE;
+                        margin: 32px 0;
                       }
                       .signature {
                         font-size: 14px;
-                        color: #6A6A62;
-                        line-height: 1.6;
+                        color: #64748B;
+                        line-height: 1.7;
                       }
-                      .signature strong { color: #1C1C1A; font-weight: 500; }
+                      .signature strong { color: #1E293B; font-weight: 500; }
                       .footer {
-                        background-color: #F0EFEB;
+                        background-color: #EFF6FF;
                         padding: 20px 40px;
-                        border: 1px solid #E5E4DF;
+                        border: 1px solid #DBEAFE;
                         border-top: none;
                         border-radius: 0 0 8px 8px;
                         text-align: center;
                         font-size: 11px;
-                        color: #AEADA6;
+                        color: #93C5FD;
                         letter-spacing: 0.04em;
                       }
                       @media (max-width: 600px) {
@@ -434,7 +452,7 @@ public class EmailService {
                   <body>
                     <div class="wrapper">
                       <div class="header">
-                        <img src="https://www.australlens.com/images/logo-austral.png" alt="Austral Lens">
+                        <span class="header-brand">Austral Lens</span>
                         <span class="header-label">Centro de Soporte Imagen Corporativa</span>
                       </div>
 
@@ -442,7 +460,7 @@ public class EmailService {
                         <span class="status-badge">Resuelto</span>
                         <h1>Tu ticket ha sido cerrado</h1>
 
-                        <p>Hola <strong style="color:#1C1C1A; font-weight:500;">%s</strong>,</p>
+                        <p>Hola <strong style="color:#1E293B; font-weight:500;">%s</strong>,</p>
                         <p>
                           El ticket <span class="ticket-ref">#%d</span> ha sido marcado como
                           cerrado por el equipo de soporte.
@@ -483,59 +501,67 @@ public class EmailService {
                       * { margin: 0; padding: 0; box-sizing: border-box; }
                       body {
                         font-family: 'DM Sans', Helvetica, sans-serif;
-                        background-color: #F0EFEB;
+                        background-color: #F1F5F9;
                         padding: 40px 16px;
                         -webkit-font-smoothing: antialiased;
                       }
                       .wrapper { max-width: 620px; margin: 0 auto; }
                       .header {
-                        background-color: #1C1C1A;
+                        background-color: #3B82F6;
                         padding: 28px 40px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
                         border-radius: 8px 8px 0 0;
                       }
-                      .header img { max-height: 32px; width: auto; }
+                      .header-brand {
+                        font-family: 'DM Sans', sans-serif;
+                        font-size: 17px;
+                        font-weight: 600;
+                        color: #FFFFFF;
+                        letter-spacing: 0.02em;
+                        display: block;
+                        margin-bottom: 4px;
+                      }
                       .header-label {
                         font-size: 11px;
                         font-weight: 500;
                         letter-spacing: 0.12em;
                         text-transform: uppercase;
-                        color: #8A8A82;
+                        color: #DBEAFE;
+                        display: block;
                       }
                       .body {
                         background-color: #FFFFFF;
-                        padding: 48px 40px;
-                        border-left: 1px solid #E5E4DF;
-                        border-right: 1px solid #E5E4DF;
+                        padding: 52px 40px;
+                        border-left: 1px solid #DBEAFE;
+                        border-right: 1px solid #DBEAFE;
                       }
                       .eyebrow {
                         font-size: 11px;
                         font-weight: 500;
                         letter-spacing: 0.12em;
                         text-transform: uppercase;
-                        color: #9A9A92;
-                        margin-bottom: 12px;
+                        color: #60A5FA;
+                        margin-bottom: 10px;
                       }
                       h1 {
                         font-family: 'Lora', Georgia, serif;
                         font-size: 26px;
                         font-weight: 600;
-                        color: #1C1C1A;
-                        line-height: 1.3;
-                        margin-bottom: 28px;
+                        color: #1E293B;
+                        line-height: 1.35;
+                        margin-bottom: 32px;
+                        padding-bottom: 24px;
+                        border-bottom: 1px solid #EFF6FF;
                       }
                       p {
                         font-size: 15px;
-                        line-height: 1.7;
-                        color: #4A4A45;
+                        line-height: 1.75;
+                        color: #475569;
                         margin-bottom: 16px;
                       }
                       .btn-container { text-align: center; margin: 36px 0; }
                       .btn {
                         display: inline-block;
-                        background-color: #1C1C1A;
+                        background-color: #3B82F6;
                         color: #FFFFFF !important;
                         text-decoration: none;
                         padding: 14px 36px;
@@ -547,31 +573,31 @@ public class EmailService {
                       }
                       .note {
                         font-size: 13px;
-                        color: #AEADA6;
-                        line-height: 1.6;
+                        color: #94A3B8;
+                        line-height: 1.7;
                         text-align: center;
                       }
                       .divider {
                         border: none;
-                        border-top: 1px solid #E5E4DF;
-                        margin: 28px 0;
+                        border-top: 1px solid #DBEAFE;
+                        margin: 32px 0;
                       }
                       .signature {
                         font-size: 14px;
-                        color: #6A6A62;
-                        line-height: 1.6;
+                        color: #64748B;
+                        line-height: 1.7;
                         margin-top: 28px;
                       }
-                      .signature strong { color: #1C1C1A; font-weight: 500; }
+                      .signature strong { color: #1E293B; font-weight: 500; }
                       .footer {
-                        background-color: #F0EFEB;
+                        background-color: #EFF6FF;
                         padding: 20px 40px;
-                        border: 1px solid #E5E4DF;
+                        border: 1px solid #DBEAFE;
                         border-top: none;
                         border-radius: 0 0 8px 8px;
                         text-align: center;
                         font-size: 11px;
-                        color: #AEADA6;
+                        color: #93C5FD;
                         letter-spacing: 0.04em;
                       }
                       @media (max-width: 600px) {
@@ -584,7 +610,7 @@ public class EmailService {
                   <body>
                     <div class="wrapper">
                       <div class="header">
-                        <img src="https://www.australlens.com/images/logo-austral.png" alt="Austral Lens">
+                        <span class="header-brand">Austral Lens</span>
                         <span class="header-label">Nueva cuenta</span>
                       </div>
 
@@ -592,7 +618,7 @@ public class EmailService {
                         <p class="eyebrow">Bienvenido</p>
                         <h1>Verifica tu cuenta</h1>
 
-                        <p>Hola <strong style="color:#1C1C1A; font-weight:500;">%s</strong>,</p>
+                        <p>Hola <strong style="color:#1E293B; font-weight:500;">%s</strong>,</p>
                         <p>Gracias por registrarte. Para activar tu cuenta haz clic en el siguiente botón:</p>
 
                         <div class="btn-container">

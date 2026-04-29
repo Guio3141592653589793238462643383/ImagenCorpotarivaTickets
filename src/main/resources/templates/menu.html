@@ -541,25 +541,15 @@
                             <option value="Educativo - Informativo">Educativo - Informativo</option>
                         </select>
                     </div>
+                    <!-- ================= PRODUCTOS ================= -->
                     <div>
-                        <label class="field-label">Producto</label>
-                        <select name="producto" class="input-field">
-                            <option value="">— Seleccionar —</option>
-                            <option>Hev Tech</option><option>Blue Balance</option><option>Sunbalance</option>
-                            <option>Next</option><option>ColorMatic 3 BIG</option><option>Norm - Rodenstock</option>
-                            <option>VIVIT</option><option>Neochromes</option><option>Nupolar</option>
-                            <option>Transitions</option><option>Fila 10</option><option>Mycon (Rodenstock)</option>
-                            <option>Polarmax</option><option>Antirreflejos</option>
-                            <option>Soluciones Digitales</option><option>Familia Steady</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="field-label">Cantidad</label>
-                        <select name="cantidad" class="input-field">
-                            <option value="">— Seleccionar —</option>
-                            <option>5</option><option>10</option><option>15</option><option>20</option>
-                            <option>25</option><option>30</option><option>40</option><option>50</option>
-                        </select>
+                        <label class="field-label">Productos solicitados</label>
+
+                        <div id="productos-container" style="display:flex;flex-direction:column;gap:8px;"></div>
+
+                        <button type="button" onclick="agregarProducto()" class="btn-secondary" style="margin-top:10px;width:100%;justify-content:center;">
+                            <i class="fas fa-plus"></i> Agregar producto
+                        </button>
                     </div>
                     <div>
                         <label class="field-label">Dimensiones <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-muted);font-size:.75rem;">(opcional)</span></label>
@@ -568,6 +558,7 @@
                             <input type="number" name="ancho" step="0.1" min="0" class="input-field" placeholder="Ancho (cm)">
                         </div>
                     </div>
+
                     <div class="nav-btns">
                         <button type="button" class="btn-secondary" id="btn-back-3"><i class="fas fa-arrow-left"></i> Atrás</button>
                         <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Enviar solicitud</button>
@@ -612,12 +603,21 @@
                                 <span th:text="${ticket.tipoDePregunta}">Categoría</span>
                             </p>
                             <div th:if="${ticket.solicitudMaterial != null}" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">
-                                <span th:if="${ticket.solicitudMaterial.producto != null and !ticket.solicitudMaterial.producto.isEmpty()}"
-                                      style="font-size:10px;padding:2px 8px;border-radius:9999px;background:rgba(14,165,233,0.08);color:#0284c7;border:1px solid rgba(14,165,233,0.2);"
-                                      th:text="${ticket.solicitudMaterial.producto}"></span>
-                                <span th:if="${ticket.solicitudMaterial.cantidad != null}"
-                                      style="font-size:10px;padding:2px 8px;border-radius:9999px;background:rgba(100,116,139,0.08);color:#475569;border:1px solid rgba(100,116,139,0.2);"
-                                      th:text="'Cant: ' + ${ticket.solicitudMaterial.cantidad}"></span>
+                                <div th:if="${ticket.solicitudMaterial != null and ticket.solicitudMaterial.productos != null}"
+                                     style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">
+
+    <span th:each="item : ${ticket.solicitudMaterial.productos}"
+          th:if="${item.productoId != null and !item.productoId.isEmpty()}"
+          style="font-size:10px;padding:2px 8px;border-radius:9999px;
+                 background:rgba(14,165,233,0.08);
+                 color:#0284c7;
+                 border:1px solid rgba(14,165,233,0.2);">
+
+        <span th:text="${item.productoId}"></span>
+        <span th:text="${item.cantidad != null ? ' ×' + item.cantidad : ''}"></span>
+
+    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -672,6 +672,55 @@
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script>
+    // ================= PRODUCTOS =================
+function agregarProducto() {
+    const container = document.getElementById('productos-container');
+
+    // evitar múltiples filas vacías
+    const filas = container.querySelectorAll('div');
+    for (let fila of filas) {
+        const select = fila.querySelector('select');
+        if (!select.value) {
+            select.focus();
+            return;
+        }
+    }
+
+    const div = document.createElement('div');
+    div.style.cssText = 'display:grid;grid-template-columns:1fr 100px 36px;gap:8px;align-items:center;';
+
+    div.innerHTML = `
+        <select name="productos[]" class="input-field">
+            <option value="">— Producto —</option>
+            <option>Hev Tech</option><option>Blue Balance</option><option>Sunbalance</option>
+            <option>Next</option><option>ColorMatic 3 BIG</option><option>Norm - Rodenstock</option>
+            <option>VIVIT</option><option>Neochromes</option><option>Nupolar</option>
+            <option>Transitions</option><option>Fila 10</option><option>Mycon (Rodenstock)</option>
+            <option>Polarmax</option><option>Antirreflejos</option>
+            <option>Soluciones Digitales</option><option>Familia Steady</option>
+        </select>
+
+        <select name="cantidadesProductos[]" class="input-field">
+            <option value="">Cant.</option>
+            <option>5</option><option>10</option><option>15</option><option>20</option>
+            <option>25</option><option>30</option><option>40</option><option>50</option>
+        </select>
+
+        <button type="button" onclick="this.closest('div').remove()"
+            style="width:36px;height:38px;border-radius:10px;border:1px solid var(--border);
+                   background:var(--surface-3);color:var(--text-muted);cursor:pointer;">✕</button>
+    `;
+
+    container.appendChild(div);
+}
+
+
+
+// 🔥 iniciar con 1 fila en cada sección
+document.addEventListener("DOMContentLoaded", () => {
+    agregarProducto();
+});
+
     const btn      = document.getElementById("btnNotificaciones");
     const dropdown = document.getElementById("dropdownNotificaciones");
     const lista    = document.getElementById("listaNotificaciones");

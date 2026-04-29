@@ -273,7 +273,7 @@
                 <div>
                     <p class="text-xs uppercase tracking-[0.18em]">Panel </p>
                     <h2 class="text-2xl md:text-3xl font-black">Gestión de Tickets</h2>
-                    <p class="text-xs md:text-sm">Administra todos los tickets registrados</p>
+                      <p class="text-xs md:text-sm">Administra todos los tickets registrados</p>
                 </div>
             </div>
 
@@ -300,6 +300,7 @@
 
         <form th:action="@{/admin/tickets/buscar}" method="get"
               class="al-card p-4 md:p-6 mb-6">
+            <input type="hidden" name="size" th:value="${size != null ? size : 10}">
 
             <h3 class="text-base md:text-lg font-black mb-4 al-section-title flex items-center gap-2">
                 <i class="fas fa-filter text-sm text-sky-600"></i> Filtros de Búsqueda
@@ -456,28 +457,64 @@ th:text="${ticket.atendidoPor != null} ? ${ticket.atendidoPor} : 'Sin asignar'"
                 </table>
             </div>
 
-            <div th:if="${pagina != null and pagina.totalPages > 1}" class="mt-6 flex justify-center">
-                <nav aria-label="Paginación de tickets">
-                    <ul class="flex -space-x-px text-sm"
-                        th:with="start=${pagina.number > 2} ? ${pagina.number - 2} : 0,
-                                 end=${pagina.number + 2} &lt; ${pagina.totalPages - 1} ? ${pagina.number + 2} : ${pagina.totalPages - 1}">
+            <div th:if="${pagina != null}" class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-slate-500"
+                   th:if="${pagina.totalElements > 0}"
+                   th:text="${'Mostrando ' + (pagina.number * pagina.size + 1) + '-' + (pagina.number * pagina.size + pagina.numberOfElements) + ' de ' + pagina.totalElements + ' tickets'}">
+                    Mostrando tickets
+                </p>
 
-
-                        <li th:if="${start > 0}">
-                            <span class="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100">...</span>
-                        </li>
-
-                        <li th:if="${end < pagina.totalPages - 1}">
-                            <span class="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100">...</span>
-                        </li>
+                <nav th:if="${pagina.totalPages > 1}" aria-label="Paginación de tickets">
+                    <ul class="flex flex-wrap justify-center -space-x-px text-sm"
+                        th:with="start=${pagina.number > 2 ? pagina.number - 2 : 0},
+                                 end=${pagina.number + 2 < pagina.totalPages - 1 ? pagina.number + 2 : pagina.totalPages - 1}">
 
                         <li>
-                            <span th:unless="${pagina.hasNext()}"
-                                  class="flex items-center justify-center w-9 h-9 text-slate-300 bg-white border border-sky-100 rounded-e-xl cursor-not-allowed">
-                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/></svg>
+                            <a th:if="${pagina.hasPrevious()}"
+                               th:href="@{/admin/tickets/buscar(page=${pagina.number - 1}, size=${size}, estado=${estado}, prioridad=${prioridad}, busqueda=${busqueda})}"
+                               class="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100 rounded-s-xl hover:bg-sky-50 hover:text-sky-700">
+                                <i class="fas fa-chevron-left text-xs"></i>
+                            </a>
+                            <span th:unless="${pagina.hasPrevious()}"
+                                  class="flex items-center justify-center w-9 h-9 text-slate-300 bg-white border border-sky-100 rounded-s-xl cursor-not-allowed">
+                                <i class="fas fa-chevron-left text-xs"></i>
                             </span>
                         </li>
 
+                        <li th:if="${start > 0}">
+                            <a th:href="@{/admin/tickets/buscar(page=0, size=${size}, estado=${estado}, prioridad=${prioridad}, busqueda=${busqueda})}"
+                               class="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100 hover:bg-sky-50 hover:text-sky-700">1</a>
+                        </li>
+                        <li th:if="${start > 1}">
+                            <span class="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100">...</span>
+                        </li>
+
+                        <li th:each="i : ${#numbers.sequence(start, end)}">
+                            <a th:href="@{/admin/tickets/buscar(page=${i}, size=${size}, estado=${estado}, prioridad=${prioridad}, busqueda=${busqueda})}"
+                               th:text="${i + 1}"
+                               th:class="${i == pagina.number ? 'al-page-active flex items-center justify-center w-9 h-9 font-semibold border border-sky-100' : 'flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100 hover:bg-sky-50 hover:text-sky-700'}"></a>
+                        </li>
+
+                        <li th:if="${end < pagina.totalPages - 2}">
+                            <span class="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100">...</span>
+                        </li>
+                        <li th:if="${end < pagina.totalPages - 1}">
+                            <a th:href="@{/admin/tickets/buscar(page=${pagina.totalPages - 1}, size=${size}, estado=${estado}, prioridad=${prioridad}, busqueda=${busqueda})}"
+                               th:text="${pagina.totalPages}"
+                               class="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100 hover:bg-sky-50 hover:text-sky-700"></a>
+                        </li>
+
+                        <li>
+                            <a th:if="${pagina.hasNext()}"
+                               th:href="@{/admin/tickets/buscar(page=${pagina.number + 1}, size=${size}, estado=${estado}, prioridad=${prioridad}, busqueda=${busqueda})}"
+                               class="flex items-center justify-center w-9 h-9 text-slate-500 bg-white border border-sky-100 rounded-e-xl hover:bg-sky-50 hover:text-sky-700">
+                                <i class="fas fa-chevron-right text-xs"></i>
+                            </a>
+                            <span th:unless="${pagina.hasNext()}"
+                                  class="flex items-center justify-center w-9 h-9 text-slate-300 bg-white border border-sky-100 rounded-e-xl cursor-not-allowed">
+                                <i class="fas fa-chevron-right text-xs"></i>
+                            </span>
+                        </li>
                     </ul>
                 </nav>
             </div>

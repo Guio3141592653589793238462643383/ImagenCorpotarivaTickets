@@ -5,6 +5,8 @@ import com.austral.back.model.Media;
 import com.austral.back.model.Ticket;
 import com.austral.back.model.TicketMedia;
 import com.austral.back.model.SolicitudMaterial;
+import com.austral.back.model.SolicitudMaterialItem;
+import com.austral.back.model.SolicitudProductoItem;
 import com.austral.back.model.Rol;
 import com.austral.back.dto.ComentarioDTO;
 import com.austral.back.repository.ComentarioRepository;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -67,6 +70,8 @@ public class TicketService {
                               Integer cantidad,
                               Double largo,
                               Double ancho,
+                              List<String> productos,
+                              List<String> cantidadesProductos,
                               boolean ayudaventasImpresos,
                               boolean listasDePrecios,
                               boolean muestrasLentes,
@@ -138,6 +143,21 @@ public class TicketService {
         solicitud.setVideosUsb(videosUsb);
         solicitud.setEsferos(esferos);
         solicitud.setHabladores(habladores);
+        solicitud.setProductos(crearProductosSolicitud(solicitud, producto, cantidad, productos, cantidadesProductos));
+        solicitud.setMateriales(crearMaterialesSolicitud(
+                solicitud,
+                ayudaventasImpresos,
+                listasDePrecios,
+                muestrasLentes,
+                regaloCorporativo,
+                materialCapacitaciones,
+                paniosMarcados,
+                libretaNotas,
+                reglillas,
+                videosUsb,
+                esferos,
+                habladores
+        ));
 
         ticket.setSolicitudMaterial(solicitud);
 
@@ -152,6 +172,98 @@ public class TicketService {
         );
 
         return ticketGuardado;
+    }
+
+    private List<SolicitudProductoItem> crearProductosSolicitud(SolicitudMaterial solicitud,
+                                                                String producto,
+                                                                Integer cantidad,
+                                                                List<String> productos,
+                                                                List<String> cantidadesProductos) {
+        List<SolicitudProductoItem> items = new ArrayList<>();
+
+        if (producto != null && !producto.isBlank()) {
+            agregarProducto(items, solicitud, producto, cantidad);
+        }
+
+        if (productos != null) {
+            for (int i = 0; i < productos.size(); i++) {
+                String productoActual = productos.get(i);
+                Integer cantidadActual = cantidadesProductos != null && i < cantidadesProductos.size()
+                        ? parseCantidad(cantidadesProductos.get(i))
+                        : null;
+                agregarProducto(items, solicitud, productoActual, cantidadActual);
+            }
+        }
+
+        return items;
+    }
+
+    private Integer parseCantidad(String valor) {
+        if (valor == null || valor.isBlank()) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(valor.trim());
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    private void agregarProducto(List<SolicitudProductoItem> items,
+                                 SolicitudMaterial solicitud,
+                                 String producto,
+                                 Integer cantidad) {
+        if (producto == null || producto.isBlank()) {
+            return;
+        }
+
+        SolicitudProductoItem item = new SolicitudProductoItem();
+        item.setSolicitud(solicitud);
+        item.setProductoId(producto.trim());
+        item.setCantidad(cantidad != null ? cantidad : 1);
+        items.add(item);
+    }
+
+    private List<SolicitudMaterialItem> crearMaterialesSolicitud(SolicitudMaterial solicitud,
+                                                                 boolean ayudaventasImpresos,
+                                                                 boolean listasDePrecios,
+                                                                 boolean muestrasLentes,
+                                                                 boolean regaloCorporativo,
+                                                                 boolean materialCapacitaciones,
+                                                                 boolean paniosMarcados,
+                                                                 boolean libretaNotas,
+                                                                 boolean reglillas,
+                                                                 boolean videosUsb,
+                                                                 boolean esferos,
+                                                                 boolean habladores) {
+        List<SolicitudMaterialItem> materiales = new ArrayList<>();
+        agregarMaterial(materiales, solicitud, ayudaventasImpresos, "Ayudaventas Impresos");
+        agregarMaterial(materiales, solicitud, listasDePrecios, "Listas de Precios");
+        agregarMaterial(materiales, solicitud, muestrasLentes, "Muestras de Lentes");
+        agregarMaterial(materiales, solicitud, regaloCorporativo, "Regalos Corporativos");
+        agregarMaterial(materiales, solicitud, materialCapacitaciones, "Material Capacitaciones");
+        agregarMaterial(materiales, solicitud, paniosMarcados, "Panos Marcados");
+        agregarMaterial(materiales, solicitud, libretaNotas, "Libreta de Notas");
+        agregarMaterial(materiales, solicitud, reglillas, "Reglillas");
+        agregarMaterial(materiales, solicitud, videosUsb, "Videos - USB");
+        agregarMaterial(materiales, solicitud, esferos, "Esferos");
+        agregarMaterial(materiales, solicitud, habladores, "Habladores");
+        return materiales;
+    }
+
+    private void agregarMaterial(List<SolicitudMaterialItem> materiales,
+                                 SolicitudMaterial solicitud,
+                                 boolean seleccionado,
+                                 String materialId) {
+        if (!seleccionado) {
+            return;
+        }
+
+        SolicitudMaterialItem item = new SolicitudMaterialItem();
+        item.setSolicitud(solicitud);
+        item.setMaterialId(materialId);
+        item.setCantidad(1);
+        materiales.add(item);
     }
 
     public Page<Ticket> obtenerTodosOrdenados(Pageable pageable) {
@@ -194,6 +306,32 @@ public class TicketService {
                         || t.getCorreoElectronico().toLowerCase().contains(busqueda.toLowerCase())
                         || t.getId().toString().contains(busqueda))
                 .toList();
+    }
+
+    public Page<Ticket> filtrarTickets(String estado, String prioridad, String busqueda, Pageable pageable) {
+        Specification<Ticket> spec = (root, query, cb) -> cb.conjunction();
+
+        if (estado != null && !estado.isBlank()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(cb.lower(root.get("estado")), estado.trim().toLowerCase()));
+        }
+
+        if (prioridad != null && !prioridad.isBlank()) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(cb.lower(root.get("priority")), prioridad.trim().toLowerCase()));
+        }
+
+        if (busqueda != null && !busqueda.isBlank()) {
+            String like = "%" + busqueda.trim().toLowerCase() + "%";
+            spec = spec.and((root, query, cb) -> cb.or(
+                    cb.like(cb.lower(root.get("correoElectronico")), like),
+                    cb.like(cb.lower(root.get("nombreCompleto")), like),
+                    cb.like(cb.lower(root.get("tema")), like),
+                    cb.like(root.get("id").as(String.class), like)
+            ));
+        }
+
+        return ticketRepository.findAll(spec, pageable);
     }
 
     /**

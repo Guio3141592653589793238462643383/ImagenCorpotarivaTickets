@@ -385,20 +385,6 @@
                                 </p>
                                 <p class="font-semibold text-gray-800" th:text="${s.decoracion}"></p>
                             </div>
-                            <div th:if="${s.producto != null and !s.producto.isEmpty()}"
-                                 class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                <p class="al-label mb-1 text-xs uppercase tracking-wide">
-                                    <i class="fas fa-glasses mr-1"></i> Producto
-                                </p>
-                                <p class="font-semibold text-gray-800" th:text="${s.producto}"></p>
-                            </div>
-                            <div th:if="${s.cantidad != null}"
-                                 class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                <p class="al-label mb-1 text-xs uppercase tracking-wide">
-                                    <i class="fas fa-sort-numeric-up mr-1"></i> Cantidad
-                                </p>
-                                <p class="font-semibold text-gray-800" th:text="${s.cantidad}"></p>
-                            </div>
                             <div th:if="${s.largo != null or s.ancho != null}"
                                  class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
                                 <p class="al-label mb-1 text-xs uppercase tracking-wide">
@@ -412,25 +398,37 @@
                             </div>
                         </div>
 
+                        <div th:if="${s.productos != null and !s.productos.isEmpty()}" class="mb-6">
+                            <p class="al-label text-xs uppercase tracking-wide mb-3">
+                                <i class="fas fa-glasses mr-1"></i> Productos solicitados
+                            </p>
+                            <div class="overflow-hidden rounded-2xl border border-gray-100">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-sky-50 text-sky-900">
+                                    <tr>
+                                        <th class="text-left px-4 py-3 font-semibold">Producto</th>
+                                        <th class="text-left px-4 py-3 font-semibold">Cantidad</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="productoItem : ${s.productos}" class="border-t border-gray-100">
+                                        <td class="px-4 py-3 text-gray-800 font-medium" th:text="${productoItem.productoId}"></td>
+                                        <td class="px-4 py-3 text-gray-700" th:text="${productoItem.cantidad}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                         <!-- Ítems seleccionados -->
-                        <div th:if="${s.ayudaventasImpresos or s.listasDePrecios or s.muestrasLentes or
-                                       s.regaloCorporativo or s.materialCapacitaciones or s.paniosMarcados or
-                                       s.libretaNotas or s.reglillas or s.videosUsb or s.esferos or s.habladores}">
+                        <div th:if="${s.materiales != null and !s.materiales.isEmpty()}">
                             <p class="al-label text-xs uppercase tracking-wide mb-3">
                                 <i class="fas fa-check-square mr-1"></i> Ítems solicitados
                             </p>
                             <div class="flex flex-wrap gap-2">
-                                <span th:if="${s.ayudaventasImpresos}"    class="badge">Ayudaventas Impresos</span>
-                                <span th:if="${s.listasDePrecios}"        class="badge">Listas de Precios</span>
-                                <span th:if="${s.muestrasLentes}"         class="badge">Muestras de Lentes</span>
-                                <span th:if="${s.regaloCorporativo}"      class="badge">Regalos Corporativos</span>
-                                <span th:if="${s.materialCapacitaciones}" class="badge">Material Capacitaciones</span>
-                                <span th:if="${s.paniosMarcados}"         class="badge">Paños Marcados</span>
-                                <span th:if="${s.libretaNotas}"           class="badge">Libretas de Notas</span>
-                                <span th:if="${s.reglillas}"              class="badge">Reglillas</span>
-                                <span th:if="${s.videosUsb}"              class="badge">Videos - USB</span>
-                                <span th:if="${s.esferos}"                class="badge">Esferos</span>
-                                <span th:if="${s.habladores}"             class="badge">Habladores</span>
+                                <span th:each="materialItem : ${s.materiales}"
+                                      class="badge"
+                                      th:text="${materialItem.materialId + ' x' + materialItem.cantidad}">Material</span>
                             </div>
                         </div>
                     </div>

@@ -322,6 +322,7 @@
         <!-- BUSCADOR -->
         <form method="get" th:action="@{/admin/usuarios}"
               class="al-card shadow-md p-4 md:p-6 mb-6">
+            <input type="hidden" name="size" th:value="${size != null ? size : 10}">
 
             <div class="flex flex-col sm:flex-row gap-3">
                 <input type="text"
@@ -467,11 +468,13 @@
             <!-- PAGINACIÓN FLOWBITE -->
             <div th:if="${pagina.totalPages > 1}" class="flex justify-center mb-6">
                 <nav aria-label="Paginación de usuarios">
-                    <ul class="flex -space-x-px text-sm">
+                    <ul class="flex flex-wrap justify-center -space-x-px text-sm"
+                        th:with="start=${pagina.number > 2 ? pagina.number - 2 : 0},
+                                 end=${pagina.number + 2 < pagina.totalPages - 1 ? pagina.number + 2 : pagina.totalPages - 1}">
 
                         <li>
                             <a th:if="${pagina.hasPrevious()}"
-                               th:href="@{/admin/usuarios(page=${pagina.number - 1}, buscar=${buscar})}"
+                               th:href="@{/admin/usuarios(page=${pagina.number - 1}, size=${size}, buscar=${buscar})}"
                                class="flex items-center justify-center w-9 h-9 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-sky-50 hover:text-sky-700 transition">
                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/>
@@ -485,23 +488,40 @@
                         </span>
                         </li>
 
-                        <li th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}">
+                        <li th:if="${start > 0}">
+                            <a th:href="@{/admin/usuarios(page=0, size=${size}, buscar=${buscar})}"
+                               class="flex items-center justify-center w-9 h-9 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-sky-50 hover:text-sky-700 transition">1</a>
+                        </li>
+                        <li th:if="${start > 1}">
+                            <span class="flex items-center justify-center w-9 h-9 leading-tight text-gray-500 bg-white border border-gray-300">...</span>
+                        </li>
+
+                        <li th:each="i : ${#numbers.sequence(start, end)}">
                             <a th:if="${i == pagina.number}"
-                               th:href="@{/admin/usuarios(page=${i}, buscar=${buscar})}"
+                               th:href="@{/admin/usuarios(page=${i}, size=${size}, buscar=${buscar})}"
                                th:text="${i + 1}"
                                aria-current="page"
                                class="al-page-active flex items-center justify-center w-9 h-9 font-semibold transition">
                             </a>
                             <a th:if="${i != pagina.number}"
-                               th:href="@{/admin/usuarios(page=${i}, buscar=${buscar})}"
+                               th:href="@{/admin/usuarios(page=${i}, size=${size}, buscar=${buscar})}"
                                th:text="${i + 1}"
                                class="flex items-center justify-center w-9 h-9 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-sky-50 hover:text-sky-700 transition">
                             </a>
                         </li>
 
+                        <li th:if="${end < pagina.totalPages - 2}">
+                            <span class="flex items-center justify-center w-9 h-9 leading-tight text-gray-500 bg-white border border-gray-300">...</span>
+                        </li>
+                        <li th:if="${end < pagina.totalPages - 1}">
+                            <a th:href="@{/admin/usuarios(page=${pagina.totalPages - 1}, size=${size}, buscar=${buscar})}"
+                               th:text="${pagina.totalPages}"
+                               class="flex items-center justify-center w-9 h-9 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-sky-50 hover:text-sky-700 transition"></a>
+                        </li>
+
                         <li>
                             <a th:if="${pagina.hasNext()}"
-                               th:href="@{/admin/usuarios(page=${pagina.number + 1}, buscar=${buscar})}"
+                               th:href="@{/admin/usuarios(page=${pagina.number + 1}, size=${size}, buscar=${buscar})}"
                                class="flex items-center justify-center w-9 h-9 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-sky-50 hover:text-sky-700 transition">
                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>

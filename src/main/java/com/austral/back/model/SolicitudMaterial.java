@@ -6,12 +6,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "solicitudes_material")
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(exclude = "ticket")
+@ToString(exclude = {"ticket", "productos", "materiales"})
 public class SolicitudMaterial {
 
     @Id
@@ -44,4 +47,10 @@ public class SolicitudMaterial {
     private boolean videosUsb;
     private boolean esferos;
     private boolean habladores;
+
+    @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SolicitudProductoItem> productos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SolicitudMaterialItem> materiales = new ArrayList<>();
 }

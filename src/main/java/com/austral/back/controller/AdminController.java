@@ -26,7 +26,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.List;
 import java.time.LocalDate;
 
 @Controller
@@ -89,12 +88,15 @@ public class AdminController {
             @RequestParam(defaultValue = "10") int size,
             Model model) {
 
+        page = Math.max(page, 0);
+        size = normalizarSize(size);
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Usuario> paginaUsuarios = adminUsuarioService.obtenerUsuariosConBusqueda(buscar, pageable);
 
         model.addAttribute("usuarios", paginaUsuarios.getContent());
         model.addAttribute("pagina", paginaUsuarios);
         model.addAttribute("buscar", buscar);
+        model.addAttribute("size", size);
         model.addAttribute("totalTickets", ticketService.obtenerTodosOrdenados().size());
 
         return "admin/usuarios";
@@ -113,11 +115,14 @@ public class AdminController {
     public String verTodosLosTickets(@RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "10") int size,
                                      Model model) {
+        page = Math.max(page, 0);
+        size = normalizarSize(size);
         Pageable pageable = PageRequest.of(page, size, Sort.by("marcaTemporal").descending());
         Page<Ticket> pagina = ticketService.obtenerTodosOrdenados(pageable);
 
         model.addAttribute("tickets", pagina.getContent());
         model.addAttribute("pagina", pagina);
+        model.addAttribute("size", size);
 
         return "admin/admin";
     }
@@ -129,10 +134,21 @@ public class AdminController {
             @RequestParam(required = false) String estado,
             @RequestParam(required = false) String prioridad,
             @RequestParam(required = false) String busqueda,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             Model model) {
 
-        List<Ticket> tickets = ticketService.filtrarTickets(estado, prioridad, busqueda);
-        model.addAttribute("tickets", tickets);
+        page = Math.max(page, 0);
+        size = normalizarSize(size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("marcaTemporal").descending());
+        Page<Ticket> pagina = ticketService.filtrarTickets(estado, prioridad, busqueda, pageable);
+
+        model.addAttribute("tickets", pagina.getContent());
+        model.addAttribute("pagina", pagina);
+        model.addAttribute("estado", estado);
+        model.addAttribute("prioridad", prioridad);
+        model.addAttribute("busqueda", busqueda);
+        model.addAttribute("size", size);
         return "admin/admin";
     }
 
@@ -314,6 +330,13 @@ public class AdminController {
             return "ADMIN";
         }
 
+    }
+
+    private int normalizarSize(int size) {
+        if (size <= 0) {
+            return 10;
+        }
+        return Math.min(size, 100);
     }
 
 }

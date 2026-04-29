@@ -372,20 +372,30 @@
                 currentStep = step;
             }
 
-            document.getElementById('btn-next-1').addEventListener('click', () => {
+            function validarDatosFinales() {
                 const tema = document.querySelector('[name="tema"]');
                 const desc = document.querySelector('[name="descripcion"]');
                 if (!tema.value.trim() || !desc.value.trim()) {
                     tema.style.borderColor = '#ef4444';
                     desc.style.borderColor = '#ef4444';
                     setTimeout(() => { tema.style.borderColor = ''; desc.style.borderColor = ''; }, 2000);
-                    return;
+                    return false;
                 }
+                return true;
+            }
+
+            document.getElementById('btn-next-1').addEventListener('click', () => {
                 goTo(2);
             });
             document.getElementById('btn-back-2').addEventListener('click', () => goTo(1));
             document.getElementById('btn-next-2').addEventListener('click', () => goTo(3));
             document.getElementById('btn-back-3').addEventListener('click', () => goTo(2));
+            document.getElementById('ticket-form').addEventListener('submit', (event) => {
+                if (!validarDatosFinales()) {
+                    event.preventDefault();
+                    goTo(3);
+                }
+            });
 
             goTo(1);
         });
@@ -481,34 +491,6 @@
 
                 <!-- PASO 1 -->
                 <div class="form-step active" id="step-1">
-                    <div>
-                        <label class="field-label">Asunto <span class="req">*</span></label>
-                        <input type="text" name="tema" class="input-field" placeholder="Describe brevemente la solicitud…">
-                    </div>
-                    <div>
-                        <label class="field-label">Descripción detallada <span class="req">*</span></label>
-                        <textarea name="descripcion" class="input-field" style="height:100px;resize:none;" placeholder="Explica el contexto, para qué evento, punto de venta, etc."></textarea>
-                    </div>
-                    <div>
-                        <label class="field-label">Evidencias / Referencia visual</label>
-                        <div id="drop-zone">
-                            <div class="icon-pill" style="margin:0 auto 12px;">
-                                <i class="fas fa-cloud-upload-alt" style="color:var(--accent);font-size:14px;"></i>
-                            </div>
-                            <p style="font-size:.8125rem;font-weight:500;color:var(--text-secondary);">Arrastra archivos aquí o haz clic</p>
-                            <p style="font-size:.75rem;color:var(--text-muted);margin-top:4px;">Imágenes o videos · Máx. 10 MB · Máx. 5 archivos</p>
-                            <input type="file" name="archivos" id="file-input" multiple class="hidden" accept="image/*,video/*">
-                            <div id="file-name-preview" style="margin-top:10px;font-size:.75rem;font-weight:600;color:var(--accent);"></div>
-                            <div id="file-error"        style="margin-top:8px;font-size:.75rem;font-weight:600;color:#ef4444;" class="hidden"></div>
-                        </div>
-                    </div>
-                    <div class="nav-btns" style="justify-content:flex-end;">
-                        <button type="button" class="btn-primary" id="btn-next-1">Siguiente <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                </div>
-
-                <!-- PASO 2 -->
-                <div class="form-step" id="step-2">
                     <div><span class="section-divider">¿Qué necesitan?</span></div>
                     <div class="checkbox-grid">
                         <label class="checkbox-item"><input type="checkbox" name="ayudaventasImpresos"><span class="check-box"></span><span class="checkbox-label">Ayudaventas impresos</span></label>
@@ -523,14 +505,13 @@
                         <label class="checkbox-item"><input type="checkbox" name="esferos"><span class="check-box"></span><span class="checkbox-label">Esferos</span></label>
                         <label class="checkbox-item"><input type="checkbox" name="habladores"><span class="check-box"></span><span class="checkbox-label">Habladores</span></label>
                     </div>
-                    <div class="nav-btns">
-                        <button type="button" class="btn-secondary" id="btn-back-2"><i class="fas fa-arrow-left"></i> Atrás</button>
-                        <button type="button" class="btn-primary"   id="btn-next-2">Siguiente <i class="fas fa-arrow-right"></i></button>
+                    <div class="nav-btns" style="justify-content:flex-end;">
+                        <button type="button" class="btn-primary" id="btn-next-1">Siguiente <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
 
-                <!-- PASO 3 -->
-                <div class="form-step" id="step-3">
+                <!-- PASO 2 -->
+                <div class="form-step" id="step-2">
                     <div><span class="section-divider">Detalles del material</span></div>
                     <div>
                         <label class="field-label">Decoración</label>
@@ -559,6 +540,36 @@
                         </div>
                     </div>
 
+                    <div class="nav-btns">
+                        <button type="button" class="btn-secondary" id="btn-back-2"><i class="fas fa-arrow-left"></i> Atrás</button>
+                        <button type="button" class="btn-primary" id="btn-next-2">Siguiente <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- PASO 3 -->
+                <div class="form-step" id="step-3">
+                    <div><span class="section-divider">Información final de la solicitud</span></div>
+                    <div>
+                        <label class="field-label">Asunto <span class="req">*</span></label>
+                        <input type="text" name="tema" class="input-field" placeholder="Describe brevemente la solicitud…">
+                    </div>
+                    <div>
+                        <label class="field-label">Descripción detallada <span class="req">*</span></label>
+                        <textarea name="descripcion" class="input-field" style="height:100px;resize:none;" placeholder="Explica el contexto, para qué evento, punto de venta, etc."></textarea>
+                    </div>
+                    <div>
+                        <label class="field-label">Evidencias / Referencia visual</label>
+                        <div id="drop-zone">
+                            <div class="icon-pill" style="margin:0 auto 12px;">
+                                <i class="fas fa-cloud-upload-alt" style="color:var(--accent);font-size:14px;"></i>
+                            </div>
+                            <p style="font-size:.8125rem;font-weight:500;color:var(--text-secondary);">Arrastra archivos aquí o haz clic</p>
+                            <p style="font-size:.75rem;color:var(--text-muted);margin-top:4px;">Imágenes o videos · Máx. 10 MB · Máx. 5 archivos</p>
+                            <input type="file" name="archivos" id="file-input" multiple class="hidden" accept="image/*,video/*">
+                            <div id="file-name-preview" style="margin-top:10px;font-size:.75rem;font-weight:600;color:var(--accent);"></div>
+                            <div id="file-error"        style="margin-top:8px;font-size:.75rem;font-weight:600;color:#ef4444;" class="hidden"></div>
+                        </div>
+                    </div>
                     <div class="nav-btns">
                         <button type="button" class="btn-secondary" id="btn-back-3"><i class="fas fa-arrow-left"></i> Atrás</button>
                         <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Enviar solicitud</button>
@@ -695,7 +706,7 @@ function agregarProducto() {
             <option>Hev Tech</option><option>Blue Balance</option><option>Sunbalance</option>
             <option>Next</option><option>ColorMatic 3 BIG</option><option>Norm - Rodenstock</option>
             <option>VIVIT</option><option>Neochromes</option><option>Nupolar</option>
-            <option>Transitions</option><option>Fila 10</option><option>Mycon (Rodenstock)</option>
+            <option>Transitions</option><option>Myohelp</option><option>Mycon (Rodenstock)</option>
             <option>Polarmax</option><option>Antirreflejos</option>
             <option>Soluciones Digitales</option><option>Familia Steady</option>
         </select>

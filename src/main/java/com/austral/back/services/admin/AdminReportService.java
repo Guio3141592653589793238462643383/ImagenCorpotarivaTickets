@@ -21,7 +21,7 @@ public class AdminReportService {
     private static final List<String> PRODUCTOS_CATALOGO = List.of(
             "Hev Tech", "Blue Balance", "Sunbalance", "Next", "ColorMatic 3 BIG",
             "Norm - Rodenstock", "VIVIT", "Neochromes", "Nupolar", "Transitions",
-            "Fila 10", "Mycon (Rodenstock)", "Polarmax", "Antirreflejos",
+            "Myohelp", "Mycon (Rodenstock)", "Polarmax", "Antirreflejos",
             "Soluciones Digitales", "Familia Steady"
     );
 

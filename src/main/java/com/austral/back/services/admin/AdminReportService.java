@@ -19,10 +19,10 @@ import java.util.*;
 public class AdminReportService {
 
     private static final List<String> PRODUCTOS_CATALOGO = List.of(
-            "Hev Tech", "Blue Balance", "Sunbalance", "Next", "ColorMatic 3 BIG",
+            "Hev Tech", "Blue Balance", "Sunbalance", "Next", "ColorMatic 3",
             "Norm - Rodenstock", "VIVIT", "Neochromes", "Nupolar", "Transitions",
             "Myohelp", "Mycon (Rodenstock)", "Polarmax", "Antirreflejos",
-            "Soluciones Digitales", "Familia Steady"
+            "Soluciones Digitales", "Familia Steady", "Sunbalance Next", "BIG Norm Rodenstock"
     );
 
     private final TicketService ticketService;
@@ -232,7 +232,7 @@ public class AdminReportService {
             for (SolicitudProductoItem item : obtenerProductosReporte(solicitud)) {
                 Row row = hoja.createRow(rowNum++);
                 row.createCell(0).setCellValue(item.getId() != null ? item.getId() : productoRowId);
-                row.createCell(1).setCellValue(solicitud.getId() != null ? solicitud.getId() : 0);
+                row.createCell(1).setCellValue(Optional.ofNullable(t.getId()).orElse(0));
                 row.createCell(2).setCellValue(Optional.ofNullable(item.getProductoId()).orElse(""));
                 row.createCell(3).setCellValue(Optional.ofNullable(item.getCantidad()).orElse(0));
                 productoRowId++;
@@ -252,7 +252,7 @@ public class AdminReportService {
             for (SolicitudMaterialItem item : obtenerMaterialesReporte(solicitud)) {
                 Row row = hoja.createRow(rowNum++);
                 row.createCell(0).setCellValue(item.getId() != null ? item.getId() : materialRowId);
-                row.createCell(1).setCellValue(solicitud.getId() != null ? solicitud.getId() : 0);
+                row.createCell(1).setCellValue(Optional.ofNullable(t.getId()).orElse(0));
                 row.createCell(2).setCellValue(Optional.ofNullable(item.getMaterialId()).orElse(""));
                 row.createCell(3).setCellValue(Optional.ofNullable(item.getCantidad()).orElse(0));
                 materialRowId++;
@@ -301,7 +301,7 @@ public class AdminReportService {
 
             for (SolicitudProductoItem item : obtenerProductosReporte(solicitud)) {
                 String producto = Optional.ofNullable(item.getProductoId()).orElse("").trim();
-                if (producto.isEmpty()) {
+                if (producto.isEmpty() || "No aplica".equalsIgnoreCase(producto)) {
                     continue;
                 }
                 int cantidad = Optional.ofNullable(item.getCantidad()).orElse(0);

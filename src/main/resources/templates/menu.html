@@ -372,25 +372,102 @@
                 currentStep = step;
             }
 
+            function marcarError(element) {
+                element.style.borderColor = '#ef4444';
+                element.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.12)';
+                setTimeout(() => {
+                    element.style.borderColor = '';
+                    element.style.boxShadow = '';
+                }, 2200);
+            }
+
+            function validarMateriales() {
+                const checkboxes = [...document.querySelectorAll('#step-1 input[type="checkbox"]')];
+                const algunoMarcado = checkboxes.some(cb => cb.checked);
+                const otrosCheck = document.getElementById('otrosCheck');
+                const otrosInput = document.getElementById('otrosInput');
+
+                if (!algunoMarcado) {
+                    marcarError(document.querySelector('#step-1 .checkbox-grid'));
+                    return false;
+                }
+
+                if (otrosCheck && otrosCheck.checked && (!otrosInput || !otrosInput.value.trim())) {
+                    marcarError(otrosInput);
+                    otrosInput.focus();
+                    return false;
+                }
+
+                return true;
+            }
+
+            function validarDetallesMaterial() {
+                const decoracion = document.querySelector('[name="decoracion"]');
+                const filas = [...document.querySelectorAll('#productos-container > div')];
+                let hayProductoValido = false;
+
+                if (!decoracion.value) {
+                    marcarError(decoracion);
+                    decoracion.focus();
+                    return false;
+                }
+
+                for (const fila of filas) {
+                    const producto = fila.querySelector('select[name="productos[]"]');
+                    const cantidad = fila.querySelector('select[name="cantidadesProductos[]"]');
+
+                    if (producto && producto.value) {
+                        hayProductoValido = true;
+                        if (producto.value !== 'No aplica' && (!cantidad || !cantidad.value)) {
+                            marcarError(cantidad);
+                            cantidad.focus();
+                            return false;
+                        }
+                    }
+                }
+
+                if (!hayProductoValido) {
+                    const primerProducto = document.querySelector('#productos-container select[name="productos[]"]');
+                    if (primerProducto) {
+                        marcarError(primerProducto);
+                        primerProducto.focus();
+                    }
+                    return false;
+                }
+
+                return true;
+            }
+
             function validarDatosFinales() {
                 const tema = document.querySelector('[name="tema"]');
                 const desc = document.querySelector('[name="descripcion"]');
                 if (!tema.value.trim() || !desc.value.trim()) {
-                    tema.style.borderColor = '#ef4444';
-                    desc.style.borderColor = '#ef4444';
-                    setTimeout(() => { tema.style.borderColor = ''; desc.style.borderColor = ''; }, 2000);
+                    marcarError(tema);
+                    marcarError(desc);
                     return false;
                 }
                 return true;
             }
 
             document.getElementById('btn-next-1').addEventListener('click', () => {
-                goTo(2);
+                if (validarMateriales()) goTo(2);
             });
             document.getElementById('btn-back-2').addEventListener('click', () => goTo(1));
-            document.getElementById('btn-next-2').addEventListener('click', () => goTo(3));
+            document.getElementById('btn-next-2').addEventListener('click', () => {
+                if (validarDetallesMaterial()) goTo(3);
+            });
             document.getElementById('btn-back-3').addEventListener('click', () => goTo(2));
             document.getElementById('ticket-form').addEventListener('submit', (event) => {
+                if (!validarMateriales()) {
+                    event.preventDefault();
+                    goTo(1);
+                    return;
+                }
+                if (!validarDetallesMaterial()) {
+                    event.preventDefault();
+                    goTo(2);
+                    return;
+                }
                 if (!validarDatosFinales()) {
                     event.preventDefault();
                     goTo(3);
@@ -504,6 +581,25 @@
                         <label class="checkbox-item"><input type="checkbox" name="videosUsb"><span class="check-box"></span><span class="checkbox-label">Videos - USB</span></label>
                         <label class="checkbox-item"><input type="checkbox" name="esferos"><span class="check-box"></span><span class="checkbox-label">Esferos</span></label>
                         <label class="checkbox-item"><input type="checkbox" name="habladores"><span class="check-box"></span><span class="checkbox-label">Habladores</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="ViniloBannerRetablo"><span class="check-box"></span><span class="checkbox-label">Vinilo Banner Retablo</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="Bolsas"><span class="check-box"></span><span class="checkbox-label">Bolsas</span></label>
+                        <label class="checkbox-item"><input type="checkbox" id="noAplicaMaterial" name="noAplicaMaterial"><span class="check-box"></span><span class="checkbox-label">No aplica</span></label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="otrosCheck" name="otros">
+                            <span class="check-box"></span>
+                            <span class="checkbox-label">Otros</span>
+                        </label>
+
+                        <!-- Input que aparece -->
+                        <div id="otrosContainer" style="display:none; margin-top: 8px;">
+                            <input
+                                    type="text"
+                                    id="otrosInput"
+                                    name="otrosDetalle"
+                                    placeholder="Especifica..."
+                                    style="width: 100%; padding: 6px;"
+                            >
+                        </div>
                     </div>
                     <div class="nav-btns" style="justify-content:flex-end;">
                         <button type="button" class="btn-primary" id="btn-next-1">Siguiente <i class="fas fa-arrow-right"></i></button>
@@ -517,6 +613,7 @@
                         <label class="field-label">Decoración</label>
                         <select name="decoracion" class="input-field">
                             <option value="">— Seleccionar —</option>
+                            <option value="No aplica">No aplica</option>
                             <option value="Decoracion local">Decoración local</option>
                             <option value="Mostrar producto">Mostrar producto</option>
                             <option value="Educativo - Informativo">Educativo - Informativo</option>
@@ -683,6 +780,47 @@
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script>
+const otrosCheck = document.getElementById('otrosCheck');
+const otrosContainer = document.getElementById('otrosContainer');
+const otrosInput = document.getElementById('otrosInput');
+const noAplicaMaterial = document.getElementById('noAplicaMaterial');
+
+if (otrosCheck && otrosContainer && otrosInput) {
+    otrosCheck.addEventListener('change', () => {
+        if (otrosCheck.checked) {
+            otrosContainer.style.display = 'block';
+            otrosInput.required = true;
+        } else {
+            otrosContainer.style.display = 'none';
+            otrosInput.value = '';
+            otrosInput.required = false;
+        }
+    });
+}
+
+if (noAplicaMaterial) {
+    const materialChecks = [...document.querySelectorAll('#step-1 input[type="checkbox"]')]
+        .filter(cb => cb !== noAplicaMaterial);
+
+    noAplicaMaterial.addEventListener('change', () => {
+        if (!noAplicaMaterial.checked) return;
+        materialChecks.forEach(cb => {
+            cb.checked = false;
+            cb.closest('.checkbox-item')?.classList.remove('checked');
+        });
+        if (otrosContainer && otrosInput) {
+            otrosContainer.style.display = 'none';
+            otrosInput.value = '';
+            otrosInput.required = false;
+        }
+    });
+
+    materialChecks.forEach(cb => cb.addEventListener('change', () => {
+        if (!cb.checked) return;
+        noAplicaMaterial.checked = false;
+        noAplicaMaterial.closest('.checkbox-item')?.classList.remove('checked');
+    }));
+}
     // ================= PRODUCTOS =================
 function agregarProducto() {
     const container = document.getElementById('productos-container');
@@ -703,12 +841,13 @@ function agregarProducto() {
     div.innerHTML = `
         <select name="productos[]" class="input-field">
             <option value="">— Producto —</option>
+            <option>No aplica</option>
             <option>Hev Tech</option><option>Blue Balance</option><option>Sunbalance</option>
-            <option>Next</option><option>ColorMatic 3 BIG</option><option>Norm - Rodenstock</option>
+            <option>ColorMatic 3</option><option>Norm - Rodenstock</option>
             <option>VIVIT</option><option>Neochromes</option><option>Nupolar</option>
             <option>Transitions</option><option>Myohelp</option><option>Mycon (Rodenstock)</option>
             <option>Polarmax</option><option>Antirreflejos</option>
-            <option>Soluciones Digitales</option><option>Familia Steady</option>
+            <option>Soluciones Digitales</option><option>Familia Steady</option><option>Sunbalance Next</option><option>BIG Norm Rodenstock</option>
         </select>
 
         <select name="cantidadesProductos[]" class="input-field">

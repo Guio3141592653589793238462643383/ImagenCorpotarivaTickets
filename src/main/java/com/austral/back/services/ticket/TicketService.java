@@ -83,7 +83,12 @@ public class TicketService {
                               boolean reglillas,
                               boolean videosUsb,
                               boolean esferos,
-                              boolean habladores) throws Exception {
+                              boolean habladores,
+                              boolean ViniloBannerRetablo,
+                              boolean Bolsas,
+                              boolean otros,
+                              String otrosDetalle,
+                              boolean noAplicaMaterial) throws Exception {
 
         File directory = new File(uploadDir);
         if (!directory.exists()) {
@@ -156,7 +161,12 @@ public class TicketService {
                 reglillas,
                 videosUsb,
                 esferos,
-                habladores
+                habladores,
+                ViniloBannerRetablo,
+                Bolsas,
+                otros,
+                otrosDetalle,
+                noAplicaMaterial
         ));
 
         ticket.setSolicitudMaterial(solicitud);
@@ -220,7 +230,7 @@ public class TicketService {
         SolicitudProductoItem item = new SolicitudProductoItem();
         item.setSolicitud(solicitud);
         item.setProductoId(producto.trim());
-        item.setCantidad(cantidad != null ? cantidad : 1);
+        item.setCantidad("No aplica".equalsIgnoreCase(producto.trim()) ? 0 : (cantidad != null ? cantidad : 1));
         items.add(item);
     }
 
@@ -235,8 +245,17 @@ public class TicketService {
                                                                  boolean reglillas,
                                                                  boolean videosUsb,
                                                                  boolean esferos,
-                                                                 boolean habladores) {
+                                                                 boolean habladores,
+                                                                 boolean ViniloBannerRetablo,
+                                                                 boolean Bolsas,
+                                                                 boolean otros,
+                                                                 String otrosDetalle,
+                                                                 boolean noAplicaMaterial) {
         List<SolicitudMaterialItem> materiales = new ArrayList<>();
+        if (noAplicaMaterial) {
+            agregarMaterial(materiales, solicitud, true, "No aplica", 0);
+            return materiales;
+        }
         agregarMaterial(materiales, solicitud, ayudaventasImpresos, "Ayudaventas Impresos");
         agregarMaterial(materiales, solicitud, listasDePrecios, "Listas de Precios");
         agregarMaterial(materiales, solicitud, muestrasLentes, "Muestras de Lentes");
@@ -248,6 +267,14 @@ public class TicketService {
         agregarMaterial(materiales, solicitud, videosUsb, "Videos - USB");
         agregarMaterial(materiales, solicitud, esferos, "Esferos");
         agregarMaterial(materiales, solicitud, habladores, "Habladores");
+        agregarMaterial(materiales, solicitud, ViniloBannerRetablo, "Vinilo Banner Retablo");
+        agregarMaterial(materiales, solicitud, Bolsas, "Bolsas");
+        if (otros) {
+            String detalle = otrosDetalle != null && !otrosDetalle.isBlank()
+                    ? "Otros: " + otrosDetalle.trim()
+                    : "Otros";
+            agregarMaterial(materiales, solicitud, true, detalle);
+        }
         return materiales;
     }
 
@@ -263,6 +290,22 @@ public class TicketService {
         item.setSolicitud(solicitud);
         item.setMaterialId(materialId);
         item.setCantidad(1);
+        materiales.add(item);
+    }
+
+    private void agregarMaterial(List<SolicitudMaterialItem> materiales,
+                                 SolicitudMaterial solicitud,
+                                 boolean seleccionado,
+                                 String materialId,
+                                 int cantidad) {
+        if (!seleccionado) {
+            return;
+        }
+
+        SolicitudMaterialItem item = new SolicitudMaterialItem();
+        item.setSolicitud(solicitud);
+        item.setMaterialId(materialId);
+        item.setCantidad(cantidad);
         materiales.add(item);
     }
 

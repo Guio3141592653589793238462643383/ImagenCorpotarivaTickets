@@ -413,7 +413,8 @@
                                     <tbody>
                                     <tr th:each="productoItem : ${s.productos}" class="border-t border-gray-100">
                                         <td class="px-4 py-3 text-gray-800 font-medium" th:text="${productoItem.productoId}"></td>
-                                        <td class="px-4 py-3 text-gray-700" th:text="${productoItem.cantidad}"></td>
+                                        <td class="px-4 py-3 text-gray-700"
+                                            th:text="${productoItem.cantidad != null and productoItem.cantidad > 0 ? productoItem.cantidad : 'No aplica'}"></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -428,7 +429,7 @@
                             <div class="flex flex-wrap gap-2">
                                 <span th:each="materialItem : ${s.materiales}"
                                       class="badge"
-                                      th:text="${materialItem.materialId + ' x' + materialItem.cantidad}">Material</span>
+                                      th:text="${materialItem.cantidad != null and materialItem.cantidad > 0 ? materialItem.materialId + ' x' + materialItem.cantidad : materialItem.materialId}">Material</span>
                             </div>
                         </div>
                     </div>

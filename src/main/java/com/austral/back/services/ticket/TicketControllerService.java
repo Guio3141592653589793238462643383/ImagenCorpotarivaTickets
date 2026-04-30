@@ -45,6 +45,11 @@ public class TicketControllerService {
             boolean videosUsb,
             boolean esferos,
             boolean habladores,
+            boolean ViniloBannerRetablo,
+            boolean Bolsas,
+            boolean otros,
+            String otrosDetalle,
+            boolean noAplicaMaterial,
             RedirectAttributes redirectAttributes
     ) {
         try {
@@ -74,7 +79,12 @@ public class TicketControllerService {
                     reglillas,
                     videosUsb,
                     esferos,
-                    habladores
+                    habladores,
+                    ViniloBannerRetablo,
+                    Bolsas,
+                    otros,
+                    otrosDetalle,
+                    noAplicaMaterial
             );
             redirectAttributes.addFlashAttribute("mensaje", "Ticket creado con éxito");
             return true;

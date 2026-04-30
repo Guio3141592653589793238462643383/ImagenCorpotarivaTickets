@@ -52,6 +52,11 @@ public class TicketController {
             @RequestParam(defaultValue = "false") boolean videosUsb,
             @RequestParam(defaultValue = "false") boolean esferos,
             @RequestParam(defaultValue = "false") boolean habladores,
+            @RequestParam(defaultValue = "false") boolean ViniloBannerRetablo,
+            @RequestParam(defaultValue = "false") boolean Bolsas,
+            @RequestParam(defaultValue = "false") boolean otros,
+            @RequestParam(required = false) String otrosDetalle,
+            @RequestParam(defaultValue = "false") boolean noAplicaMaterial,
             RedirectAttributes redirectAttributes
     ) {
         ticketControllerService.procesarCreacionTicket(
@@ -62,7 +67,7 @@ public class TicketController {
                 ayudaventasImpresos, listasDePrecios, muestrasLentes,
                 regaloCorporativo, materialCapacitaciones, opcion6,
                 paniosMarcados, libretaNotas, reglillas, videosUsb,
-                esferos, habladores,
+                esferos, habladores, ViniloBannerRetablo, Bolsas, otros, otrosDetalle, noAplicaMaterial,
                 redirectAttributes
         );
         return "redirect:/menu";
